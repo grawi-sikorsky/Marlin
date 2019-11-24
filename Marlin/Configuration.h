@@ -71,8 +71,8 @@
 // @section info
 
 // Author info of this build printed to the host during boot and M115
-#define STRING_CONFIG_H_AUTHOR "(none, default config)" // Who made the changes.
-//#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
+#define STRING_CONFIG_H_AUTHOR "(Printo3d.pl, Jakub Sikora)" // Who made the changes.
+#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 /**
  * *** VENDORS PLEASE READ ***
@@ -2208,3 +2208,90 @@
 
 // Allow servo angle to be edited and saved to EEPROM
 //#define EDITABLE_SERVO_ANGLES
+
+/**
+ * 
+ * ************************************************************************************************************************************
+ *  PRINTO H3 CONFIGURATION!
+ *  PRINTO H3 CONFIGURATION!
+ * ************************************************************************************************************************************
+ * 
+ */
+
+// ============================================
+// WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
+// ============================================
+#define PRINTO_H3
+//#define PRINTO_H3_PLUS
+//#define PRINTO_H3_TOWER
+//#define PRINTO_H3_TOWERPLUS
+
+
+//#define PRINTOH3_SPEAKER_SOUNDS //sd in out beeper sounds and more..
+
+#if defined(PRINTO_H3_PLUS) || defined(PRINTO_H3_TOWERPLUS)
+	#define PLOSS_SUPPORT
+	#define PLOSS_MANUAL_RECOVERY
+#endif
+#if defined(PRINTO_H3) || defined(PRINTO_H3_TOWER)
+	//#define PLOSS_SUPPORT
+	//#define PLOSS_MANUAL_RECOVERY
+#endif
+
+//#define DEBUG_VLCS
+
+  #define EEPROM_PANIC_POWER_FAIL		4088								// 1 - POWER LOSS INDICATOR
+  #define EEPROM_PANIC_POWER_FAIL_COUNT	(EEPROM_PANIC_POWER_FAIL-2)			// 2 - POWER LOSS COUNTER
+  #define EEPROM_PANIC_SD_FILE_POSITION	(EEPROM_PANIC_POWER_FAIL_COUNT-4)	// 4 - SD FILE POSITION, 32 bit for uint32_t
+  #define EEPROM_PANIC_CURRENT_XPOS		(EEPROM_PANIC_SD_FILE_POSITION-4)	// 4 - X
+  #define EEPROM_PANIC_CURRENT_YPOS		(EEPROM_PANIC_CURRENT_XPOS-4)		// 4 - Y
+  #define EEPROM_PANIC_CURRENT_ZPOS		(EEPROM_PANIC_CURRENT_YPOS-4)		// 4 - Z
+  #define EEPROM_PANIC_CURRENT_EPOS		(EEPROM_PANIC_CURRENT_ZPOS-4)		// 4 - E
+  #define EEPROM_PANIC_AXIS_REL_MODES	(EEPROM_PANIC_CURRENT_EPOS-1)		// 1 - realtive axis modes
+  #define EEPROM_PANIC_FEEDRATE			(EEPROM_PANIC_AXIS_REL_MODES-2)		// 2 - FEEDRATE
+  #define EEPROM_PANIC_TARGET_HOTEND	(EEPROM_PANIC_FEEDRATE-2)			// 2 - HOTEND TEMP uint16
+  #define EEPROM_PANIC_TARGET_BED		(EEPROM_PANIC_TARGET_HOTEND-2)		// 2 - BED TEMP uint16
+  #define EEPROM_PANIC_FAN_SPEED		(EEPROM_PANIC_TARGET_BED-2)			// 2 - FAN SPEED  // uint16 czyli 2
+  #define EEPROM_SD_FILENAME			(EEPROM_PANIC_FAN_SPEED-8)			// 8 - Nazwa pliku - 8 znakow
+  #define EEPROM_SD_FILE_DIR_DEPTH		(EEPROM_SD_FILENAME-1)				// 1 - zagniezdzenie pliku
+  #define EEPROM_SD_DIRS				(EEPROM_SD_FILE_DIR_DEPTH-80)		// 8x10 @_@
+  #define EEPROM_PANIC_BABYSTEP_Z		(EEPROM_SD_DIRS-4)					// 4 - long 4 bajty
+	
+	#define EEPROM_NEX_FILAMENT_SENSOR (EEPROM_PANIC_BABYSTEP_Z-1) // 1bajt bool
+
+
+//3 Obama SD Care - reakcja po wyjęciu karty SD
+
+  //
+  // Nextion
+  //
+//#define NEX_UPLOAD
+  #define NEXTION
+  #define NEXTION_DISPLAY
+  #define NEXTION_SERIAL 2
+	//#define NEXTION_DEBUG
+
+  // For GFX preview visualization enable NEXTION GFX
+  //#define NEXTION_GFX
+	//#define NEX_UPLOAD // dodane na chwile
+  // Define name firmware file for Nextion on SD
+  #define NEXTION_FIRMWARE_FILE "printoh3nex35.tft"
+
+	#define NEX_SCREEN_TIMEOUT
+	#define NEX_SCREEN_TIME	8000
+	#define NEXTION_SD_LONG_NAMES
+	#define NEX_STAT_PAGE
+	#define NEX_ACC_PAGE
+	#define NEXTION_STEP_SETTINGS
+	#define NEXTION_JERK_SETTINGS
+
+// BED LEVELING NEXTION
+	#define NEXTION_BED_LEVEL
+	#define LCD_Z_STEP 0.04
+	#define PROBE_MANUALLY
+
+// FSENSOR ONOFF
+	#define FSENSOR_STATE
+	#define FSENSOR_USER_STATE
+//G28 after print stop
+	#define STOP_PRINT_G28
