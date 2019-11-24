@@ -1308,7 +1308,7 @@ static_assert(Y_MAX_LENGTH >= Y_BED_SIZE, "Movement bounds (Y_MIN_POS, Y_MAX_POS
 /**
  * LCD_BED_LEVELING requirements
  */
-#if ENABLED(LCD_BED_LEVELING)
+#if ENABLED(LCD_BED_LEVELING) 
   #if !HAS_LCD_MENU
     #error "LCD_BED_LEVELING requires a programmable LCD controller."
   #elif !(ENABLED(MESH_BED_LEVELING) || HAS_ABL_NOT_UBL)
