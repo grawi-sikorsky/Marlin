@@ -22,9 +22,9 @@
 //#include <MemoryFree.h>
 
 #if ENABLED(NEXTION_DISPLAY)
-	#include "../stepper.h"
-	#include "../mesh_bed_leveling.h"
-	#include "../configuration_store.h"
+	#include "../../module/stepper.h"
+	#include "../../feature/bedlevel/mbl/mesh_bed_leveling.h"
+	#include "../../module/configuration_store.h"
 #endif
 
 #if ENABLED(SPEAKER)
