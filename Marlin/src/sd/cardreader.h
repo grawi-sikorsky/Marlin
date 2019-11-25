@@ -167,6 +167,11 @@ public:
     }
   #endif
 
+  #if ENABLED(NEXTION)
+    void getfilename(uint16_t nr, const char* const match=NULL);
+    uint16_t getnrfilenames();
+  #endif
+
 private:
   //
   // Working directory and parents

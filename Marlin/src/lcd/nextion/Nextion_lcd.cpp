@@ -4,6 +4,7 @@
 #include "../../Marlin.h"
 #include "../../module/temperature.h"
 #include "../../sd/cardreader.h"
+#include "../../module/printcounter.h"
 //#include <MemoryFree.h>
 
 #if ENABLED(NEXTION_DISPLAY)
@@ -17,7 +18,6 @@
 #endif
 
 #if ENABLED(NEXTION)
-
   #include "Nextion_lcd.h"
   #include "Nextion_gfx.h"
   #include "library/Nextion.h"
@@ -754,7 +754,7 @@
 
 		//Ustawia liste plikow na stronie SDCARD
     static void setrowsdcard(uint32_t number = 0) {
-      uint16_t fileCnt = card.getnrfilenames(); // nalezaloby przeniesc funkcje get_num_files z mk4duo / jakis tweak
+      uint16_t fileCnt = card.get_num_Files(); // nalezaloby przeniesc funkcje get_num_files z mk4duo / jakis tweak
       uint32_t i = 0;
       card.getWorkDirName();
 
