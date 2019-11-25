@@ -30,8 +30,8 @@
               lcd_status_message_level  = 0;
   uint16_t    slidermaxval              = 20;
   char        bufferson[70]             = { 0 };
-  char        lcd_status_message[24]    = "TRAAA" //{Language_pl::WELCOME_MSG}; //PROBLEMOOOOO
-  const float manual_feedrate_mm_m[]    = MANUAL_FEEDRATE;
+  char        lcd_status_message[24]    = "TRAAA"; //{Language_pl::WELCOME_MSG}; //PROBLEMOOOOO
+  //const float manual_feedrate_mm_m[]    = MANUAL_FEEDRATE; //bylo w ultralcd, obecnie jest w planner.h 
 	millis_t		screen_timeout_millis;
 
   extern uint8_t progress_printing; // dodane nex
@@ -41,7 +41,7 @@
 	uint8_t lcd_sd_status;
 	#endif
 
-	extern float destination[XYZE];// = { 0.0 };
+	extern xyze_pos_t destination;// = { 0.0 };
 	extern bool g29_in_progress;// = false;
 	extern inline void set_current_to_destination() { COPY(current_position, destination); }
 	extern inline void set_destination_to_current() { COPY(destination, current_position); }
