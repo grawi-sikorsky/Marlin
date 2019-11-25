@@ -99,6 +99,8 @@ extern float feedrate_mm_s;
     void rfid_setText(const char* message, uint32_t color = 65535);
   #endif
 
+  void lcd_setstatusPGM(PGM_P const message, int8_t level);
+
 #endif // ENABLED(NEXTION)
 
 #endif /* _NEXTION_LCD_H_ */

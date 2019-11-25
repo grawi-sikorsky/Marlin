@@ -945,7 +945,8 @@
           #if ENABLED(PARK_HEAD_ON_PAUSE)
             enqueue_and_echo_commands_P(PSTR("M125"));
           #endif
-					lcd_setstatusPGM(PSTR(MSG_PRINT_PAUSED));
+					lcd_setstatusPGM(GET_TEXT(MSG_PRINT_PAUSED), -1);
+					//set_status_P(GET_TEXT(MSG_PRINT_PAUSED));
         }
         else {																					//resume
 					#if ENABLED(PARK_HEAD_ON_PAUSE)
@@ -954,7 +955,7 @@
 						card.startFileprint();
 						print_job_timer.start();
 					#endif
-					lcd_setstatusPGM(PSTR(MSG_RESUME_PRINT));
+					lcd_setstatusPGM(GET_TEXT(MSG_RESUME_PRINT), -1);
         }
       }
     }
@@ -2062,7 +2063,7 @@
     if (PageID == 2) LcdStatus.setText(lcd_status_message);
   }
 
-  void lcd_setstatusPGM(const char* message, int8_t level) {
+  void lcd_setstatusPGM(PGM_P const message, int8_t level) {
     if (level < 0) level = lcd_status_message_level = 0;
     if (level < lcd_status_message_level || !NextionON) return;
     strncpy_P(lcd_status_message, message, 24);
