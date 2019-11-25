@@ -65,6 +65,7 @@
   #endif
 	
 	#if ENABLED(ADVANCED_PAUSE_FEATURE)
+		void lcd_pause_pausing_message()  { _lcd_pause_message(GET_TEXT(MSG_PAUSE_PRINT_INIT));        }
 		void lcd_advanced_pause_wait_for_nozzles_to_heat();
 		void lcd_advanced_pause_toocold_menu();
 		void lcd_advanced_pause_option_menu();
@@ -75,6 +76,16 @@
 		void lcd_advanced_pause_heat_nozzle();
 		void lcd_advanced_pause_extrude_message();
 		void lcd_advanced_pause_resume_message();
+
+		//void lcd_pause_pausing_message()  { _lcd_pause_message(GET_TEXT(MSG_PAUSE_PRINT_INIT));        }
+		//void lcd_pause_changing_message() { _lcd_pause_message(GET_TEXT(MSG_FILAMENT_CHANGE_INIT));    }
+		//void lcd_pause_unload_message()   { _lcd_pause_message(GET_TEXT(MSG_FILAMENT_CHANGE_UNLOAD));  }
+		//void lcd_pause_heating_message()  { _lcd_pause_message(GET_TEXT(MSG_FILAMENT_CHANGE_HEATING)); }
+		//void lcd_pause_heat_message()     { _lcd_pause_message(GET_TEXT(MSG_FILAMENT_CHANGE_HEAT));    }
+		//void lcd_pause_insert_message()   { _lcd_pause_message(GET_TEXT(MSG_FILAMENT_CHANGE_INSERT));  }
+		//void lcd_pause_load_message()     { _lcd_pause_message(GET_TEXT(MSG_FILAMENT_CHANGE_LOAD));    }
+		//void lcd_pause_waiting_message()  { _lcd_pause_message(GET_TEXT(MSG_ADVANCED_PAUSE_WAITING));  }
+		//void lcd_pause_resume_message()   { _lcd_pause_message(GET_TEXT(MSG_FILAMENT_CHANGE_RESUME));  }
 	#endif
 
   /**
@@ -540,7 +551,7 @@
    *
    */
   void lcd_sdcard_stop() {
-		did_pause_print = false;									// flaga pause_print na false, na wypadek gdyby drukarka byla w stanie pauzy @_@
+		// 2.0 did_pause_print = false;									// flaga pause_print na false, na wypadek gdyby drukarka byla w stanie pauzy @_@
 	  card.stopSDPrint();											// wstrzymaj wydruk z kartysd
 		//clear_command_queue();									// czysc kolejke komend
 		//stepper.quick_stop_panic();								// pomocne z panic'a, trzeba to zaserwowac aby mozna bylo ponownie wykonac jakakolwiek komende
@@ -1008,7 +1019,7 @@
       pause_menu_response = PAUSE_RESPONSE_EXTRUDE_MORE;
     }
 
-    static void lcd_advanced_pause_option_menu() {
+    void lcd_advanced_pause_option_menu() {
       START_MENU();
       STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_OPTION_HEADER));
       MENU_ITEM(function, GET_TEXT(MSG_FILAMENT_CHANGE_OPTION_RESUME), lcd_advanced_pause_resume_print);
@@ -1016,7 +1027,7 @@
       END_MENU();
     }
 
-    static void lcd_advanced_pause_init_message() {
+    void lcd_advanced_pause_init_message() {
       START_SCREEN();
 		STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_INIT_1));
@@ -1024,7 +1035,7 @@
       END_SCREEN();
     }
 
-    static void lcd_advanced_pause_unload_message() {
+    void lcd_advanced_pause_unload_message() {
       START_SCREEN();
 		STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
 		STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_UNLOAD_1));
@@ -1032,7 +1043,7 @@
       END_SCREEN();
     }
 
-    static void lcd_advanced_pause_wait_for_nozzles_to_heat() {
+    void lcd_advanced_pause_wait_for_nozzles_to_heat() {
       START_SCREEN();
 		STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_HEATING_1));
@@ -1040,7 +1051,7 @@
       END_SCREEN();
     }
 
-    static void lcd_advanced_pause_heat_nozzle() {
+    void lcd_advanced_pause_heat_nozzle() {
       START_SCREEN();
 		STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_HEAT_1));
@@ -1048,7 +1059,7 @@
       END_SCREEN();
     }
 
-    static void lcd_advanced_pause_insert_message() {
+    void lcd_advanced_pause_insert_message() {
       START_SCREEN();
 		STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_INSERT_1));
@@ -1088,7 +1099,14 @@
       advanced_pause_mode = mode;
 
       if (old_message != message) {
-				nex_m600_heatingup = 0;//zmiana jesli wyjdzie poza heatingup 
+				nex_m600_heatingup = 0;//zmiana jesli wyjdzie poza heatingup ????
+				    
+					// POZOSTALO
+					//PAUSE_MESSAGE_PAUSING,
+					//PAUSE_MESSAGE_CHANGING,
+					//PAUSE_MESSAGE_WAITING,
+					//PAUSE_MESSAGE_STATUS,
+					
         switch (message) {
           case PAUSE_MESSAGE_INIT:
             lcd_advanced_pause_init_message();
@@ -1102,16 +1120,16 @@
           case PAUSE_MESSAGE_LOAD:
             lcd_advanced_pause_load_message();
             break;
-          case PAUSE_MESSAGE_EXTRUDE:
+          case PAUSE_MESSAGE_PURGE:
             lcd_advanced_pause_purge_message();
             break;
           case PAUSE_MESSAGE_RESUME:
             lcd_advanced_pause_resume_message();
             break;
-          case PAUSE_MESSAGE_CLICK_TO_HEAT_NOZZLE:
+          case PAUSE_MESSAGE_HEAT:
             lcd_advanced_pause_heat_nozzle();
             break;
-          case PAUSE_MESSAGE_WAIT_FOR_NOZZLES_TO_HEAT:
+          case PAUSE_MESSAGE_HEATING:
 						nex_m600_heatingup = 1;
             lcd_advanced_pause_wait_for_nozzles_to_heat();
             break;
@@ -1284,7 +1302,7 @@
         prepare_move_to_destination(); // will call set_current_from_destination()
         feedrate_mm_s = old_feedrate;
 
-        stepper.synchronize();
+        planner.synchronize(); //przesuniecie metody synchronize ze stepper do planner
       }
       else if (ptr == &ProbeSend) {
 				SERIAL_ECHOLNPGM("probesend:");
@@ -1385,11 +1403,11 @@
 				// PRINTER INFO START
 				Sfirmware.setText_PGM(PSTR(SHORT_BUILD_VERSION), "statscreen");
 				Skompil.setText_PGM(PSTR(STRING_DISTRIBUTION_DATE), "statscreen");
-				Sleveling.setText_PGM(PSTR(MSG_MESH_LEVELING), "statscreen");
+				Sleveling.setText_PGM(GET_TEXT(MSG_MESH_LEVELING), "statscreen");
 				#if ENABLED(PLOSS_SUPPORT)
 							Svlcs.setText_PGM(PSTR(MSG_INFO_YES), "statscreen");
 				#else
-							Svlcs.setText_PGM(PSTR(MSG_INFO_NO), "statscreen");
+							Svlcs.setText_PGM(GET_TEXT(MSG_INFO_NO), "statscreen");
 				#endif
 
 				#if ENABLED(FILAMENT_RUNOUT_SENSOR)
