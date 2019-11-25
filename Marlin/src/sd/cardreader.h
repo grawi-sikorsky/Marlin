@@ -92,6 +92,9 @@ public:
     static void printLongPath(char * const path);   // Used by M33
   #endif
 
+  // PRINTO H3
+  static inline bool isFilenameisDir() { return flag.filenameIsDir; }
+
   // Working Directory for SD card menu
   static void cdroot();
   static void cd(const char *relpath);

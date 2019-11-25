@@ -703,7 +703,7 @@
 
 	#if ENABLED(NEX_UPLOAD)
 	void UploadNewFirmware() {
-		if (IS_SD_INSERTED || card.cardOK) {
+		if (IS_SD_INSERTED || card.isMounted) {
 			Firmware.startUpload();
 			nexSerial.end();
 			lcd_init();
@@ -779,9 +779,9 @@
             #endif
 
 						#if ENABLED(NEXTION_SD_LONG_NAMES)
-							printrowsd(row, card.filenameIsDir, card.filename, card.longFilename);
+							printrowsd(row, card.isFilenameisDir, card.filename, card.longFilename);
 						#else
-							printrowsd(row, card.filenameIsDir, card.filename);
+							printrowsd(row, card.isFilenameisDir, card.filename);
 						#endif
 
           } else {
@@ -832,7 +832,7 @@
 				strcpy(dir_names[depth], filename);								// dodane
 			#endif	//OCB?
 
-      card.chdir(filename);
+      card.cd(filename);
       setpageSD();
     }
 
@@ -931,15 +931,15 @@
 		// NEXTION: Obsluga klikniecia przycisku Folder Up
     void sdfolderUpPopCallback(void *ptr) {
       UNUSED(ptr);
-      card.updir();
+      card.cdup();
       setpageSD();
     }
 
 		// NEXTION: Obsluga klikniecia linijek przycisku PAUSE / PLAY
     void PlayPausePopCallback(void *ptr) {
       UNUSED(ptr);
-      if (card.cardOK && card.isFileOpen()) {
-        if (IS_SD_PRINTING) {														//pause
+      if (card.isMounted && card.isFileOpen()) {
+        if (card.isPrinting) {														//pause
           card.pauseSDPrint();
           print_job_timer.pause();
           #if ENABLED(PARK_HEAD_ON_PAUSE)
@@ -1770,7 +1770,7 @@
     heater_list0[h]->setValue(temp,"printer");
 
     #if ENABLED(NEXTION_GFX)
-      if (!(print_job_counter.isRunning() || IS_SD_PRINTING) && !Wavetemp.getObjVis() && show_Wave) {
+      if (!(print_job_counter.isRunning() || card.isPrinting) && !Wavetemp.getObjVis() && show_Wave) {
         Wavetemp.SetVisibility(true);
       }
     #endif
@@ -1985,20 +1985,20 @@
 
 				#if ENABLED(SDSUPPORT)
 				if (card.isFileOpen()) {
-					if (IS_SD_PRINTING && SDstatus != SD_PRINTING) {
+					if (card.isPrinting && SDstatus != SD_PRINTING) {
 						SDstatus = SD_PRINTING;
 						SD.setValue(SDstatus,"printer");
 					}
-					else if (!IS_SD_PRINTING && SDstatus != SD_PAUSE) {
+					else if (!card.isPrinting && SDstatus != SD_PAUSE) {
 						SDstatus = SD_PAUSE;
 						SD.setValue(SDstatus,"printer");
 					}
 				}
-				else if (card.cardOK && SDstatus != SD_INSERT) {
+				else if (card.isMounted && SDstatus != SD_INSERT) {
 					SDstatus = SD_INSERT;
 					SD.setValue(SDstatus,"printer");
 				}
-				else if (card.cardOK && SDstatus != SD_NO_INSERT) {
+				else if (card.isMounted && SDstatus != SD_NO_INSERT) {
 					SDstatus = SD_NO_INSERT;
 					SD.setValue(SDstatus,"printer");
 				}
@@ -2130,7 +2130,7 @@
     }
 
     void gfx_clear(const float x, const float y, const float z, bool force_clear) {
-      if (PageID == 2 && (print_job_counter.isRunning() || IS_SD_PRINTING || force_clear)) {
+      if (PageID == 2 && (print_job_counter.isRunning() || card.isPrinting || force_clear)) {
         Wavetemp.SetVisibility(false);
         show_Wave = !force_clear;
         gfx.clear(x, y, z);
@@ -2138,12 +2138,12 @@
     }
 
     void gfx_cursor_to(const float x, const float y, const float z, bool force_cursor) {
-      if (PageID == 2 && (print_job_counter.isRunning() || IS_SD_PRINTING || force_cursor))
+      if (PageID == 2 && (print_job_counter.isRunning() || card.isPrinting || force_cursor))
         gfx.cursor_to(x, y, z);
     }
 
     void gfx_line_to(const float x, const float y, const float z) {
-      if (PageID == 2 && (print_job_counter.isRunning() || IS_SD_PRINTING)) {
+      if (PageID == 2 && (print_job_counter.isRunning() || card.isPrinting)) {
         #if ENABLED(ARDUINO_ARCH_SAM)
           gfx.line_to(NX_TOOL, x, y, z, true);
         #else
