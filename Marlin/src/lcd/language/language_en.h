@@ -590,6 +590,28 @@ namespace Language_en {
   PROGMEM Language_Str MSG_BACKLASH_C                      = LCD_STR_C;
   PROGMEM Language_Str MSG_BACKLASH_CORRECTION             = _UxGT("Correction");
   PROGMEM Language_Str MSG_BACKLASH_SMOOTHING              = _UxGT("Smoothing");
+
+    #if ENABLED(NEXTION)
+      PROGMEM Language_Str MSG_NEX_FILAMENT_CHANGE_HEADER				= _UxGT("Wymiana filamentu");
+      PROGMEM Language_Str MSG_NEX_FILAMENT_CHANGE_OPTION_HEADER	= _UxGT("Wybierz opcje");
+      PROGMEM Language_Str MSG_FILAMENT_CHANGE_INIT_1         = _UxGT("Trwa rozpoczynanie");
+      PROGMEM Language_Str MSG_FILAMENT_CHANGE_INIT_2         = _UxGT("zmiany filamentu");
+      PROGMEM Language_Str MSG_FILAMENT_CHANGE_UNLOAD_1       = _UxGT("Trwa wysuwanie");
+      PROGMEM Language_Str MSG_FILAMENT_CHANGE_UNLOAD_2       = _UxGT("filamentu z glowicy");
+      PROGMEM Language_Str MSG_FILAMENT_CHANGE_INSERT_1       = _UxGT("Wloz filament");
+      PROGMEM Language_Str MSG_FILAMENT_CHANGE_INSERT_2       = _UxGT("i nacisnij przycisk");
+      PROGMEM Language_Str MSG_FILAMENT_CHANGE_INSERT_3       = _UxGT("aby kontynuowac...");
+      PROGMEM Language_Str MSG_FILAMENT_CHANGE_LOAD_1         = _UxGT("Trwa wprowadzanie");
+      PROGMEM Language_Str MSG_FILAMENT_CHANGE_LOAD_2         = _UxGT("filamentu do glowicy");
+      PROGMEM Language_Str MSG_FILAMENT_CHANGE_EXTRUDE_1      = _UxGT("Trwa ekstruzja");
+      PROGMEM Language_Str MSG_FILAMENT_CHANGE_EXTRUDE_2      = _UxGT("nowego materialu");
+      PROGMEM Language_Str MSG_FILAMENT_CHANGE_RESUME_1       = _UxGT("Trwa wznawianie");
+      PROGMEM Language_Str MSG_FILAMENT_CHANGE_RESUME_2       = _UxGT("wydruku");
+      PROGMEM Language_Str MSG_TOO_COLD_FOR_M600_1						= _UxGT("Glowica jest zimna,");
+      PROGMEM Language_Str MSG_TOO_COLD_FOR_M600_2						= _UxGT("rozgrzej aby");
+      PROGMEM Language_Str MSG_TOO_COLD_FOR_M600_3						= _UxGT("kontynuowac");
+      PROGMEM Language_Str MSG_TOO_COLD_FOR_M600_4						= _UxGT("Temp. min: 170");
+    #endif
 }
 
 #if FAN_COUNT == 1

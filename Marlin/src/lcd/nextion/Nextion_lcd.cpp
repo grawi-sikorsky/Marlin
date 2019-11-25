@@ -970,16 +970,20 @@
 // ========================
   #if ENABLED(ADVANCED_PAUSE_FEATURE)
 
-    static AdvancedPauseMenuResponse advanced_pause_mode = ADVANCED_PAUSE_RESPONSE_WAIT_FOR;
+    static PauseMenuResponse advanced_pause_mode = PAUSE_RESPONSE_WAIT_FOR;
 
 		void lcd_advanced_pause_toocold_menu() {
 			nex_m600_heatingup = 1; // wlacz wyswietlanie temperatury
 			//screen_timeout_millis = millis(); // wlaczamy timer
 			START_SCREEN();
-			STATIC_ITEM(MSG_TOO_COLD_FOR_M600_1);
-			STATIC_ITEM(MSG_TOO_COLD_FOR_M600_2);
-			STATIC_ITEM(MSG_TOO_COLD_FOR_M600_3);
-			STATIC_ITEM(MSG_TOO_COLD_FOR_M600_4);
+			LCD_MESSAGEPGM(MSG_TOO_COLD_FOR_M600_1);
+			LCD_MESSAGEPGM(MSG_TOO_COLD_FOR_M600_2);
+			LCD_MESSAGEPGM(MSG_TOO_COLD_FOR_M600_3);
+			LCD_MESSAGEPGM(MSG_TOO_COLD_FOR_M600_4);
+			//STATIC_ITEM(MSG_TOO_COLD_FOR_M600_1);
+			//STATIC_ITEM(MSG_TOO_COLD_FOR_M600_2);
+			//STATIC_ITEM(MSG_TOO_COLD_FOR_M600_3);
+			//STATIC_ITEM(MSG_TOO_COLD_FOR_M600_4);
 			WAIT_FOR_CLICK();
 			END_MENU();
 		}
@@ -1000,12 +1004,12 @@
 		}
 
     static void lcd_advanced_pause_resume_print() {
-      advanced_pause_menu_response = ADVANCED_PAUSE_RESPONSE_RESUME_PRINT;
+      pause_menu_response = PAUSE_RESPONSE_RESUME_PRINT;
       Pprinter.show();
     }
 
     static void lcd_advanced_pause_extrude_more() {
-      advanced_pause_menu_response = ADVANCED_PAUSE_RESPONSE_EXTRUDE_MORE;
+      pause_menu_response = PAUSE_RESPONSE_EXTRUDE_MORE;
     }
 
     static void lcd_advanced_pause_option_menu() {
