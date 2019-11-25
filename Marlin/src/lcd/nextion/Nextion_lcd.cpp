@@ -540,10 +540,10 @@
    *
    */
   void lcd_sdcard_stop() {
-		move_away_flag = false;									// flaga pause_print na false, na wypadek gdyby drukarka byla w stanie pauzy @_@
+		did_pause_print = false;									// flaga pause_print na false, na wypadek gdyby drukarka byla w stanie pauzy @_@
 	  card.stopSDPrint();											// wstrzymaj wydruk z kartysd
 		//clear_command_queue();									// czysc kolejke komend
-		//stepper.quick_stop_panic();							// pomocne z panic'a, trzeba to zaserwowac aby mozna bylo ponownie wykonac jakakolwiek komende
+		//stepper.quick_stop_panic();								// pomocne z panic'a, trzeba to zaserwowac aby mozna bylo ponownie wykonac jakakolwiek komende
 		thermalManager.disable_all_heaters();		// wylacz grzalki
 		percentdone.setText("0", "printer");		// zeruj procenty
 		progressbar.setValue(0, "printer");			// zeruj progress bar
@@ -553,18 +553,19 @@
 			eeprom_update_dword((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);	// zeruj babystepping w eeprom
 		#endif
 		#if FAN_COUNT > 0
-			for (uint8_t i = 0; i < FAN_COUNT; i++) fanSpeeds[i] = 0;
+			for (uint8_t i = 0; i < FAN_COUNT; i++) fanSpeed[i] = 0;
 		#endif
 
-		wait_for_heatup = false;												// flaga false
-		lcd_setstatusPGM(PSTR(MSG_PRINT_ABORTED), -1);	// status info
-		print_job_timer.stop();			// wstrzymujemy timer
+		wait_for_heatup = false;					// flaga false
+		//lcd_setstatusPGM(PSTR(MSG_PRINT_ABORTED), -1);	// status info
+		//KATT lcd_setstatusPGM(PSTR("chwilowka"), -1);	// podmiana tego co wyzej na chwile dla kompilacji
+		print_job_timer.stop();						// wstrzymujemy timer
 
 		//G28 on stop print
 		#if ENABLED(STOP_PRINT_G28)
 				//home_all_axes();						// bazujemy osie
 		#endif
-				enqueue_and_echo_commands_P(PSTR("G28"));
+				//KATT enqueue_and_echo_commands_P(PSTR("G28"));
 				//quickstop_stepper();
 }
 
@@ -594,11 +595,11 @@
 		VSpeed.setValue(100, "printer");
 
     #if ENABLED(SDSUPPORT)
-      if (!card.cardOK) card.initsd();
+      if (!card.isMounted) card.mount();
       delay(100);
-      if (card.cardOK) {
+      if (card.isMounted) {
         SDstatus = SD_INSERT;
-        card.setroot();  // Initial boot
+        card.cdroot();  // Initial boot
       }
       else SDstatus = SD_NO_INSERT;
 
@@ -1079,42 +1080,42 @@
       END_SCREEN();
     }
 
-    void lcd_advanced_pause_show_message(const AdvancedPauseMessage message,const AdvancedPauseMenuResponse mode/*=ADVANCED_PAUSE_MODE_PAUSE_PRINT*/) 
+    void lcd_advanced_pause_show_message(const PauseMessage message,const PauseMenuResponse mode/*=ADVANCED_PAUSE_MODE_PAUSE_PRINT*/) 
 		{
       //UNUSED(extruder);
-      static AdvancedPauseMessage old_message;
+      static PauseMessage old_message;
       advanced_pause_mode = mode;
 
       if (old_message != message) {
 				nex_m600_heatingup = 0;//zmiana jesli wyjdzie poza heatingup 
         switch (message) {
-          case ADVANCED_PAUSE_MESSAGE_INIT:
+          case PAUSE_MESSAGE_INIT:
             lcd_advanced_pause_init_message();
             break;
-          case ADVANCED_PAUSE_MESSAGE_UNLOAD:
+          case PAUSE_MESSAGE_UNLOAD:
             lcd_advanced_pause_unload_message();
             break;
-          case ADVANCED_PAUSE_MESSAGE_INSERT:
+          case PAUSE_MESSAGE_INSERT:
             lcd_advanced_pause_insert_message();
             break;
-          case ADVANCED_PAUSE_MESSAGE_LOAD:
+          case PAUSE_MESSAGE_LOAD:
             lcd_advanced_pause_load_message();
             break;
-          case ADVANCED_PAUSE_MESSAGE_EXTRUDE:
+          case PAUSE_MESSAGE_EXTRUDE:
             lcd_advanced_pause_purge_message();
             break;
-          case ADVANCED_PAUSE_MESSAGE_RESUME:
+          case PAUSE_MESSAGE_RESUME:
             lcd_advanced_pause_resume_message();
             break;
-          case ADVANCED_PAUSE_MESSAGE_CLICK_TO_HEAT_NOZZLE:
+          case PAUSE_MESSAGE_CLICK_TO_HEAT_NOZZLE:
             lcd_advanced_pause_heat_nozzle();
             break;
-          case ADVANCED_PAUSE_MESSAGE_WAIT_FOR_NOZZLES_TO_HEAT:
+          case PAUSE_MESSAGE_WAIT_FOR_NOZZLES_TO_HEAT:
 						nex_m600_heatingup = 1;
             lcd_advanced_pause_wait_for_nozzles_to_heat();
             break;
-          case ADVANCED_PAUSE_MESSAGE_OPTION:
-            advanced_pause_menu_response = ADVANCED_PAUSE_RESPONSE_WAIT_FOR;
+          case PAUSE_MESSAGE_OPTION:
+            pause_menu_response = PAUSE_RESPONSE_WAIT_FOR;
             lcd_advanced_pause_option_menu();
             break;
           //case ADVANCED_PAUSE_MESSAGE_STATUS:
@@ -1343,7 +1344,7 @@
 		ZERO(bufferson);
 		vfanbuff = FanSpeedNex.getValue("fanspeedpage");
 		fanpagefrom = FanPageIDfrom.getValue("fanspeedpage");
-		fanSpeeds[0] = vfanbuff;
+		fanSpeed[0] = vfanbuff;
 		if (fanpagefrom == 0) // wejscie z status
 		{
 			Pprinter.show();
@@ -1907,9 +1908,9 @@
           #endif
 				}
 				//fanek
-         if (PreviousfanSpeed != fanSpeeds[0]) {
-					PrinterFanspeed.setValue(((float)(fanSpeeds[0]) / 255) * 100,"printer");
-          PreviousfanSpeed = fanSpeeds[0];
+         if (PreviousfanSpeed != fanSpeed[0]) {
+					PrinterFanspeed.setValue(((float)(fanSpeed[0]) / 255) * 100,"printer");
+          PreviousfanSpeed = fanSpeed[0];
          }
 				//feedrate
         if (Previousfeedrate != feedrate_percentage) {

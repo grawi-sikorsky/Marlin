@@ -32,7 +32,7 @@
 extern float feedrate_mm_s;
 
   #if ENABLED(ADVANCED_PAUSE_FEATURE)
-		#include "../enum.h"
+		#include "../../core/types.h"
   #endif
 
   void sethotPopCallback(void *ptr);
@@ -90,8 +90,8 @@ extern float feedrate_mm_s;
   #endif
 
   #if ENABLED(ADVANCED_PAUSE_FEATURE)
-    void lcd_advanced_pause_show_message(const AdvancedPauseMessage message,
-                                         const AdvancedPauseMenuResponse mode= ADVANCED_PAUSE_RESPONSE_WAIT_FOR);
+    void lcd_advanced_pause_show_message(const PauseMessage message,
+                                         const PauseMenuResponse mode = PAUSE_RESPONSE_WAIT_FOR);
   #endif
 
   #if ENABLED(RFID_MODULE)

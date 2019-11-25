@@ -378,3 +378,20 @@ void protected_pin_err();
 #endif
 
 extern const char G28_STR[], M21_STR[], M23_STR[], M24_STR[], NUL_STR[];
+
+
+/**
+ * 
+ * // Marlin.h zmiany dla Printo H3
+ * 
+ **/
+//#include "../src/lcd/nextion/Nextion_lcd.h"
+
+#if FAN_COUNT > 0
+  extern uint8_t fanSpeed[FAN_COUNT]; // dodane uint8_t zamaist 16
+  #if ENABLED(PROBING_FANS_OFF)
+    extern bool fans_paused;
+    extern uint16_t paused_fanSpeed[FAN_COUNT]; // dodane uint8_t zamaist 16
+  #endif
+#endif
+
