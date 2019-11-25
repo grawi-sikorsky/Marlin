@@ -25,8 +25,10 @@
  * Conditionals_LCD.h
  * Conditionals that need to be set before Configuration_adv.h or pins.h
  */
+#if ENABLED(NEXTION)
+  #define IS_ULTIPANEL
 
-#if ENABLED(CARTESIO_UI)
+#elif ENABLED(CARTESIO_UI)
 
   #define DOGLCD
   #define IS_ULTIPANEL
@@ -357,7 +359,7 @@
 #define HAS_DISPLAY         (HAS_SPI_LCD || ENABLED(EXTENSIBLE_UI))
 #define HAS_GRAPHICAL_LCD    ENABLED(DOGLCD)
 #define HAS_CHARACTER_LCD   (HAS_SPI_LCD && !HAS_GRAPHICAL_LCD)
-#define HAS_LCD_MENU        (ENABLED(NEXTION) || ENABLED(ULTIPANEL) && DISABLED(NO_LCD_MENUS))
+#define HAS_LCD_MENU        (ENABLED(ULTIPANEL) && DISABLED(NO_LCD_MENUS))
 #define HAS_ADC_BUTTONS      ENABLED(ADC_KEYPAD)
 
 /**

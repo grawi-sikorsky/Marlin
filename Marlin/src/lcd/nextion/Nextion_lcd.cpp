@@ -1,22 +1,7 @@
 /**
  * Nextion_lcd.cpp
- *
- * Copyright (c) 2014-2016 Alberto Cotronei @MagoKimbra
- *
- * Grbl is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Grbl is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Grbl. If not, see <http://www.gnu.org/licenses/>.
  */
-#include "src/Marlin.h"
+#include "../../Marlin.h"
 #include "../../module/temperature.h"
 #include "../../sd/cardreader.h"
 //#include <MemoryFree.h>
@@ -45,7 +30,7 @@
               lcd_status_message_level  = 0;
   uint16_t    slidermaxval              = 20;
   char        bufferson[70]             = { 0 };
-  char        lcd_status_message[24]    = WELCOME_MSG;
+  char        lcd_status_message[24]    = {Language_pl::WELCOME_MSG}; //PROBLEMOOOOO
   const float manual_feedrate_mm_m[]    = MANUAL_FEEDRATE;
 	millis_t		screen_timeout_millis;
 
