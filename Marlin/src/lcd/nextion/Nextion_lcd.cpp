@@ -30,7 +30,7 @@
               lcd_status_message_level  = 0;
   uint16_t    slidermaxval              = 20;
   char        bufferson[70]             = { 0 };
-  char        lcd_status_message[24]    = {Language_pl::WELCOME_MSG}; //PROBLEMOOOOO
+  char        lcd_status_message[24]    = "TRAAA" //{Language_pl::WELCOME_MSG}; //PROBLEMOOOOO
   const float manual_feedrate_mm_m[]    = MANUAL_FEEDRATE;
 	millis_t		screen_timeout_millis;
 
