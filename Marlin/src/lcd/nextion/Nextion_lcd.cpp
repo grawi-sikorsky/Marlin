@@ -1405,22 +1405,22 @@
 				Skompil.setText_PGM(PSTR(STRING_DISTRIBUTION_DATE), "statscreen");
 				Sleveling.setText_PGM(GET_TEXT(MSG_MESH_LEVELING), "statscreen");
 				#if ENABLED(PLOSS_SUPPORT)
-							Svlcs.setText_PGM(PSTR(MSG_INFO_YES), "statscreen");
+							Svlcs.setText_PGM(GET_TEXT(MSG_YES), "statscreen");
 				#else
-							Svlcs.setText_PGM(GET_TEXT(MSG_INFO_NO), "statscreen");
+							Svlcs.setText_PGM(GET_TEXT(MSG_NO), "statscreen");
 				#endif
 
 				#if ENABLED(FILAMENT_RUNOUT_SENSOR)
 							if (eeprom_read_byte((uint8_t*)EEPROM_NEX_FILAMENT_SENSOR) == 1)
 							{
-								Sfilsensor.setText_PGM(PSTR(MSG_INFO_YES), "statscreen");
+								Sfilsensor.setText_PGM(GET_TEXT(MSG_YES), "statscreen");
 							}
 							else
 							{
-								Sfilsensor.setText_PGM(PSTR(MSG_INFO_NO), "statscreen");
+								Sfilsensor.setText_PGM(GET_TEXT(MSG_NO), "statscreen");
 							}
 				#else
-							Sfilsensor.setText_PGM(PSTR(MSG_INFO_NO), "statscreen");
+							Sfilsensor.setText_PGM(GET_TEXT(MSG_NO), "statscreen");
 				#endif			
 				// END OF PRINTER INFO
 
