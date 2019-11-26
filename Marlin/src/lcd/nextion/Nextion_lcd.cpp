@@ -1819,7 +1819,7 @@
       LcdZ.setText(ftostr41sign(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS]))),"printer");
     }
     else if (PageID == 5) {
-      if (axis_homed[X_AXIS]) {
+      if (all_axes_homed) {
         valuetemp = ftostr4sign(LOGICAL_X_POSITION(current_position[X_AXIS]));
         strcat(bufferson, "X");
         strcat(bufferson, valuetemp);
@@ -1827,7 +1827,7 @@
       else
         strcat(bufferson, "?");
 
-      if (axis_homed[Y_AXIS]) {
+      if (all_axes_homed) {
         valuetemp = ftostr4sign(LOGICAL_Y_POSITION(current_position[Y_AXIS]));
         strcat(bufferson, " Y");
         strcat(bufferson, valuetemp);
@@ -1835,7 +1835,7 @@
       else
         strcat(bufferson, " ?");
 
-      if (axis_homed[Z_AXIS]) {
+      if (all_axes_homed) {
         valuetemp = ftostr52sp(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS])));
         strcat(bufferson, " Z");
         strcat(bufferson, valuetemp);
