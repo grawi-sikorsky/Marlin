@@ -40,7 +40,7 @@
 	extern bool nex_filament_runout_sensor_flag;
 	bool nex_m600_heatingup = 0;
 	#if PIN_EXISTS(SD_DETECT)
-	uint8_t lcd_sd_status;
+	extern uint8_t lcd_sd_status;
 	#endif
 
 	extern xyze_pos_t destination;// = { 0.0 };
@@ -719,7 +719,7 @@
 		if (IS_SD_INSERTED || card.isMounted) {
 			Firmware.startUpload();
 			nexSerial.end();
-			lcd_init();
+			init();
 		}
 	}
 	#endif
@@ -1633,7 +1633,7 @@
 // =======================
 // ==	LCD INIT					==
 // =======================
-  void lcd_init() {
+  void MarlinUI::nex_init() {
     for (uint8_t i = 0; i < 10; i++) {
       ZERO(bufferson);
       NextionON = nexInit(bufferson);
@@ -1860,18 +1860,18 @@
 		// IS_SD_INSERTED ma odwrocona logike:
 		// 1 - brak karty
 		// 0 - karta wlozona
-		const bool sd_status = IS_SD_INSERTED;
-		if (sd_status != lcd_sd_status && lcd_detected())								// sprawdz czy nastapila zmiana? SD DET ->
-		{																																// TAK:
+		const bool sd_status = IS_SD_INSERTED();
+		if (sd_status != lcd_sd_status && lcd_detected())	// sprawdz czy nastapila zmiana? SD DET ->
+		{																				// TAK:
 			SERIAL_ECHOLNPGM("zmiana sd det:");
-			if (!sd_status)																									// je�li SD_DETECT == false:
+			if (!sd_status)													// je�li SD_DETECT == false:
 			{
 				SERIAL_ECHOLNPGM("sd_status:false");
-				card.initsd();																								// inicjalizacja karty
-				setpageSD();																									// ustaw strone i przekaz flage do strony status
+				card.mount();													// inicjalizacja karty
+				setpageSD();													// ustaw strone i przekaz flage do strony status
 				SDstatus = SD_INSERT;
 				SD.setValue(SDstatus, "printer");
-				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_SD_INSERTED);			// MSG
+				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_MEDIA_INSERTED);			// MSG
 			}
 			else																														// je�li SD_DETECT == true:
 			{
@@ -1880,7 +1880,7 @@
 				setpageSD();																									// ustaw strone i przekaz flage do strony status
 				SDstatus = SD_NO_INSERT;
 				SD.setValue(SDstatus, "printer");
-				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_SD_REMOVED);				// MSG
+				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_MEDIA_REMOVED);				// MSG
 			}
 			lcd_sd_status = sd_status;
 		} // CALY IF SPRAWDZA STAN SD_DETECT I JEGO ZMIANE: SD jest->init / SD niet->release
@@ -1914,7 +1914,7 @@
                     PreviousfanSpeed = 0,
 										Previousflow = 0,
                     PreviouspercentDone = 0;
-    static bed_info_t    PreviousdegHeater[1] = { 0.0 },
+    static float    PreviousdegHeater[1] = { 0.0 },
                     PrevioustargetdegHeater[1] = { 0.0 };
 
     if (!NextionON) return;
@@ -1926,7 +1926,7 @@
       case 2:
         if (PreviousPage != 2) 
 				{
-					lcd_setstatus(lcd_status_message);
+					lcd_setstatus(lcd_status_message,false);
           #if ENABLED(NEXTION_GFX)
             #if MECH(DELTA)
               gfx_clear(mechanics.delta_print_radius * 2, mechanics.delta_print_radius * 2, mechanics.delta_height);
@@ -1946,9 +1946,9 @@
           Previousfeedrate = feedrate_percentage;
         }
 				//flow
-				if (Previousflow != flow_percentage[0]) {
-					vFlowNex.setValue(flow_percentage[0], "flowpage");
-					Previousflow = flow_percentage[0];
+				if (Previousflow != planner.flow_percentage[0]) {
+					vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
+					Previousflow = planner.flow_percentage[0];
 				}
         #if HAS_TEMP_0
           if (PreviousdegHeater[0] != thermalManager.current_temperature[0]) 
@@ -1962,7 +1962,7 @@
             targetdegtoLCD(0, PrevioustargetdegHeater[0]);
           }
         #endif
-				#if HAS_TEMP_BED
+				#if 0 //HAS_TEMP_BED
 					if (PreviousdegHeater[1] != thermalManager.temp_bed){ //.current_temperature_bed) {
 						PreviousdegHeater[1] = thermalManager.temp_bed; //.current_temperature_bed;
 						degtoLCD(1, PreviousdegHeater[1]);
@@ -1998,14 +1998,14 @@
 
 					// procenty t4
 					ZERO(bufferson);
-					strcat(bufferson, itostr3(progress_printing));
+					strcat(bufferson, i8tostr3(progress_printing));
 					strcat(bufferson, " %");
 					percentdone.setText(bufferson, "printer");
 				}
 				else
 				{
 					ZERO(bufferson);
-					strcat(bufferson, itostr3(progress_printing));
+					strcat(bufferson, i8tostr3(progress_printing));
 					strcat(bufferson, " %");
 					percentdone.setText(bufferson, "printer");
 					progressbar.setValue(progress_printing, "printer"); // dodatkowo odswiez progressbar
@@ -2055,7 +2055,7 @@
         break;
 			case 12:
 				// odswiez temp glowicy na ekranie filament [przyciski]
-					degtoLCD(0, thermalManager.current_temperature[0]);
+					//KATT degtoLCD(0, thermalManager.current_temperature[0]);
 				break;
 			case 13:
 				// pokaz temp glowicy podczas nagrzewania m600 na stronie select
@@ -2065,11 +2065,11 @@
 					char *temp_te;
 					char temptemp[14];
 
-					temp_te = itostr3(thermalManager.target_temperature[0]);
-					temp_he = itostr3(thermalManager.current_temperature[0]);
-					strlcpy(temptemp,temp_he,4);
-					strcat_P(temptemp, PSTR(" / "));
-					strcat(temptemp, itostr3(thermalManager.target_temperature[0]));
+					//KATT temp_te = itostr3(thermalManager.target_temperature[0]);
+					//KATT temp_he = itostr3(thermalManager.current_temperature[0]);
+					//KATT strlcpy(temptemp,temp_he,4);
+					//KATT strcat_P(temptemp, PSTR(" / "));
+					//KATT strcat(temptemp, itostr3(thermalManager.target_temperature[0]));
 					LcdRiga4.setText(temptemp);
 				}
 				break;
@@ -2077,7 +2077,7 @@
         coordtoLCD();
         break;
 			case 31:
-				vFlowNex.setValue(flow_percentage[0], "flowpage");
+				vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
 				break;
     }
     PreviousPage = PageID;
@@ -2134,14 +2134,14 @@
 		void nextion_babystep_z(bool dir) {
 				const int16_t babystep_increment = 8;
 
-				if (dir == true)
+				if (dir == true) //w dół?
 				{
-					thermalManager.babystep_axis(Z_AXIS, babystep_increment);
+					//thermalManager.babystep_axis(Z_AXIS, babystep_increment);
 					_babystep_z_shift += babystep_increment;
 				}
-				else if (dir == false)
+				else if (dir == false) //w górę?
 				{
-					thermalManager.babystep_axis(Z_AXIS, -babystep_increment);
+					//thermalManager.babystep_axis(Z_AXIS, -babystep_increment);
 					_babystep_z_shift -= babystep_increment;
 				}
 		}
