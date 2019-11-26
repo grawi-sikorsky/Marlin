@@ -1811,7 +1811,7 @@
 
 	// Wysyla koordynaty do do NEX / MOVE PAGE / STATUS / BEDLEVEL
   static void coordtoLCD() {
-    char* valuetemp;
+    const char* valuetemp;
     ZERO(bufferson);
     if (PageID == 2) {
       LcdX.setText(ftostr41sign(LOGICAL_X_POSITION(current_position[X_AXIS])),"printer");
