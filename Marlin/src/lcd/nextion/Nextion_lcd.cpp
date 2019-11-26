@@ -5,6 +5,8 @@
 #include "../../module/temperature.h"
 #include "../../sd/cardreader.h"
 #include "../../module/printcounter.h"
+#include "../../libs/numtostr.h"
+#include "../../HAL/shared/persistent_store_api.h"
 //#include <MemoryFree.h>
 
 #if ENABLED(NEXTION_DISPLAY)
@@ -560,8 +562,8 @@
 		progressbar.setValue(0, "printer");			// zeruj progress bar
 
 		#if ENABLED(PLOSS_SUPPORT)
-			_babystep_z_shift = 0;								// dodane - zeruje babystep po zatrzymaniu wydruku
-			eeprom_update_dword((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);	// zeruj babystepping w eeprom
+			//_babystep_z_shift = 0;								// dodane - zeruje babystep po zatrzymaniu wydruku
+			persistentStore.writedata((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);	// zeruj babystepping w eeprom
 		#endif
 		#if FAN_COUNT > 0
 			for (uint8_t i = 0; i < FAN_COUNT; i++) fanSpeed[i] = 0;
@@ -827,7 +829,7 @@
 					}
 				}
 				_babystep_z_shift = 0;																												// zeruj babystep po uruchomieniu wydruku
-				eeprom_update_dword((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);	// zeruj babystepping w eeprom
+				//KATT eeprom_update_dword((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);	// zeruj babystepping w eeprom
 			#endif // jezeli VLCS wlaczone
 
       card.openAndPrintFile(filename);
@@ -954,14 +956,14 @@
           card.pauseSDPrint();
           print_job_timer.pause();
           #if ENABLED(PARK_HEAD_ON_PAUSE)
-            enqueue_and_echo_commands_P(PSTR("M125"));
+            //KATT enqueue_and_echo_commands_P(PSTR("M125"));
           #endif
 					lcd_setstatusPGM(GET_TEXT(MSG_PRINT_PAUSED), -1);
 					//set_status_P(GET_TEXT(MSG_PRINT_PAUSED));
         }
         else {																					//resume
 					#if ENABLED(PARK_HEAD_ON_PAUSE)
-						enqueue_and_echo_commands_P(PSTR("M24"));
+						//KATT enqueue_and_echo_commands_P(PSTR("M24"));
 					#else
 						card.startFileprint();
 						print_job_timer.start();
@@ -1007,7 +1009,7 @@
 				}
 			#endif
 			Pselect.show();
-			enqueue_and_echo_commands_P(PSTR("M600 B0"));
+			//kATT enqueue_and_echo_commands_P(PSTR("M600 B0"));
 		}
 
     void lcd_advanced_pause_resume_print() {
@@ -1223,7 +1225,7 @@
 				break;
 			case PLOSS_LCD_MENU_NO_RESUME:
 				ploss_recovery_menu_no_resume();
-				enqueue_and_echo_commands_P(PSTR("G28"));
+				//KATT enqueue_and_echo_commands_P(PSTR("G28"));
 				break;
 			case PLOSS_LCD_MENU_LAST_CONFIRM:
 				lcd_ploss_menu_response = PLOSS_LCD_RESPONSE_WAIT_FOR_LAST_CONFIRMATION;
@@ -1308,7 +1310,7 @@
 				SERIAL_ECHOLNPGM("probesend:");
         #if HAS_LEVELING && ENABLED(NEXTION_BED_LEVEL)
 				if (g29_in_progress == true) {
-					enqueue_and_echo_commands_P(PSTR("G29 S2")); 
+					//KATT enqueue_and_echo_commands_P(PSTR("G29 S2")); 
 				}
         #endif
 					wait_for_user = false;
@@ -1381,8 +1383,8 @@
 				char buffer[21];
 				printStatistics stats = print_job_timer.getStats();
 
-				Sprints.setText(itostr3left(stats.totalPrints),"statscreen");        // Print Count: 999
-				Scompl.setText(itostr3left(stats.finishedPrints), "statscreen");			// Completed  : 666
+				Sprints.setText(i16tostr3left(stats.totalPrints),"statscreen");        // Print Count: 999
+				Scompl.setText(i16tostr3left(stats.finishedPrints), "statscreen");			// Completed  : 666
 
 				#if ENABLED(PLOSS_SUPPORT)
 					Spanic.setText(itostr3left(eeprom_read_byte((uint8_t*)EEPROM_PANIC_POWER_FAIL_COUNT)), "statscreen"); // dodane power fail count
@@ -1429,42 +1431,47 @@
 #if ENABLED(NEX_ACC_PAGE)
 	void setaccelpagePopCallback(void *ptr)
 	{
-			UNUSED(ptr);
-			Awork.setValue(planner.acceleration, "accelpage"); //va0
-			Aretr.setValue(planner.retract_acceleration, "accelpage");	//va1
-			Atravel.setValue(planner.travel_acceleration, "accelpage");
-			Amaxx.setValue(planner.max_acceleration_mm_per_s2[X_AXIS], "accelpage");
-			Amaxy.setValue(planner.max_acceleration_mm_per_s2[Y_AXIS], "accelpage");
-			Amaxz.setValue(planner.max_acceleration_mm_per_s2[Z_AXIS], "accelpage");
-			Amaxe.setValue(planner.max_acceleration_mm_per_s2[E_AXIS+active_extruder], "accelpage");
+			UNUSED(ptr); 
+			Awork.setValue(planner.settings.acceleration, "accelpage"); //va0
+			Aretr.setValue(planner.settings.retract_acceleration, "accelpage");	//va1
+			Atravel.setValue(planner.settings.travel_acceleration, "accelpage");
+			Amaxx.setValue(planner.settings.max_acceleration_mm_per_s2[X_AXIS], "accelpage");
+			Amaxy.setValue(planner.settings.max_acceleration_mm_per_s2[Y_AXIS], "accelpage");
+			Amaxz.setValue(planner.settings.max_acceleration_mm_per_s2[Z_AXIS], "accelpage");
+			Amaxe.setValue(planner.settings.max_acceleration_mm_per_s2[E_AXIS+active_extruder], "accelpage");
 	}
 	void getaccelPagePopCallback(void *ptr)
 	{
-		planner.acceleration = Awork.getValue("accelpage");
-		planner.retract_acceleration = Aretr.getValue("accelpage");
-		planner.travel_acceleration = Atravel.getValue("accelpage");
-		planner.max_acceleration_mm_per_s2[X_AXIS] = Amaxx.getValue("accelpage");
-		planner.max_acceleration_mm_per_s2[Y_AXIS] = Amaxy.getValue("accelpage");
-		planner.max_acceleration_mm_per_s2[Z_AXIS] = Amaxz.getValue("accelpage");
-		planner.max_acceleration_mm_per_s2[E_AXIS + active_extruder] = Amaxe.getValue("accelpage");
+		planner.settings.acceleration = Awork.getValue("accelpage");
+		planner.settings.retract_acceleration = Aretr.getValue("accelpage");
+		planner.settings.travel_acceleration = Atravel.getValue("accelpage");
+		planner.settings.max_acceleration_mm_per_s2[X_AXIS] = Amaxx.getValue("accelpage");
+		planner.settings.max_acceleration_mm_per_s2[Y_AXIS] = Amaxy.getValue("accelpage");
+		planner.settings.max_acceleration_mm_per_s2[Z_AXIS] = Amaxz.getValue("accelpage");
+		planner.settings.max_acceleration_mm_per_s2[E_AXIS + active_extruder] = Amaxe.getValue("accelpage");
 	}
-	void setjerkpagePopCallback(void *ptr)
-	{
-			UNUSED(ptr);
-			Awork.setValue(planner.max_jerk[X_AXIS], "accelpage"); //va0
-			Aretr.setValue(planner.max_jerk[Y_AXIS], "accelpage");	//va1
-			Atravel.setValue(planner.max_jerk[Z_AXIS],"accelpage"); //va2
-			Amaxx.setValue(planner.max_jerk[E_AXIS],"accelpage");	//va3
-	}
+	#ifdef CLASSIC_JERK
+		void setjerkpagePopCallback(void *ptr)
+		{
+				UNUSED(ptr);
+				Awork.setValue(planner.max_jerk[X_AXIS], "accelpage"); //va0
+				Aretr.setValue(planner.max_jerk[Y_AXIS], "accelpage");	//va1
+				Atravel.setValue(planner.max_jerk[Z_AXIS],"accelpage"); //va2
+				Amaxx.setValue(planner.max_jerk[E_AXIS],"accelpage");	//va3
+		}
+	#endif
 
-	void setstepspagePopCallback(void *ptr)
-	{
-			UNUSED(ptr);
-			Awork.setValue(planner.axis_steps_per_mm[X_AXIS], "accelpage"); //va0
-			Aretr.setValue(planner.axis_steps_per_mm[Y_AXIS], "accelpage");	//va1
-			Atravel.setValue(planner.axis_steps_per_mm[Z_AXIS], "accelpage");	//va2
-			Amaxx.setValue(planner.axis_steps_per_mm[E_AXIS+active_extruder], "accelpage");	//va3
-	}
+	#ifdef NEXTION_STEP_SETTINGS
+		void setstepspagePopCallback(void *ptr)
+		{
+				UNUSED(ptr);
+				Awork.setValue(planner.axis_steps_per_mm[X_AXIS], "accelpage"); //va0
+				Aretr.setValue(planner.axis_steps_per_mm[Y_AXIS], "accelpage");	//va1
+				Atravel.setValue(planner.axis_steps_per_mm[Z_AXIS], "accelpage");	//va2
+				Amaxx.setValue(planner.axis_steps_per_mm[E_AXIS+active_extruder], "accelpage");	//va3
+		}
+	#endif
+
 #endif
 	void setaccelsavebtnPopCallback(void *ptr)
 	{
@@ -1487,7 +1494,7 @@
 	}
 	void setBabystepEEPROMPopCallback(void *ptr)
 	{
-		eeprom_update_dword((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);
+		//KATT eeprom_update_dword((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);
 	}
 	void setspeedPopCallback(void *ptr) 
 	{
@@ -1506,7 +1513,7 @@
 		vflowbuff = (int)vFlowNex.getValue("flowpage");
 		flowfrom = FlowPageFrom.getValue("flowpage");
 
-		flow_percentage[0] = vflowbuff;
+		//KATT flow_percentage[0] = vflowbuff;
 
 		if (flowfrom == 0) // wejscie z status
 		{
@@ -1527,16 +1534,16 @@
 
 		if (strcmp(bufferson,"M600") == 0)
 		{
-			nex_enqueue_filament_change();
+			//KATT nex_enqueue_filament_change();
 		}
 		else if (strcmp(bufferson, "M78 S78") == 0)
 		{
-			enqueue_and_echo_command(bufferson);
+			//KATT enqueue_and_echo_command(bufferson);
 			buzzer.tone(100, 2300);
 		}
 		else
 		{ 
-			enqueue_and_echo_command(bufferson);
+			//KATT enqueue_and_echo_command(bufferson);
 		}
   }
 
@@ -1544,14 +1551,14 @@
     UNUSED(ptr);
     ZERO(bufferson);
     movecmd.getText(bufferson, sizeof(bufferson));
-		enqueue_and_echo_commands_P(PSTR("G91"));
-		enqueue_and_echo_command(bufferson);
-		enqueue_and_echo_commands_P(PSTR("G90"));
+		//KATT enqueue_and_echo_commands_P(PSTR("G91"));
+		//KATT enqueue_and_echo_command(bufferson);
+		//KATT enqueue_and_echo_commands_P(PSTR("G90"));
   }
 
   void motoroffPopCallback(void *ptr) {
     UNUSED(ptr);
-		enqueue_and_echo_commands_P(PSTR("M84"));
+		//KATT enqueue_and_echo_commands_P(PSTR("M84"));
   }
 
 	// NEXTION: Obsluga klikniecia przycisku SEND na SELECT PAGE
@@ -1594,7 +1601,7 @@
           break;
 				case 5: // ustaw czujnik filamentu
 					nex_filament_runout_sensor_flag = 1;
-					eeprom_update_byte((uint8_t*)EEPROM_NEX_FILAMENT_SENSOR,1);
+					//KATT PersistentStore.write_data(0x0F0F0F, (uint8_t*)EEPROM_NEX_FILAMENT_SENSOR);
 					Psetup.show();
 					break;
         default: break;
@@ -1614,7 +1621,7 @@
         #endif
 					case 5: // ustaw czujnik filamentu
 						nex_filament_runout_sensor_flag = 0;
-						eeprom_update_byte((uint8_t*)EEPROM_NEX_FILAMENT_SENSOR, 0);
+						//KATT eeprom_update_byte((uint8_t*)EEPROM_NEX_FILAMENT_SENSOR, 0);
 						Psetup.show();
 						break;
         default:
@@ -1724,7 +1731,9 @@
 				Aload.attachPop(setaccelloadbtnPopCallback);
 			#endif
 
-			SvSteps.attachPop(setstepspagePopCallback);
+			#ifdef NEXTION_STEP_SETTINGS
+			//KATT SvSteps.attachPop(setstepspagePopCallback);
+			#endif
 
 			// TEMPERATURA
 			heatupenter.attachPop(sethotPopCallback, &heatupenter); // obsluga przycisku rozgrzej oba
@@ -1905,7 +1914,7 @@
                     PreviousfanSpeed = 0,
 										Previousflow = 0,
                     PreviouspercentDone = 0;
-    static float    PreviousdegHeater[1] = { 0.0 },
+    static bed_info_t    PreviousdegHeater[1] = { 0.0 },
                     PrevioustargetdegHeater[1] = { 0.0 };
 
     if (!NextionON) return;
@@ -1954,12 +1963,12 @@
           }
         #endif
 				#if HAS_TEMP_BED
-					if (PreviousdegHeater[1] != thermalManager.current_temperature_bed) {
-						PreviousdegHeater[1] = thermalManager.current_temperature_bed;
+					if (PreviousdegHeater[1] != thermalManager.temp_bed){ //.current_temperature_bed) {
+						PreviousdegHeater[1] = thermalManager.temp_bed; //.current_temperature_bed;
 						degtoLCD(1, PreviousdegHeater[1]);
 					}
-					if (PrevioustargetdegHeater[1] != thermalManager.target_temperature_bed) {
-						PrevioustargetdegHeater[1] = thermalManager.target_temperature_bed;
+					if (PrevioustargetdegHeater[1] != thermalManager.degTargetBed){ //.target_temperature_bed) {
+						PrevioustargetdegHeater[1] = thermalManager.degTargetBed; //.target_temperature_bed;
 						targetdegtoLCD(1, PrevioustargetdegHeater[1]);
 					}
 				#endif
