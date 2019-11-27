@@ -30,6 +30,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #if HAS_DRIVER(L6470)
   #include "libs/L6470/L6470_Marlin.h"

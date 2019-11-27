@@ -791,7 +791,7 @@
             #if ENABLED(SDCARD_SORT_ALPHA)
               card.getfilename_sorted(i);
             #else
-              card.getfilename(i);
+              card.getfilename(i); // brak sensownego ciala funkcji - linker wali babole
             #endif
 
 						#if ENABLED(NEXTION_SD_LONG_NAMES)
@@ -855,7 +855,7 @@
 		// Ustawia strone z karta SD
 		// obsluga slidera
     void setpageSD() {
-      uint16_t fileCnt = card.getnrfilenames();
+      uint16_t fileCnt = card.get_num_Files();
 
       if (fileCnt <= 6)
         slidermaxval = 0;

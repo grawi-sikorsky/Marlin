@@ -26,6 +26,9 @@
 #if ENABLED(NEX_UPLOAD)
 	#include "../../cardreader.h"
 #endif
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #if ENABLED(NEXTION)
 
@@ -184,7 +187,7 @@
   void NexObject::setValue(const uint16_t number, const char *pname) {
     char buf[10] = {0};
     String cmd;
-    utoa(number, buf, 10);
+    __utoa(number, buf, 10);
 
     if (pname) {
       cmd += pname;
@@ -218,7 +221,7 @@
     char buf[10] = {0};
     String cmd;
 
-    utoa(number, buf, 10);
+    __utoa(number, buf, 10);
     cmd += this->__name;
     cmd += ".hig=";
     cmd += buf;
@@ -244,7 +247,7 @@
     char buf[10] = {0};
     String cmd;
 
-    utoa(number, buf, 10);
+    __utoa(number, buf, 10);
     cmd += this->__name;
     cmd += ".maxval=";
     cmd += buf;
@@ -270,7 +273,7 @@
     char buf[10] = {0};
     String cmd;
 
-    utoa(number, buf, 10);
+    __utoa(number, buf, 10);
     cmd += this->__name;
     cmd += ".minval=";
     cmd += buf;
@@ -296,7 +299,7 @@
     char buf[10] = {0};
     String cmd;
 
-    utoa(number, buf, 10);
+    __utoa(number, buf, 10);
     cmd += this->__name;
     cmd += ".bco=";
     cmd += buf;
@@ -322,7 +325,7 @@
     char buf[10] = {0};
     String cmd;
 
-    utoa(number, buf, 10);
+    __utoa(number, buf, 10);
     cmd += this->__name;
     cmd += ".pco=";
     cmd += buf;
@@ -348,7 +351,7 @@
     char buf[10] = {0};
     String cmd;
 
-    utoa(number, buf, 10);
+    __utoa(number, buf, 10);
     cmd += this->__name;
     cmd += ".xcen=";
     cmd += buf;
@@ -374,7 +377,7 @@
     char buf[10] = {0};
     String cmd;
 
-    utoa(number, buf, 10);
+    __utoa(number, buf, 10);
     cmd += this->__name;
     cmd += ".ycen=";
     cmd += buf;
@@ -400,7 +403,7 @@
     char buf[10] = {0};
     String cmd;
 
-    utoa(number, buf, 10);
+    __utoa(number, buf, 10);
     cmd += this->__name;
     cmd += ".font=";
     cmd += buf;
@@ -426,7 +429,7 @@
     char buf[10] = {0};
     String cmd;
 
-    utoa(number, buf, 10);
+    __utoa(number, buf, 10);
     cmd += this->__name;
     cmd += ".picc=";
     cmd += buf;
@@ -451,7 +454,7 @@
     char buf[10] = {0};
     String cmd;
 
-    utoa(number, buf, 10);
+    __utoa(number, buf, 10);
     cmd += this->__name;
     cmd += ".pic=";
     cmd += buf;
@@ -736,7 +739,7 @@
     uint16_t ret = 0;
     bool str_start_flag = false;
     uint8_t cnt_0xFF = 0;
-    String temp = String("");
+    String temp = "";//String("");
     uint8_t c = 0;
     millis_t start;
 
@@ -797,7 +800,7 @@
   void setCurrentBrightness(uint8_t dimValue) {
     char buf[10] = {0};
     String cmd;
-    utoa(dimValue, buf, 10);
+    __utoa(dimValue, buf, 10);
     cmd += "dim=";
     cmd += buf;
     sendCommand(cmd.c_str());

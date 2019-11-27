@@ -181,6 +181,13 @@
   #include "libs/L6470/L6470_Marlin.h"
 #endif
 
+#if ENABLED (NEXTION_DISPLAY)
+  //#include "nextion/Nextion_lcd.h"
+  uint8_t progress_printing; // dodane nex
+	bool nex_filament_runout_sensor_flag;
+#endif
+
+
 const char G28_STR[] PROGMEM = "G28",
            M21_STR[] PROGMEM = "M21",
            M23_STR[] PROGMEM = "M23 %s",
