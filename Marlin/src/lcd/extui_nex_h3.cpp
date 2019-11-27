@@ -21,9 +21,12 @@
 
 #include "../inc/MarlinConfigPre.h"
 
-#if BOTH(EXTUI_EXAMPLE, EXTENSIBLE_UI)
+#if ENABLED(NEXTION) // NEXTION Display FOR PRINTO H3 
 
-#include "extensible_ui/ui_api.h"
+  #include "extensible_ui/ui_api.h"
+
+  //#define ULTIPANEL
+  #define IS_ULTIPANEL
 
 // To implement a new UI, complete the functions below and
 // read or update Marlin's state using the methods in the
@@ -33,7 +36,7 @@
 // variables from Marlin, using the API here possibly
 // helps ensure future compatibility.
 
-namespace ExtUI {
+namespace NexLCD {
   void onStartup() {
     /* Initialize the display module here. The following
      * routines are available for access to the GPIO pins:
@@ -94,4 +97,4 @@ namespace ExtUI {
   }
 }
 
-#endif // EXTUI_EXAMPLE && EXTENSIBLE_UI
+#endif // NexLCD

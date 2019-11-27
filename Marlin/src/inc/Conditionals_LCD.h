@@ -25,10 +25,8 @@
  * Conditionals_LCD.h
  * Conditionals that need to be set before Configuration_adv.h or pins.h
  */
-#if ENABLED(NEXTION)
-  #define IS_ULTIPANEL
 
-#elif ENABLED(CARTESIO_UI)
+#if ENABLED(CARTESIO_UI)
 
   #define DOGLCD
   #define IS_ULTIPANEL
@@ -352,6 +350,13 @@
 #if ANY(MALYAN_LCD, DGUS_LCD, TOUCH_UI_FTDI_EVE)
   #define IS_EXTUI
   #define EXTENSIBLE_UI
+#endif
+
+#ifdef NEXTION
+  #define IS_EXTUI
+  #define EXTENSIBLE_UI
+  #define ULTIPANEL
+  #define IS_ULTIPANEL
 #endif
 
 // Aliases for LCD features

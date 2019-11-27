@@ -403,8 +403,6 @@ public:
     static void status_printf_P(const uint8_t level, PGM_P const fmt, ...);
     static void reset_status();
 
-
-
   #if ENABLED(NEXTION)
       bool lcd_wait_for_move = false;
 
@@ -627,10 +625,6 @@ public:
     static inline void update_buttons() {}
 
   #endif
-
-    #if ENABLED(NEXTION)
-
-    #endif
 
 private:
 
