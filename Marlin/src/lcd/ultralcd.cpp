@@ -27,7 +27,7 @@
 #endif
 
 // All displays share the MarlinUI class
-#if HAS_DISPLAY
+#if HAS_DISPLAY //|| ENABLED (NEXTION)
   #include "../gcode/queue.h"
   #include "ultralcd.h"
   #include "fontutils.h"

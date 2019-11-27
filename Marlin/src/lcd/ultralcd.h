@@ -411,7 +411,7 @@ public:
 
   #elif ENABLED(NEXTION_DISPLAY)
 
-    bool lcd_wait_for_move = false;
+      bool lcd_wait_for_move = false;
 
     void init();
     void update();
@@ -448,7 +448,7 @@ public:
       static screenFunc_t currentScreen;
       static inline void go_back(){ }
       static inline void goto_previous_screen_no_defer() {}
-      FORCE_INLINE static bool should_draw() {}
+      FORCE_INLINE static bool should_draw() {return false;}
       static void save_previous_screen();
       static void goto_screen(const screenFunc_t screen, const uint16_t encoder=0, const uint8_t top=0, const uint8_t items=0);
       static bool lcd_clicked;
