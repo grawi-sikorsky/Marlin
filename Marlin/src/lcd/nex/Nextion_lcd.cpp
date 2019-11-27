@@ -58,6 +58,7 @@
 
 
   #if ENABLED(SDSUPPORT)
+		extern CardReader card;
     // 0 card not present, 1 SD not insert, 2 SD insert, 3 SD printing
     enum SDstatus_enum {NO_SD = 0, SD_NO_INSERT = 1, SD_INSERT = 2, SD_PRINTING = 3, SD_PAUSE = 4 };
     SDstatus_enum SDstatus    = NO_SD;
@@ -65,11 +66,6 @@
 			NexUpload Firmware(NEXTION_FIRMWARE_FILE, 57600);
 		#endif
   #endif
-	#if ENABLED(BABYSTEPPING)
-		
-
-	#endif
-
 
   #if ENABLED(NEXTION_GFX)
     GFX gfx = GFX(1, 1, 1, 1);
@@ -965,7 +961,7 @@
           #if ENABLED(PARK_HEAD_ON_PAUSE)
             //KATT enqueue_and_echo_commands_P(PSTR("M125"));
           #endif
-					lcd_setstatusPGM(GET_TEXT(MSG_PRINT_PAUSED), -1);
+					ui.lcd_setstatusPGM(GET_TEXT(MSG_PRINT_PAUSED), -1);
 					//set_status_P(GET_TEXT(MSG_PRINT_PAUSED));
         }
         else {																					//resume
@@ -975,7 +971,7 @@
 						card.startFileprint();
 						print_job_timer.start();
 					#endif
-					lcd_setstatusPGM(GET_TEXT(MSG_RESUME_PRINT), -1);
+					ui.lcd_setstatusPGM(GET_TEXT(MSG_RESUME_PRINT), -1);
         }
       }
     }
@@ -1936,7 +1932,7 @@
       case 2:
         if (PreviousPage != 2) 
 				{
-					lcd_setstatusPGM(lcd_status_message,1);
+					ui.lcd_setstatusPGM(lcd_status_message,1);
           #if ENABLED(NEXTION_GFX)
             #if MECH(DELTA)
               gfx_clear(mechanics.delta_print_radius * 2, mechanics.delta_print_radius * 2, mechanics.delta_height);
@@ -2116,6 +2112,12 @@
 				lcd_status_message_level = level;
 				if (PageID == 2) LcdStatus.setText(lcd_status_message);
 	};
+	void MarlinUI::set_status(const char* message, bool persist) {
+    UNUSED(persist);
+    if (lcd_status_message_level > 0 || !NextionON) return;
+    strncpy(lcd_status_message, message, 24);
+    if (PageID == 2) LcdStatus.setText(lcd_status_message);
+  }
 
   void lcd_status_printf_P(const uint8_t level, const char * const fmt, ...) {
     //if (level < lcd_status_message_level || !NextionON) return;
@@ -2128,7 +2130,7 @@
   }
 
   void lcd_setalertstatusPGM(const char * const message) {
-    lcd_setstatusPGM(message, 1);
+    ui.set_status_P(message, 1);
   }
 
   void reset_alert_level() { lcd_status_message_level = 0; }
