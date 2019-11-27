@@ -405,9 +405,12 @@ public:
     static void reset_status();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   #if ENABLED(NEXTION)
       bool lcd_wait_for_move = false;
 =======
+=======
+>>>>>>> parent of 1df0b28d6... marlinUI - nextion - lipa w chujnik
 #elif ENABLED(NEXTION_DISPLAY)
 
 	constexpr bool lcd_wait_for_move = false;
@@ -420,6 +423,7 @@ public:
 	void lcd_setstatus(const char* message, const bool persist = false);
 	void lcd_status_printf_P(const uint8_t level, const char * const fmt, ...);
 	bool lcd_detected();
+<<<<<<< HEAD
 >>>>>>> parent of 1df0b28d6... marlinUI - nextion - lipa w chujnik
 
   #define LCD_MESSAGEPGM(x)      lcd_setstatusPGM(PSTR(x))
@@ -437,6 +441,24 @@ public:
 	void lcd_ploss_recovery_menu(const PlossMenuMessage message);
 	#endif //PLOSS
 
+=======
+
+  #define LCD_MESSAGEPGM(x)      lcd_setstatusPGM(PSTR(x))
+	#define LCD_ALERTMESSAGEPGM(x) lcd_setalertstatusPGM(PSTR(x))
+
+	inline void lcd_refresh() {}
+	inline bool lcd_hasstatus() { return false; }
+	inline void lcd_eeprom_allert() {}
+	inline void lcd_buttons_update() {}
+
+	void lcd_sdcard_stop();
+
+	//VLCS
+	#if ENABLED(PLOSS_SUPPORT)
+	void lcd_ploss_recovery_menu(const PlossMenuMessage message);
+	#endif //PLOSS
+
+>>>>>>> parent of 1df0b28d6... marlinUI - nextion - lipa w chujnik
   #else // No LCD
 
     static inline void init() {}
