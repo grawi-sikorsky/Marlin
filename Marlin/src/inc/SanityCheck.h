@@ -1309,7 +1309,7 @@ static_assert(Y_MAX_LENGTH >= Y_BED_SIZE, "Movement bounds (Y_MIN_POS, Y_MAX_POS
  * LCD_BED_LEVELING requirements
  */
 #if ENABLED(LCD_BED_LEVELING) 
-  #if !HAS_LCD_MENU
+  #if !HAS_LCD_MENU && DISABLED(NEXTION_DISPLAY)
     #error "LCD_BED_LEVELING requires a programmable LCD controller."
   #elif !(ENABLED(MESH_BED_LEVELING) || HAS_ABL_NOT_UBL)
     #error "LCD_BED_LEVELING requires MESH_BED_LEVELING or AUTO_BED_LEVELING."
@@ -1924,10 +1924,9 @@ static_assert(Y_MAX_LENGTH >= Y_BED_SIZE, "Movement bounds (Y_MIN_POS, Y_MAX_POS
   + ENABLED(OVERLORD_OLED) \
   + ENABLED(DGUS_LCD) \
   + ENABLED(MALYAN_LCD) \
-  + ENABLED(NEXTION) \
   + ENABLED(TOUCH_UI_FTDI_EVE) \
   + ENABLED(FSMC_GRAPHICAL_TFT)
-  #error "Please select no more than one LCD controller option."
+  #error "Please select no more than one LCD controller option."   //+ ENABLED(NEXTION)
 #endif
 
 #undef IS_RRD_SC

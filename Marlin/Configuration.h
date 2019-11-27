@@ -1285,7 +1285,7 @@
  * Add a bed leveling sub-menu for ABL or MBL.
  * Include a guided procedure if manual probing is enabled.
  */
-#define LCD_BED_LEVELING
+//#define LCD_BED_LEVELING
 
 #if ENABLED(LCD_BED_LEVELING)
   #define MESH_EDIT_Z_STEP  0.04 // (mm) Step size while manually probing Z axis.
@@ -1721,7 +1721,7 @@
 // If you have a speaker that can produce tones, enable it here.
 // By default Marlin assumes you have a buzzer with a fixed frequency.
 //
-//#define SPEAKER
+#define SPEAKER
 
 //
 // The duration and frequency for the UI feedback sound.
@@ -2301,6 +2301,7 @@
 // BED LEVELING NEXTION
 	#define NEXTION_BED_LEVEL
 	#define LCD_Z_STEP 0.04
+  #define LCD_PROBE_Z_RANGE 16
 	#define PROBE_MANUALLY
 
 // FSENSOR ONOFF

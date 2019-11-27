@@ -16,7 +16,7 @@
 #endif
 
 #if ENABLED(SPEAKER)
-	#include "../buzzer.h"
+	#include "../../libs/buzzer.h"
 #endif
 
 #if ENABLED(NEXTION)
@@ -1633,7 +1633,7 @@
 // =======================
 // ==	LCD INIT					==
 // =======================
-  void nex_init() {
+  void init() {
     for (uint8_t i = 0; i < 10; i++) {
       ZERO(bufferson);
       NextionON = nexInit(bufferson);
@@ -1805,7 +1805,7 @@
   }
 
 	// Wysyla docelowe temperatury do NEX
-  static void targetdegtoLCD(const uint8_t h, const float temp) {
+  static void targetdegtoLCD(const uint8_t h, const uint16_t temp) {
     heater_list1[h]->setValue(temp);
   }
 
@@ -1926,7 +1926,7 @@
       case 2:
         if (PreviousPage != 2) 
 				{
-					lcd_setstatus(lcd_status_message);
+					lcd_setstatusPGM(lcd_status_message,1);
           #if ENABLED(NEXTION_GFX)
             #if MECH(DELTA)
               gfx_clear(mechanics.delta_print_radius * 2, mechanics.delta_print_radius * 2, mechanics.delta_height);
@@ -1946,9 +1946,9 @@
           Previousfeedrate = feedrate_percentage;
         }
 				//flow
-				if (Previousflow != flow_percentage[0]) {
-					vFlowNex.setValue(flow_percentage[0], "flowpage");
-					Previousflow = flow_percentage[0];
+				if (Previousflow != planner.flow_percentage[0]) {
+					vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
+					Previousflow = planner.flow_percentage[0];
 				}
         #if HAS_TEMP_0
           if (PreviousdegHeater[0] != thermalManager.current_temperature[0]) 

@@ -22,8 +22,8 @@
 
 // For debug Connect
 //#define NEXTION_CONNECT_DEBUG
-#include "../../../Marlin.h"
-#include "../../../ultralcd.h"
+#include "../../Marlin.h"
+#include "../ultralcd.h"
 #include "library/Nextion.h"
 #include "HardwareSerial.h"
 

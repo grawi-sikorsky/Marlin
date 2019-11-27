@@ -35,6 +35,11 @@
 // I2C buttons must be read in the main thread
 #define HAS_SLOW_BUTTONS EITHER(LCD_I2C_VIKI, LCD_I2C_PANELOLU2)
 
+//nextion
+
+typedef void (*screenFunc_t)();
+typedef void (*menuAction_t)();
+
 #if HAS_SPI_LCD
 
   #include "../Marlin.h"
@@ -251,7 +256,7 @@ public:
 
   MarlinUI() {
     #if HAS_LCD_MENU
-      currentScreen = status_screen;
+      currentScreen = status_screen; //nextion?
     #endif
   }
 
@@ -404,61 +409,61 @@ public:
     static void status_printf_P(const uint8_t level, PGM_P const fmt, ...);
     static void reset_status();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  #if ENABLED(NEXTION)
-      bool lcd_wait_for_move = false;
-=======
-=======
->>>>>>> parent of 1df0b28d6... marlinUI - nextion - lipa w chujnik
-#elif ENABLED(NEXTION_DISPLAY)
+  #elif ENABLED(NEXTION_DISPLAY)
 
-	constexpr bool lcd_wait_for_move = false;
+    bool lcd_wait_for_move = false;
 
-	void lcd_init();
-	void lcd_update();
-	void lcd_reset_alert_level();
-	void lcd_setstatusPGM(const char* message, const int8_t level = 0);
-	void lcd_setalertstatusPGM(const char* message);
-	void lcd_setstatus(const char* message, const bool persist = false);
-	void lcd_status_printf_P(const uint8_t level, const char * const fmt, ...);
-	bool lcd_detected();
-<<<<<<< HEAD
->>>>>>> parent of 1df0b28d6... marlinUI - nextion - lipa w chujnik
+    void init();
+    void update();
+    void reset_alert_level();
+    void lcd_setstatusPGM(const char* message, const int8_t level = 0);
+    void lcd_setalertstatusPGM(const char* message);
+    void lcd_setstatus(const char* message, const bool persist = false);
+    void lcd_status_printf_P(const uint8_t level, const char * const fmt, ...);
+    bool lcd_detected();
 
-  #define LCD_MESSAGEPGM(x)      lcd_setstatusPGM(PSTR(x))
-	#define LCD_ALERTMESSAGEPGM(x) lcd_setalertstatusPGM(PSTR(x))
+    inline void refresh() {}
+    inline bool lcd_hasstatus() { return false; }
+    inline void lcd_eeprom_allert() {}
+    inline void lcd_buttons_update() {}
 
-	inline void lcd_refresh() {}
-	inline bool lcd_hasstatus() { return false; }
-	inline void lcd_eeprom_allert() {}
-	inline void lcd_buttons_update() {}
+    void lcd_sdcard_stop();
 
-	void lcd_sdcard_stop();
+    //VLCS
+    #if ENABLED(PLOSS_SUPPORT)
+    void lcd_ploss_recovery_menu(const PlossMenuMessage message);
+    #endif //PLOSS
 
-	//VLCS
-	#if ENABLED(PLOSS_SUPPORT)
-	void lcd_ploss_recovery_menu(const PlossMenuMessage message);
-	#endif //PLOSS
+    // Szkieletowe - narazie nie uzywane
+      static bool get_blink();
+      static void kill_screen(PGM_P const lcd_error, PGM_P const lcd_component);
+      static void draw_kill_screen();
+      static void set_status(const char* const message, const bool persist=false);
+      static void set_status_P(PGM_P const message, const int8_t level=0);
+      static inline void set_alert_status_P(PGM_P const) {}
+      static void status_printf_P(const uint8_t level, PGM_P const fmt, ...);
+      static void reset_status();
+      static constexpr bool has_status() { return false; }
+      // kolejne z menu.h...
+      static screenFunc_t currentScreen;
+      static inline void go_back(){ }
+      static inline void goto_previous_screen_no_defer() {}
+      FORCE_INLINE static bool should_draw() {}
+      static void save_previous_screen();
+      static void goto_screen(const screenFunc_t screen, const uint16_t encoder=0, const uint8_t top=0, const uint8_t items=0);
+      static bool lcd_clicked;
+      static bool use_click();
+      static uint32_t encoderPosition;
+      FORCE_INLINE static void defer_status_screen(const bool defer=true) {}
+      
+      enum LCDViewAction : uint8_t {
+        LCDVIEW_NONE,
+        LCDVIEW_REDRAW_NOW,
+        LCDVIEW_CALL_REDRAW_NEXT,
+        LCDVIEW_CLEAR_CALL_REDRAW,
+        LCDVIEW_CALL_NO_REDRAW
+      };
 
-=======
-
-  #define LCD_MESSAGEPGM(x)      lcd_setstatusPGM(PSTR(x))
-	#define LCD_ALERTMESSAGEPGM(x) lcd_setalertstatusPGM(PSTR(x))
-
-	inline void lcd_refresh() {}
-	inline bool lcd_hasstatus() { return false; }
-	inline void lcd_eeprom_allert() {}
-	inline void lcd_buttons_update() {}
-
-	void lcd_sdcard_stop();
-
-	//VLCS
-	#if ENABLED(PLOSS_SUPPORT)
-	void lcd_ploss_recovery_menu(const PlossMenuMessage message);
-	#endif //PLOSS
-
->>>>>>> parent of 1df0b28d6... marlinUI - nextion - lipa w chujnik
   #else // No LCD
 
     static inline void init() {}
