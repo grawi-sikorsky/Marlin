@@ -1,18 +1,18 @@
 /**
  * Nextion_lcd.cpp
  */
-#include "../../Marlin.h"
-#include "../../module/temperature.h"
-#include "../../sd/cardreader.h"
-#include "../../module/printcounter.h"
-#include "../../libs/numtostr.h"
-#include "../../HAL/shared/persistent_store_api.h"
+#include "../../../Marlin.h"
+#include "../../../module/temperature.h"
+#include "../../../sd/cardreader.h"
+#include "../../../module/printcounter.h"
+#include "../../../libs/numtostr.h"
+#include "../../../HAL/shared/persistent_store_api.h"
 //#include <MemoryFree.h>
 
 #if ENABLED(NEXTION_DISPLAY)
-	#include "../../module/stepper.h"
-	#include "../../feature/bedlevel/mbl/mesh_bed_leveling.h"
-	#include "../../module/configuration_store.h"
+	#include "../../../module/stepper.h"
+	#include "../../../feature/bedlevel/mbl/mesh_bed_leveling.h"
+	#include "../../../module/configuration_store.h"
 #endif
 
 #if ENABLED(SPEAKER)

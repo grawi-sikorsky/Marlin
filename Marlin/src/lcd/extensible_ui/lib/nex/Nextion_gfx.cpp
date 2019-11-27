@@ -15,7 +15,7 @@
  *
  */
 
-#include "../nextion/Nextion_lcd.h"
+#include "../nex/Nextion_lcd.h"
 
 #if ENABLED(NEXTION_GFX)
 
