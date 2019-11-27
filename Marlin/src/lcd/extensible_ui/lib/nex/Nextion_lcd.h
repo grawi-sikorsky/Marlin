@@ -100,7 +100,6 @@ extern float feedrate_mm_s;
   #endif
 
   void lcd_setstatusPGM(PGM_P const message, int8_t level);
-  void lcd_setstatus(const char* message, bool persist);
 
 #endif // ENABLED(NEXTION)
 

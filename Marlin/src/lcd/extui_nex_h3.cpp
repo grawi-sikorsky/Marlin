@@ -26,7 +26,7 @@
   #include "extensible_ui/ui_api.h"
 
   //#define ULTIPANEL
-  #define IS_ULTIPANEL
+  //#define IS_ULTIPANEL
 
 // To implement a new UI, complete the functions below and
 // read or update Marlin's state using the methods in the
@@ -47,6 +47,7 @@ namespace NexLCD {
      *   WRITE(pin,value)
      *   READ(pin)
      */
+    
   }
   void onIdle() {}
   void onPrinterKilled(PGM_P const error, PGM_P const component) {}

@@ -35,7 +35,7 @@
  * Verbose version identifier which should contain a reference to the location
  * from where the binary was downloaded or the source code was compiled.
  */
-#define DETAILED_BUILD_VERSION SHORT_BUILD_VERSION " (printo3d.pl)"
+//#define DETAILED_BUILD_VERSION SHORT_BUILD_VERSION " (Github)"
 
 /**
  * The STRING_DISTRIBUTION_DATE represents when the binary file was built,

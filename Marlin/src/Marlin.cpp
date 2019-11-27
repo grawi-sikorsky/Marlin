@@ -930,7 +930,6 @@ void setup() {
   #endif
 
   ui.init();
-  
   #if HAS_SPI_LCD && ENABLED(SHOW_BOOTSCREEN)
     ui.show_bootscreen();
   #endif

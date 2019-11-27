@@ -268,6 +268,7 @@ public:
   static void init_lcd();
 
   #if HAS_DISPLAY
+
     static void init();
     static void update();
     static void set_alert_status_P(PGM_P const message);
@@ -403,34 +404,39 @@ public:
     static void status_printf_P(const uint8_t level, PGM_P const fmt, ...);
     static void reset_status();
 
+<<<<<<< HEAD
   #if ENABLED(NEXTION)
       bool lcd_wait_for_move = false;
+=======
+#elif ENABLED(NEXTION_DISPLAY)
 
-      void nex_init();
-      void lcd_update();
-      void lcd_reset_alert_level();
-      void lcd_setstatusPGM(const char* message, const int8_t level = 0);
-      void lcd_setalertstatusPGM(const char* message);
-      void lcd_setstatus(const char* message, const bool persist = false);
-      void lcd_status_printf_P(const uint8_t level, const char * const fmt, ...);
-      bool lcd_detected();
+	constexpr bool lcd_wait_for_move = false;
 
-      #define LCD_MESSAGEPGM(x)      lcd_setstatusPGM(PSTR(x))
-      #define LCD_ALERTMESSAGEPGM(x) lcd_setalertstatusPGM(PSTR(x))
+	void lcd_init();
+	void lcd_update();
+	void lcd_reset_alert_level();
+	void lcd_setstatusPGM(const char* message, const int8_t level = 0);
+	void lcd_setalertstatusPGM(const char* message);
+	void lcd_setstatus(const char* message, const bool persist = false);
+	void lcd_status_printf_P(const uint8_t level, const char * const fmt, ...);
+	bool lcd_detected();
+>>>>>>> parent of 1df0b28d6... marlinUI - nextion - lipa w chujnik
 
-      inline void lcd_refresh() {}
-      inline bool lcd_hasstatus() { return false; }
-      inline void lcd_eeprom_allert() {}
-      inline void lcd_buttons_update() {}
+  #define LCD_MESSAGEPGM(x)      lcd_setstatusPGM(PSTR(x))
+	#define LCD_ALERTMESSAGEPGM(x) lcd_setalertstatusPGM(PSTR(x))
 
-      void lcd_sdcard_stop();
+	inline void lcd_refresh() {}
+	inline bool lcd_hasstatus() { return false; }
+	inline void lcd_eeprom_allert() {}
+	inline void lcd_buttons_update() {}
 
-      //VLCS
-      #if ENABLED(PLOSS_SUPPORT)
-        void lcd_ploss_recovery_menu(const PlossMenuMessage message);
-      #endif //PLOSS
-  #endif
-  
+	void lcd_sdcard_stop();
+
+	//VLCS
+	#if ENABLED(PLOSS_SUPPORT)
+	void lcd_ploss_recovery_menu(const PlossMenuMessage message);
+	#endif //PLOSS
+
   #else // No LCD
 
     static inline void init() {}
@@ -653,4 +659,3 @@ extern MarlinUI ui;
 
 #define LCD_MESSAGEPGM(x)        LCD_MESSAGEPGM_P(GET_TEXT(x))
 #define LCD_ALERTMESSAGEPGM(x)   LCD_ALERTMESSAGEPGM_P(GET_TEXT(x))
-

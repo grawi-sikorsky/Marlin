@@ -355,8 +355,6 @@
 #ifdef NEXTION
   #define IS_EXTUI
   #define EXTENSIBLE_UI
-  #define ULTIPANEL
-  #define IS_ULTIPANEL
 #endif
 
 // Aliases for LCD features
