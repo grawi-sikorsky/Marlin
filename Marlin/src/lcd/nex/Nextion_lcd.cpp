@@ -704,7 +704,7 @@
 	 // Portions from STATIC_ITEM...
 	#define HOTEND_STATUS_ITEM() do { \
         if (lcdDrawUpdate) { \
-          lcd_row_list[_lcdLineNr]->setText(itostr3(thermalManager.degHotend)); \
+          lcd_row_list[_lcdLineNr]->setText(i8tostr3(thermalManager.degHotend)); \
         } \
 				lcdDrawUpdate = true; \
 				++_lcdLineNr; \
