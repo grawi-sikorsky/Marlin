@@ -18,6 +18,10 @@
 #if ENABLED(SPEAKER)
 	#include "../../libs/buzzer.h"
 #endif
+#if ENABLED(BABYSTEPPING)
+	#include "../../feature/babystep.h"
+	extern Babystep babystep;
+#endif
 
 #if ENABLED(NEXTION)
   #include "Nextion_lcd.h"
@@ -49,6 +53,7 @@
 	extern inline void set_destination_to_current() { COPY(destination, current_position); }
 	extern void home_all_axes();
 
+
   #if ENABLED(SDSUPPORT)
     // 0 card not present, 1 SD not insert, 2 SD insert, 3 SD printing
     enum SDstatus_enum {NO_SD = 0, SD_NO_INSERT = 1, SD_INSERT = 2, SD_PRINTING = 3, SD_PAUSE = 4 };
@@ -58,6 +63,7 @@
 		#endif
   #endif
 	#if ENABLED(BABYSTEPPING)
+		
 			int _babystep_z_shift = 0;
 	#endif
 
@@ -566,7 +572,7 @@
 			persistentStore.writedata((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);	// zeruj babystepping w eeprom
 		#endif
 		#if FAN_COUNT > 0
-			for (uint8_t i = 0; i < FAN_COUNT; i++) fanSpeed[i] = 0;
+			for (uint8_t i = 0; i < FAN_COUNT; i++) thermalManager.fan_speed[i] = 0;
 		#endif
 
 		wait_for_heatup = false;					// flaga false
@@ -589,8 +595,6 @@
 	// wywo�ywana raz w lcdinit()
   void setpagePrinter() 
 	{
-    char temp[8] = { 0 };
-
     #if HOTENDS > 0
       Hotend00.setValue(0, "printer");
 			Hotend01.setValue(0, "printer");
@@ -719,7 +723,7 @@
 		if (IS_SD_INSERTED || card.isMounted) {
 			Firmware.startUpload();
 			nexSerial.end();
-			lcd_init();
+			ui.init();
 		}
 	}
 	#endif
@@ -1365,7 +1369,7 @@
 		ZERO(bufferson);
 		vfanbuff = FanSpeedNex.getValue("fanspeedpage");
 		fanpagefrom = FanPageIDfrom.getValue("fanspeedpage");
-		fanSpeed[0] = vfanbuff;
+		thermalManager.fan_speed[0] = vfanbuff;
 		if (fanpagefrom == 0) // wejscie z status
 		{
 			Pprinter.show();
@@ -1633,7 +1637,7 @@
 // =======================
 // ==	LCD INIT					==
 // =======================
-  void init() {
+  void MarlinUI::init() {
     for (uint8_t i = 0; i < 10; i++) {
       ZERO(bufferson);
       NextionON = nexInit(bufferson);
@@ -1890,7 +1894,7 @@
 // =======================
 // == LCD UPDATE				==
 // =======================
-  void lcd_update() {
+  void MarlinUI::update() {
     if (!NextionON) return;
     nexLoop(nex_listen_list); // odswieza sie z delayem 5 ms
 
@@ -1915,8 +1919,10 @@
 											Previousflow = 0,					// dotychczasowy flow
                     	PreviouspercentDone = 0;	// dotychczasowy postep %
 
-    static bed_info_t   PreviousdegHeater[1] = { 0 },
-                    		PrevioustargetdegHeater[1] = { 0 };
+    static uint8_t   	PreviousBedTemp = 0,
+                    	PreviousTargetBedTemp = 0;
+		static uint8_t		PreviousHotendTemp = 0,
+											PreviousTargetHotendTemp = 0;
 
     if (!NextionON) return;
 	
@@ -1937,9 +1943,9 @@
           #endif
 				}
 				//Wentylator
-         if (PreviousfanSpeed != fanSpeed[0]) {
-					PrinterFanspeed.setValue(((float)(fanSpeed[0]) / 255) * 100,"printer");
-          PreviousfanSpeed = fanSpeed[0];
+         if (PreviousfanSpeed != thermalManager.fan_speed[0]) {
+					PrinterFanspeed.setValue(((float)(thermalManager.fan_speed[0]) / 255) * 100,"printer");
+          PreviousfanSpeed = thermalManager.fan_speed[0]; 
          }
 				//feedrate
         if (Previousfeedrate != feedrate_percentage) {
@@ -1949,28 +1955,28 @@
 				//flow
 				if (Previousflow != planner.flow_percentage[0]) {
 					vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
-					Previousflow = planner.flow_percentage[0]; thermalManager.degHotend;
+					Previousflow = planner.flow_percentage[0]; thermalManager.degHotend[0];
 				}
         
-        if (PreviousdegHeater[0] != thermalManager.degHotend[0]) // porownaj dotychczasowa z obecna
+        if (PreviousHotendTemp != thermalManager.degHotend(0)) // porownaj dotychczasowa z obecna
 				{
-						PreviousdegHeater[0] = thermalManager.degHotend[0];
-            degtoLCD(0, PreviousdegHeater[0]); //
+						PreviousHotendTemp = thermalManager.degHotend(0);
+            degtoLCD(0, PreviousHotendTemp); //
         }
-        if (PrevioustargetdegHeater[0] != thermalManager.target_temperature[0]) 
+        if (PreviousTargetHotendTemp != thermalManager.degTargetHotend(0)) 
 				{
-			  		PrevioustargetdegHeater[0] = thermalManager.target_temperature[0];
-            targetdegtoLCD(0, PrevioustargetdegHeater[0]);
+			  		PreviousTargetHotendTemp = thermalManager.degTargetHotend(0);
+            targetdegtoLCD(0, PreviousTargetHotendTemp);
         }
         
 				#if HAS_TEMP_BED
-					if (PreviousdegHeater[1] != thermalManager.temp_bed){ //.current_temperature_bed) {
-						PreviousdegHeater[1] = thermalManager.temp_bed; //.current_temperature_bed;
-						degtoLCD(1, PreviousdegHeater[1]);
+					if (PreviousBedTemp != thermalManager.degBed()){ //.current_temperature_bed) {
+						PreviousBedTemp = thermalManager.degBed(); //.current_temperature_bed;
+						degtoLCD(1, PreviousBedTemp);
 					}
-					if (PrevioustargetdegHeater[1] != thermalManager.degTargetBed){ //.target_temperature_bed) {
-						PrevioustargetdegHeater[1] = thermalManager.degTargetBed; //.target_temperature_bed;
-						targetdegtoLCD(1, PrevioustargetdegHeater[1]);
+					if (PreviousTargetBedTemp != thermalManager.degTargetBed()){ //.target_temperature_bed) {
+						PreviousTargetBedTemp = thermalManager.degTargetBed(); //.target_temperature_bed;
+						targetdegtoLCD(1, PreviousTargetBedTemp);
 					}
 				#endif
  
@@ -1999,14 +2005,14 @@
 
 					// procenty t4
 					ZERO(bufferson);
-					strcat(bufferson, itostr3(progress_printing));
+					strcat(bufferson, i8tostr3(progress_printing));
 					strcat(bufferson, " %");
 					percentdone.setText(bufferson, "printer");
 				}
 				else
 				{
 					ZERO(bufferson);
-					strcat(bufferson, itostr3(progress_printing));
+					strcat(bufferson, i8tostr3(progress_printing));
 					strcat(bufferson, " %");
 					percentdone.setText(bufferson, "printer");
 					progressbar.setValue(progress_printing, "printer"); // dodatkowo odswiez progressbar
@@ -2056,21 +2062,22 @@
         break;
 			case 12:
 				// odswiez temp glowicy na ekranie filament [przyciski]
-					degtoLCD(0, thermalManager.current_temperature[0]);
+					degtoLCD(0, thermalManager.degHotend(0));
 				break;
 			case 13:
 				// pokaz temp glowicy podczas nagrzewania m600 na stronie select
 				if (nex_m600_heatingup == 1)
 				{
-					char *temp_he;
-					char *temp_te;
-					char temptemp[14];
+					const char *temp_he; 	// temperatura hotendu
+					const char *temp_te;	// temperatura hotendu docelowa
+					char temptemp[14];	// temporary temp @_@ xD
 
-					temp_te = itostr3(thermalManager.target_temperature[0]);
-					temp_he = itostr3(thermalManager.current_temperature[0]);
+					temp_te = i8tostr3(thermalManager.degTargetHotend(0));
+					temp_he = i8tostr3(thermalManager.degHotend(0));
 					strlcpy(temptemp,temp_he,4);
-					strcat_P(temptemp, PSTR(" / "));
-					strcat(temptemp, itostr3(thermalManager.target_temperature[0]));
+					
+					strcat(temptemp, PSTR(" / "));
+					strcat(temptemp, i8tostr3(thermalManager.degTargetHotend(0)));
 					LcdRiga4.setText(temptemp);
 				}
 				break;
@@ -2078,7 +2085,7 @@
         coordtoLCD();
         break;
 			case 31:
-				vFlowNex.setValue(flow_percentage[0], "flowpage");
+				vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
 				break;
     }
     PreviousPage = PageID;
@@ -2113,7 +2120,7 @@
     lcd_setstatusPGM(message, 1);
   }
 
-  void lcd_reset_alert_level() { lcd_status_message_level = 0; }
+  void reset_alert_level() { lcd_status_message_level = 0; }
 
 
   void lcd_yesno(const uint8_t val, const char* msg1, const char* msg2, const char* msg3) {
@@ -2137,12 +2144,12 @@
 
 				if (dir == true)
 				{
-					thermalManager.babystep_axis(Z_AXIS, babystep_increment);
+					babystep.add_steps(Z_AXIS, babystep_increment);
 					_babystep_z_shift += babystep_increment;
 				}
 				else if (dir == false)
 				{
-					thermalManager.babystep_axis(Z_AXIS, -babystep_increment);
+					 babystep.add_steps(Z_AXIS, -babystep_increment);
 					_babystep_z_shift -= babystep_increment;
 				}
 		}
