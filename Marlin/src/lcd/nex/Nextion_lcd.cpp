@@ -2074,10 +2074,10 @@
 
 					temp_te = i8tostr3(thermalManager.degTargetHotend(0));
 					temp_he = i8tostr3(thermalManager.degHotend(0));
-					strlcpy(temptemp,temp_he,4);
+					//strlcpy(temptemp,temp_he,4);
 					
-					strcat(temptemp, PSTR(" / "));
-					strcat(temptemp, i8tostr3(thermalManager.degTargetHotend(0)));
+					//strcat(temptemp, PSTR(" / "));
+					//strcat(temptemp, i8tostr3(thermalManager.degTargetHotend(0)));
 					LcdRiga4.setText(temptemp);
 				}
 				break;
