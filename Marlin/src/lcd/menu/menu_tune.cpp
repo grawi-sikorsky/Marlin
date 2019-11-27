@@ -26,7 +26,7 @@
 
 #include "../../inc/MarlinConfigPre.h"
 
-//#if HAS_LCD_MENU
+#if HAS_LCD_MENU
 
 #include "menu.h"
 #include "../../module/motion.h"

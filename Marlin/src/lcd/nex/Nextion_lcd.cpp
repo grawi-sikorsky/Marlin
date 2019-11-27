@@ -1909,14 +1909,14 @@
 // ===========================
   void nextion_draw_update() {
 
-    static uint8_t  	PreviousPage = 0,
-                    	Previousfeedrate = 0,
-                    	PreviousfanSpeed = 0,
-						Previousflow = 0,
-                    	PreviouspercentDone = 0;
-						
-    static bed_info_t   PreviousdegHeater[1] = { 0.0 },
-                    	PrevioustargetdegHeater[1] = { 0.0 };
+    static uint8_t  	PreviousPage = 0,					// strona nex
+                    	Previousfeedrate = 0,			// dotychczasowa predkosc druku
+                    	PreviousfanSpeed = 0,			// dotychczasowa predkosc wentylatora
+											Previousflow = 0,					// dotychczasowy flow
+                    	PreviouspercentDone = 0;	// dotychczasowy postep %
+
+    static bed_info_t   PreviousdegHeater[1] = { 0 },
+                    		PrevioustargetdegHeater[1] = { 0 };
 
     if (!NextionON) return;
 	
@@ -1936,7 +1936,7 @@
             #endif
           #endif
 				}
-				//fanek
+				//Wentylator
          if (PreviousfanSpeed != fanSpeed[0]) {
 					PrinterFanspeed.setValue(((float)(fanSpeed[0]) / 255) * 100,"printer");
           PreviousfanSpeed = fanSpeed[0];
@@ -1949,20 +1949,20 @@
 				//flow
 				if (Previousflow != planner.flow_percentage[0]) {
 					vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
-					Previousflow = planner.flow_percentage[0];
+					Previousflow = planner.flow_percentage[0]; thermalManager.degHotend;
 				}
-        #if HAS_TEMP_0
-          if (PreviousdegHeater[0] != thermalManager.current_temperature[0]) 
-					{
-						PreviousdegHeater[0] = thermalManager.current_temperature[0];
-            degtoLCD(0, PreviousdegHeater[0]);
-          }
-          if (PrevioustargetdegHeater[0] != thermalManager.target_temperature[0]) 
-					{
-			  PrevioustargetdegHeater[0] = thermalManager.target_temperature[0];
+        
+        if (PreviousdegHeater[0] != thermalManager.degHotend[0]) // porownaj dotychczasowa z obecna
+				{
+						PreviousdegHeater[0] = thermalManager.degHotend[0];
+            degtoLCD(0, PreviousdegHeater[0]); //
+        }
+        if (PrevioustargetdegHeater[0] != thermalManager.target_temperature[0]) 
+				{
+			  		PrevioustargetdegHeater[0] = thermalManager.target_temperature[0];
             targetdegtoLCD(0, PrevioustargetdegHeater[0]);
-          }
-        #endif
+        }
+        
 				#if HAS_TEMP_BED
 					if (PreviousdegHeater[1] != thermalManager.temp_bed){ //.current_temperature_bed) {
 						PreviousdegHeater[1] = thermalManager.temp_bed; //.current_temperature_bed;
