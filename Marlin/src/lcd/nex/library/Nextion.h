@@ -21,6 +21,11 @@
  */
 #include "HardwareSerial.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include "string.h"
+#include "WString.h"
+
 #ifndef __NEXTION_H__
 #define __NEXTION_H__
 

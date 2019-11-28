@@ -28,7 +28,6 @@
 #endif
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #if ENABLED(NEXTION)
 
@@ -107,7 +106,7 @@
    */
 
   void NexObject::show() {
-    String cmd;
+    std::string cmd;// = String("");
     cmd += "page ";
     cmd += this->__name;
     sendCommand(cmd.c_str());
@@ -115,7 +114,7 @@
   }
 
   void NexObject::enable(const bool en /* true */) {
-    String cmd;
+    std::string cmd;// = String("");
     cmd += this->__name;
     cmd += ".en=";
     cmd += en ? "1" : "0";
@@ -124,7 +123,7 @@
   }
 
   void NexObject::getText(char *buffer_temp, uint16_t len, const char *pname) {
-    String cmd;
+    std::string cmd;// = std::string("");
     cmd += "get ";
     if (pname) {
       cmd += pname;
@@ -139,7 +138,7 @@
   }
 
 	void NexObject::setText(const char *buffer, const char *pname) {
-		String cmd;
+		std::string cmd;// = String("");
 		if (pname) {
 			cmd += pname;
 			cmd += ".";
@@ -153,7 +152,7 @@
 	}
 
 	void NexObject::setText_PGM(const char *buffer, const char *pname) {
-		String cmd;
+		std::string cmd;// = String("");
 		if (pname) {
 			cmd += pname;
 			cmd += ".";
@@ -172,7 +171,7 @@
 	}
 
   uint16_t NexObject::getValue(const char *pname) {
-    String cmd;
+    std::string cmd;// = String("");
     cmd += "get ";
     if (pname) {
       cmd += pname;
@@ -186,7 +185,7 @@
 
   void NexObject::setValue(const uint16_t number, const char *pname) {
     char buf[10] = {0};
-    String cmd;
+    std::string cmd;// = String("");
     __utoa(number, buf, 10);
 
     if (pname) {
@@ -209,7 +208,7 @@
   }
 
   uint16_t NexObject::Get_cursor_height_hig() {
-    String cmd;
+    std::string cmd;// = String("");
     cmd += "get ";
     cmd += this->__name;
     cmd += ".hig";
@@ -219,7 +218,7 @@
 
   void NexObject::Set_cursor_height_hig(const uint16_t number) {
     char buf[10] = {0};
-    String cmd;
+    std::string cmd;// = String("");
 
     __utoa(number, buf, 10);
     cmd += this->__name;
@@ -235,7 +234,7 @@
   }
 
   uint16_t NexObject::getMaxval() {
-    String cmd;
+    std::string cmd;// = String("");
     cmd += "get ";
     cmd += this->__name;
     cmd += ".maxval";
@@ -245,7 +244,7 @@
 
   void NexObject::setMaxval(const uint16_t number) {
     char buf[10] = {0};
-    String cmd;
+    std::string cmd;//;
 
     __utoa(number, buf, 10);
     cmd += this->__name;
@@ -261,7 +260,7 @@
   }
 
   uint16_t NexObject::getMinval() {
-    String cmd;
+    std::string cmd;//;
     cmd += "get ";
     cmd += this->__name;
     cmd += ".minval";
@@ -271,7 +270,7 @@
 
   void NexObject::setMinval(const uint16_t number) {
     char buf[10] = {0};
-    String cmd;
+    std::string cmd;//;
 
     __utoa(number, buf, 10);
     cmd += this->__name;
@@ -287,7 +286,7 @@
   }
 
   uint16_t NexObject::Get_background_color_bco() {
-    String cmd;
+    std::string cmd;//;
     cmd += "get ";
     cmd += this->__name;
     cmd += ".bco";
@@ -297,7 +296,7 @@
 
   void NexObject::Set_background_color_bco(const uint16_t number) {
     char buf[10] = {0};
-    String cmd;
+    std::string cmd;//;
 
     __utoa(number, buf, 10);
     cmd += this->__name;
@@ -313,7 +312,7 @@
   }
 
   uint16_t NexObject::Get_font_color_pco() {
-    String cmd;
+    std::string cmd;//;
     cmd += "get ";
     cmd += this->__name;
     cmd += ".pco";
@@ -323,7 +322,7 @@
 
   void NexObject::Set_font_color_pco(const uint16_t number) {
     char buf[10] = {0};
-    String cmd;
+    std::string cmd;//;
 
     __utoa(number, buf, 10);
     cmd += this->__name;
@@ -339,7 +338,7 @@
   }
 
   uint16_t NexObject::Get_place_xcen() {
-    String cmd;
+    std::string cmd;//;
     cmd += "get ";
     cmd += this->__name;
     cmd += ".xcen";
@@ -349,7 +348,7 @@
 
   void NexObject::Set_place_xcen(const uint16_t number) {
     char buf[10] = {0};
-    String cmd;
+    std::string cmd;//;
 
     __utoa(number, buf, 10);
     cmd += this->__name;
@@ -365,7 +364,7 @@
   }
 
   uint16_t NexObject::Get_place_ycen() {
-    String cmd;
+    std::string cmd;//;
     cmd += "get ";
     cmd += this->__name;
     cmd += ".ycen";
@@ -375,7 +374,7 @@
 
   void NexObject::Set_place_ycen(const uint16_t number) {
     char buf[10] = {0};
-    String cmd;
+    std::string cmd;//;
 
     __utoa(number, buf, 10);
     cmd += this->__name;
@@ -391,7 +390,7 @@
   }
 
   uint16_t NexObject::getFont() {
-    String cmd;
+    std::string cmd;//;
     cmd += "get ";
     cmd += this->__name;
     cmd += ".font";
@@ -401,7 +400,7 @@
 
   void NexObject::setFont(const uint16_t number) {
     char buf[10] = {0};
-    String cmd;
+    std::string cmd;//;
 
     __utoa(number, buf, 10);
     cmd += this->__name;
@@ -417,7 +416,7 @@
   }
 
   uint16_t NexObject::getCropPic() {
-    String cmd;
+    std::string cmd;//;
     cmd += "get ";
     cmd += this->__name;
     cmd += ".picc";
@@ -427,7 +426,7 @@
 
   void NexObject::setCropPic(const uint16_t number) {
     char buf[10] = {0};
-    String cmd;
+    std::string cmd;//;
 
     __utoa(number, buf, 10);
     cmd += this->__name;
@@ -452,7 +451,7 @@
 
   void NexObject::setPic(const uint16_t number) {
     char buf[10] = {0};
-    String cmd;
+    std::string cmd;//;
 
     __utoa(number, buf, 10);
     cmd += this->__name;
@@ -464,7 +463,7 @@
   }
 
   void NexObject::SetVisibility(const bool visible) {
-    String cmd;
+    std::string cmd;//;
     cmd += "vis ";
     cmd += this->__name;
     cmd += ',';
@@ -639,7 +638,7 @@
     delay(20);
 
 	  uint8_t   c = 0;
-	  String temp = String("");
+	  std::string temp;//= String("");
 
 	#if ENABLED(NEXTION_CONNECT_DEBUG)
 	  SERIAL_MSG(" NEXTION Debug Connect receveid:");
@@ -724,22 +723,25 @@
 
     nexSerial.setTimeout(NEX_TIMEOUT);
     if (sizeof(temp) != nexSerial.readBytes((char *)temp, sizeof(temp)))
-      return NULL;
+      return 0;
 
     if (temp[0] == NEX_RET_NUMBER_HEAD
         && temp[5] == 0xFF
         && temp[6] == 0xFF
         && temp[7] == 0xFF
     )
-
     return (uint16_t)(((uint32_t)temp[4] << 24) | ((uint32_t)temp[3] << 16) | (temp[2] << 8) | (temp[1]));
+    else
+    {
+      return 0;
+    }
   }
 
   void recvRetString(char *buffer, uint16_t len) {
     uint16_t ret = 0;
     bool str_start_flag = false;
     uint8_t cnt_0xFF = 0;
-    String temp = "";//String("");
+    std::string temp;// = "";//String("");
     uint8_t c = 0;
     millis_t start;
 
@@ -799,7 +801,7 @@
 
   void setCurrentBrightness(uint8_t dimValue) {
     char buf[10] = {0};
-    String cmd;
+    std::string cmd;//;
     __utoa(dimValue, buf, 10);
     cmd += "dim=";
     cmd += buf;

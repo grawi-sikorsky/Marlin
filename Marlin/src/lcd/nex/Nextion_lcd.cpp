@@ -2067,12 +2067,12 @@
 				// pokaz temp glowicy podczas nagrzewania m600 na stronie select
 				if (nex_m600_heatingup == 1)
 				{
-					const char *temp_he; 	// temperatura hotendu
-					const char *temp_te;	// temperatura hotendu docelowa
+					char *temp_he; 	// temperatura hotendu
+					char *temp_te;	// temperatura hotendu docelowa
 					char temptemp[14];	// temporary temp @_@ xD
 
-					temp_te = i8tostr3(thermalManager.degTargetHotend(0));
-					temp_he = i8tostr3(thermalManager.degHotend(0));
+					//temp_te = i8tostr3(thermalManager.degTargetHotend(0));
+					//temp_he = i8tostr3(thermalManager.degHotend(0));
 					//strlcpy(temptemp,temp_he,4);
 					
 					//strcat(temptemp, PSTR(" / "));

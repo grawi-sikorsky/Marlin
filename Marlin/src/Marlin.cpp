@@ -182,7 +182,8 @@
 #endif
 
 #if ENABLED (NEXTION_DISPLAY)
-  //#include "nextion/Nextion_lcd.h"
+  #include "../src/lcd/nex/Nextion_lcd.h"
+  
   uint8_t progress_printing; // dodane nex
 	bool nex_filament_runout_sensor_flag;
 #endif
@@ -936,7 +937,8 @@ void setup() {
     leds.setup();
   #endif
 
-  ui.init();
+  ui.init(); 
+  std::string klocek;
   #if HAS_SPI_LCD && ENABLED(SHOW_BOOTSCREEN)
     ui.show_bootscreen();
   #endif

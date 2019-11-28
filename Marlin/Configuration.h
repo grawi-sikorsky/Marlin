@@ -112,7 +112,7 @@
  *
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#define SERIAL_PORT 0
+#define SERIAL_PORT -1
 
 /**
  * Select a secondary serial port on the board to use for communication with the host.
@@ -121,7 +121,7 @@
  *
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-//#define SERIAL_PORT_2 -1
+//#define SERIAL_PORT_2 2
 
 /**
  * This setting determines the communication speed of the printer.
@@ -2278,7 +2278,7 @@
 //#define NEX_UPLOAD
   #define NEXTION
   #define NEXTION_DISPLAY
-  #define NEXTION_SERIAL 2
+  #define NEXTION_SERIAL 1
 	//#define NEXTION_DEBUG
 
   // For GFX preview visualization enable NEXTION GFX
