@@ -680,7 +680,7 @@
 			SERIAL_ECHOLNPGM(" weszlo w 9600, proba zmiany na 115 ");
       sendCommand("baud=115200");
       //nexSerial.end(); //HardwareSerial.end() nie istnieje w 2.0?
-      delay(1000);
+      delay(800);
       nexSerial.begin(115200);
 			if (connect) return true;
       //return true;
@@ -688,7 +688,7 @@
     else { // Else try to 115200 baudrate
 			SERIAL_ECHOLNPGM(" nie weszlo w 9600 proba wejscia na 115 ");
       //nexSerial.end(); //HardwareSerial.end() nie istnieje w 2.0?
-	  delay(1000);
+	  delay(800);
       nexSerial.begin(115200);
       connect = getConnect(buffer);
       if (connect) return true;

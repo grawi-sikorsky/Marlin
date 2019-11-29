@@ -937,8 +937,11 @@ void setup() {
     leds.setup();
   #endif
 
-  ui.init(); 
-  std::string klocek;
+
+  ui.init();
+  //MYSERIAL1.println("serial1:dupa z cyckami");
+  Serial1.println("Serial1: dupa z goownem");
+  MYSERIAL0.println("myserial0:dupa z cyckami");
   #if HAS_SPI_LCD && ENABLED(SHOW_BOOTSCREEN)
     ui.show_bootscreen();
   #endif

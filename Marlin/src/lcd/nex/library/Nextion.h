@@ -38,7 +38,7 @@
     #define nexSerial Serial3
   #endif
 #else
-  #define nexSerial Serial1
+  #define nexSerial Serial
 #endif
 
 #define NEX_RET_CMD_FINISHED                (0x01)

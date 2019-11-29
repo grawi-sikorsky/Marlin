@@ -1637,7 +1637,7 @@
 // ==	LCD INIT					==
 // =======================
   void MarlinUI::init() {
-    for (uint8_t i = 0; i < 10; i++) {
+    for (uint8_t i = 0; i < 30; i++) {
       ZERO(bufferson);
       NextionON = nexInit(bufferson);
       if (NextionON) break;
