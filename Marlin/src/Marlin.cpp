@@ -657,6 +657,10 @@ void idle(
     max7219.idle_tasks();
   #endif
 
+  #if ENABLED(NEXTION)
+    check_periodical_actions(); //dodane dla nextion
+  #endif
+
   ui.update();
 
   #if ENABLED(HOST_KEEPALIVE_FEATURE)
@@ -939,9 +943,7 @@ void setup() {
 
 
   ui.init();
-  //MYSERIAL1.println("serial1:dupa z cyckami");
-  Serial1.println("Serial1: dupa z goownem");
-  MYSERIAL0.println("myserial0:dupa z cyckami");
+
   #if HAS_SPI_LCD && ENABLED(SHOW_BOOTSCREEN)
     ui.show_bootscreen();
   #endif
@@ -1152,3 +1154,25 @@ void loop() {
     endstops.event_handler();
   }
 }
+
+#if ENABLED (NEXTION)
+  void check_periodical_actions()
+  {
+    static millis_t cycle_1s = 0;
+    const millis_t now = millis();
+    
+    if (ELAPSED(now, cycle_1s)) {
+      cycle_1s = now + 1000UL; // zmianka z 1000UL
+
+      #if ENABLED(NEXTION)
+        nextion_draw_update();
+
+      #if ENABLED(NEXTION_DEBUG)
+          SERIAL_ECHOPGM("busystate:");
+          SERIAL_ECHOLN(busy_state);
+      #endif
+      
+      #endif
+    }
+  }
+#endif

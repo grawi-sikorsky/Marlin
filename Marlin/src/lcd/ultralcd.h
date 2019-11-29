@@ -415,6 +415,7 @@ public:
 
     void init();
     void update();
+    static void reset_status();
     void reset_alert_level(){}
     static void lcd_setstatusPGM(const char* message, const int8_t level = 0);
     static void lcd_setalertstatusPGM(const char* message);
@@ -442,7 +443,6 @@ public:
       static void set_status_P(PGM_P const message, const int8_t level=0);
       static inline void set_alert_status_P(PGM_P const) {}
       static void status_printf_P(const uint8_t level, PGM_P const fmt, ...);
-      static void reset_status(){}
       static constexpr bool has_status() { return false; }
       // kolejne z menu.h...
       static screenFunc_t currentScreen;

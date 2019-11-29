@@ -2134,6 +2134,8 @@
   }
 
   void reset_alert_level() { lcd_status_message_level = 0; }
+	
+	void MarlinUI::reset_status(){ lcd_setstatusPGM(GET_TEXT(WELCOME_MSG),1); }
 
 
   void lcd_yesno(const uint8_t val, const char* msg1, const char* msg2, const char* msg3) {

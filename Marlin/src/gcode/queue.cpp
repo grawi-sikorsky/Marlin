@@ -35,6 +35,10 @@ GCodeQueue queue;
 #include "../module/temperature.h"
 #include "../Marlin.h"
 
+#if ENABLED(NEXTION)
+  #include "../../src/lcd/nex/Nextion_lcd.h"
+#endif
+
 #if ENABLED(PRINTER_EVENT_LEDS)
   #include "../feature/leds/printer_event_leds.h"
 #endif
@@ -366,6 +370,13 @@ void GCodeQueue::get_serial_commands() {
         serial_comment_mode[i] = false;
         #if ENABLED(PAREN_COMMENTS)
           serial_comment_paren_mode[i] = false;
+        #endif
+
+        #if ENABLED(NEXTION_DISPLAY)
+          if (!serial_count) { 
+            nextion_draw_update();//dodane dla nextiona
+            continue; 
+          } // skip empty lines           
         #endif
 
         // Skip empty lines and comments
