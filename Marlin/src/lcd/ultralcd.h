@@ -411,7 +411,7 @@ public:
 
   #elif ENABLED(NEXTION_DISPLAY)
 
-      bool lcd_wait_for_move = false;
+    bool lcd_wait_for_move = false;
 
     void init();
     void update();

@@ -1128,6 +1128,8 @@ void setup() {
   #if ENABLED(PRUSA_MMU2)
     mmu2.init();
   #endif
+
+  ui.init();
 }
 
 /**
@@ -1143,6 +1145,10 @@ void loop() {
   for (;;) {
 
     idle(); // Do an idle first so boot is slightly faster
+
+    #if ENABLED(NEXTION)
+      check_periodical_actions(); //dodane dla nextion
+    #endif
 
     #if ENABLED(SDSUPPORT)
       card.checkautostart();
@@ -1166,10 +1172,11 @@ void loop() {
 
       #if ENABLED(NEXTION)
         nextion_draw_update();
-
+        //SERIAL_ECHO("draw update"); //nextion
+        sendCommand("page gcode");
       #if ENABLED(NEXTION_DEBUG)
-          SERIAL_ECHOPGM("busystate:");
-          SERIAL_ECHOLN(busy_state);
+          //SERIAL_ECHOPGM("busystate:");
+          //SERIAL_ECHOLN(busy_state);
       #endif
       
       #endif

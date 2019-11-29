@@ -111,6 +111,8 @@
     cmd += this->__name;
     sendCommand(cmd.c_str());
     recvRetCommandFinished();
+    SERIAL_ECHO("show()-cmd:");
+    SERIAL_ECHO(cmd.c_str());
   }
 
   void NexObject::enable(const bool en /* true */) {
@@ -132,9 +134,12 @@
     cmd += this->__name;
     cmd += ".txt";
     sendCommand(cmd.c_str());
-		//SERIAL_ECHO(cmd);
     recvRetString(buffer_temp, len);
-		//SERIAL_ECHO(buffer_temp);
+
+    SERIAL_ECHO("getText-cmd:");
+		SERIAL_ECHOLN(cmd.c_str());
+    SERIAL_ECHO("getText-__name:");
+    SERIAL_ECHOLN(__name);
   }
 
 	void NexObject::setText(const char *buffer, const char *pname) {
@@ -149,6 +154,10 @@
 		cmd += "\"";
 		sendCommand(cmd.c_str());
 		recvRetCommandFinished();
+    SERIAL_ECHO("setText-__name:");
+    SERIAL_ECHOLN(__name);
+    SERIAL_ECHO("setText-cmd:");
+    SERIAL_ECHOLN(cmd.c_str());
 	}
 
 	void NexObject::setText_PGM(const char *buffer, const char *pname) {
@@ -641,13 +650,13 @@
 	  std::string temp;//= String("");
 
 	#if ENABLED(NEXTION_CONNECT_DEBUG)
-	  SERIAL_MSG(" NEXTION Debug Connect receveid:");
+	  SERIAL_ECHO(" NEXTION Debug Connect receveid:");
 	#endif
 
 	  while (nexSerial.available()) {
 		  c = nexSerial.read();
 			#if ENABLED(NEXTION_CONNECT_DEBUG)
-			SERIAL_CHR((char)c);
+			SERIAL_ECHO((char)c);
 			#endif
 		  temp += (char)c;
 	  }
@@ -672,23 +681,25 @@
     nexSerial.begin(9600);
 
     ZERO(buffer);
-	SERIAL_ECHOLN(" przed getConnect ");
+	  SERIAL_ECHOLN(" przed getConnect ");
     bool connect = getConnect(buffer);
-	SERIAL_ECHOLN(" za get connect ");
+	  SERIAL_ECHOLN(" za get connect ");
+    
     // If baudrate is 9600 set to 115200 and reconnect
     if (connect) {
-			SERIAL_ECHOLNPGM(" weszlo w 9600, proba zmiany na 115 ");
+			SERIAL_ECHOLNPGM(" Weszlo w 9600, proba zmiany na 115200 ");
       sendCommand("baud=115200");
       //nexSerial.end(); //HardwareSerial.end() nie istnieje w 2.0?
       delay(800);
       nexSerial.begin(115200);
+      connect = getConnect(buffer);
 			if (connect) return true;
       //return true;
     }
     else { // Else try to 115200 baudrate
-			SERIAL_ECHOLNPGM(" nie weszlo w 9600 proba wejscia na 115 ");
+			SERIAL_ECHOLNPGM(" Nie weszlo w 9600 proba wejscia na 115200 ");
       //nexSerial.end(); //HardwareSerial.end() nie istnieje w 2.0?
-	  delay(800);
+	    delay(800);
       nexSerial.begin(115200);
       connect = getConnect(buffer);
       if (connect) return true;
@@ -702,8 +713,11 @@
     uint8_t c;  
 
     while (nexSerial.available() > 0) {   
-      delay(5); // sprawdzic czy nie delay czasem?
+      delay(1); // sprawdzic czy nie delay czasem?
       c = nexSerial.read();
+
+      SERIAL_ECHO("nexSerial.read:");
+      SERIAL_ECHOLN(c);
 
       if (c == NEX_RET_EVENT_TOUCH_HEAD) {
         if (nexSerial.available() >= 6) {

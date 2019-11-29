@@ -587,11 +587,11 @@
 				//quickstop_stepper();
 }
 
-  //void menu_action_back() { Pprinter.show(); }
+  void menu_action_back() { Pprinter.show(); }
   void menu_action_function(screenFunc_t func) { (*func)(); }
 
 	// Ustawia strone statusu przypisujac zerowe wartosci do zmiennych tj. glowica, stol, fan, stan SD
-	// wywo�ywana raz w lcdinit()
+	// wywolywana raz w lcdinit()
   void setpagePrinter() 
 	{
     #if HOTENDS > 0
@@ -961,7 +961,7 @@
           #if ENABLED(PARK_HEAD_ON_PAUSE)
             //KATT enqueue_and_echo_commands_P(PSTR("M125"));
           #endif
-					ui.lcd_setstatusPGM(GET_TEXT(MSG_PRINT_PAUSED), -1);
+					ui.lcd_setstatusPGM(GET_TEXT(MSG_PRINT_PAUSED), 1);
 					//set_status_P(GET_TEXT(MSG_PRINT_PAUSED));
         }
         else {																					//resume
@@ -971,7 +971,7 @@
 						card.startFileprint();
 						print_job_timer.start();
 					#endif
-					ui.lcd_setstatusPGM(GET_TEXT(MSG_RESUME_PRINT), -1);
+					ui.lcd_setstatusPGM(GET_TEXT(MSG_RESUME_PRINT), 1);
         }
       }
     }
@@ -1531,7 +1531,7 @@
   void setgcodePopCallback(void *ptr) {
     UNUSED(ptr);
     ZERO(bufferson);
-		
+		SERIAL_ECHOLN("setgcodepopcallbac");
     Tgcode.getText(bufferson, sizeof(bufferson), "gcode");
     Tgcode.setText("", "gcode");
 
@@ -1541,12 +1541,12 @@
 		}
 		else if (strcmp(bufferson, "M78 S78") == 0)
 		{
-			//KATT enqueue_and_echo_command(bufferson);
+			queue.enqueue_one_now(bufferson); //KATT enqueue_and_echo_command(bufferson);
 			buzzer.tone(100, 2300);
 		}
 		else
 		{ 
-			//KATT enqueue_and_echo_command(bufferson);
+			queue.enqueue_one_now(bufferson);
 		}
   }
 
@@ -1554,14 +1554,14 @@
     UNUSED(ptr);
     ZERO(bufferson);
     movecmd.getText(bufferson, sizeof(bufferson));
-		//KATT enqueue_and_echo_commands_P(PSTR("G91"));
-		//KATT enqueue_and_echo_command(bufferson);
-		//KATT enqueue_and_echo_commands_P(PSTR("G90"));
+		queue.enqueue_one_now("G91");			//KATT enqueue_and_echo_commands_P(PSTR("G91"));
+		queue.enqueue_one_now(bufferson);	//KATT enqueue_and_echo_command(bufferson);
+		queue.enqueue_one_now("G90");			//KATT enqueue_and_echo_commands_P(PSTR("G90"));
   }
 
   void motoroffPopCallback(void *ptr) {
     UNUSED(ptr);
-		//KATT enqueue_and_echo_commands_P(PSTR("M84"));
+		queue.enqueue_one_now("M84");
   }
 
 	// NEXTION: Obsluga klikniecia przycisku SEND na SELECT PAGE
@@ -1654,7 +1654,7 @@
 		#endif
 
     if (!NextionON) {
-	  SERIAL_ECHOPGM("Nextion not connected!");
+	  SERIAL_ECHOPGM("Nextion NOT connected...");
       return;
     }
     else {
@@ -1769,7 +1769,7 @@
       MotorOff.attachPop(motoroffPopCallback);
 
 			// GCODE
-      Send.attachPop(setgcodePopCallback);
+      Send.attachPop(setgcodePopCallback); //SERIAL_ECHOLN("attachpop-SEND.");
 
 			// YESNO
       Yes.attachPop(YesNoPopCallback, &Yes);
@@ -1895,6 +1895,7 @@
 // =======================
   void MarlinUI::update() {
     if (!NextionON) return;
+		
     nexLoop(nex_listen_list); // odswieza sie z delayem 5 ms
 
 		//sprawdzamy timeout ekranu
@@ -1911,7 +1912,7 @@
 // == LCD PERIODICAL UPDATE	==
 // ===========================
   void nextion_draw_update() {
-
+		SERIAL_ECHOLN(nexSerial.available());
     static uint8_t  	PreviousPage = 0,					// strona nex
                     	Previousfeedrate = 0,			// dotychczasowa predkosc druku
                     	PreviousfanSpeed = 0,			// dotychczasowa predkosc wentylatora
@@ -2134,7 +2135,7 @@
   }
 
   void reset_alert_level() { lcd_status_message_level = 0; }
-	
+
 	void MarlinUI::reset_status(){ lcd_setstatusPGM(GET_TEXT(WELCOME_MSG),1); }
 
 

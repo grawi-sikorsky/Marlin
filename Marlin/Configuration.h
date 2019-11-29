@@ -2279,7 +2279,8 @@
   #define NEXTION
   #define NEXTION_DISPLAY
   #define NEXTION_SERIAL 1
-	//#define NEXTION_DEBUG
+  #define NEXTION_CONNECT_DEBUG
+	#define NEXTION_DEBUG
 
   // For GFX preview visualization enable NEXTION GFX
   //#define NEXTION_GFX
@@ -2305,7 +2306,7 @@
 	#define PROBE_MANUALLY
 
 // FSENSOR ONOFF
-	#define FSENSOR_STATE
+	//#define FSENSOR_STATE
 	#define FSENSOR_USER_STATE
 //G28 after print stop
 	#define STOP_PRINT_G28
