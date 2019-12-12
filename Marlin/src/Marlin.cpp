@@ -1129,7 +1129,7 @@ void setup() {
     mmu2.init();
   #endif
 
-  ui.init();
+  //ui.init();
 }
 
 /**
@@ -1168,12 +1168,12 @@ void loop() {
     const millis_t now = millis();
     
     if (ELAPSED(now, cycle_1s)) {
-      cycle_1s = now + 1000UL; // zmianka z 1000UL
+      cycle_1s = now + 200UL; // zmianka z 1000UL
 
       #if ENABLED(NEXTION)
         nextion_draw_update();
         //SERIAL_ECHO("draw update"); //nextion
-        sendCommand("page gcode");
+        //sendCommand("page gcode"); //testinh
       #if ENABLED(NEXTION_DEBUG)
           //SERIAL_ECHOPGM("busystate:");
           //SERIAL_ECHOLN(busy_state);

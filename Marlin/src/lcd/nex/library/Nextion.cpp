@@ -713,7 +713,7 @@
     uint8_t c;  
 
     while (nexSerial.available() > 0) {   
-      delay(1); // sprawdzic czy nie delay czasem?
+      delay(5); // sprawdzic czy nie delay czasem?
       c = nexSerial.read();
 
       SERIAL_ECHO("nexSerial.read:");

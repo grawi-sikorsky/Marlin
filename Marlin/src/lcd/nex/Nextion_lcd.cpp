@@ -1637,11 +1637,11 @@
 // ==	LCD INIT					==
 // =======================
   void MarlinUI::init() {
-    for (uint8_t i = 0; i < 30; i++) {
+    for (uint8_t i = 0; i < 10; i++) {
       ZERO(bufferson);
       NextionON = nexInit(bufferson);
       if (NextionON) break;
-      delay(20);
+      delay(50);
     }
 
 		#if ENABLED(FSENSOR_STATE)
@@ -1955,7 +1955,7 @@
 				//flow
 				if (Previousflow != planner.flow_percentage[0]) {
 					vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
-					Previousflow = planner.flow_percentage[0]; thermalManager.degHotend[0];
+					Previousflow = planner.flow_percentage[0]; //thermalManager.degHotend[0];
 				}
         
         if (PreviousHotendTemp != thermalManager.degHotend(0)) // porownaj dotychczasowa z obecna
