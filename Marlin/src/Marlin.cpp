@@ -1132,7 +1132,7 @@ void setup() {
     mmu2.init();
   #endif
 
-  HAL_idletask();           // DODANE BO BLOKUJE USB SERIAL PRZY BOOTOWANIU NA CZAS ZAKONCZENIA FUNKCJI NEXINIT
+  idle();           // DODANE BO BLOKUJE USB SERIAL PRZY BOOTOWANIU NA CZAS ZAKONCZENIA FUNKCJI NEXINIT
   ui.init();
   ui.reset_status();        // Print startup message after print statistics are loaded
 }
