@@ -377,8 +377,8 @@ void protected_pin_err();
   void event_probe_failure();
 #endif
 
-extern const char G28_STR[], M21_STR[], M23_STR[], M24_STR[], NUL_STR[];
-
+extern const char NUL_STR[], G28_STR[], M21_STR[], M23_STR[], M24_STR[],
+                  SP_X_STR[], SP_Y_STR[], SP_Z_STR[], SP_E_STR[];
 
 /**
  * 
@@ -394,4 +394,3 @@ extern const char G28_STR[], M21_STR[], M23_STR[], M24_STR[], NUL_STR[];
     extern uint16_t paused_fanSpeed[FAN_COUNT]; // dodane uint8_t zamaist 16
   #endif
 #endif
-
