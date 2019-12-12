@@ -14,7 +14,7 @@
 	#include "../../feature/bedlevel/mbl/mesh_bed_leveling.h"
 	#include "../../module/configuration_store.h"
 	#include "../../lcd/ultralcd.h"
-	MarlinUI ui;
+	//MarlinUI ui;
 #endif
 
 #if ENABLED(SPEAKER)
@@ -2106,7 +2106,7 @@
     if (PageID == 2) LcdStatus.setText(lcd_status_message);
   }
 
-	void MarlinUI::set_status_P(PGM_P const message, int8_t level) { //TO SAMO ^
+	/*void MarlinUI::set_status_P(PGM_P const message, int8_t level) { //TO SAMO ^
 				if (level < 0) level = lcd_status_message_level = 0;
 				if (level < lcd_status_message_level || !NextionON) return;
 				strncpy_P(lcd_status_message, message, 24);
@@ -2118,7 +2118,7 @@
     if (lcd_status_message_level > 0 || !NextionON) return;
     strncpy(lcd_status_message, message, 24);
     if (PageID == 2) LcdStatus.setText(lcd_status_message);
-  }
+  }*/
 
   void lcd_status_printf_P(const uint8_t level, const char * const fmt, ...) {
     //if (level < lcd_status_message_level || !NextionON) return;
@@ -2131,7 +2131,7 @@
   }
 
   void lcd_setalertstatusPGM(const char * const message) {
-    ui.set_status_P(message, 1);
+    ui.lcd_setstatusPGM(message, 1);
   }
 
   void reset_alert_level() { lcd_status_message_level = 0; }

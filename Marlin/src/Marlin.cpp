@@ -945,7 +945,7 @@ void setup() {
   #endif
 
 
-  ui.init();
+  //ui.init();
 
   #if HAS_SPI_LCD && ENABLED(SHOW_BOOTSCREEN)
     ui.show_bootscreen();
@@ -1132,7 +1132,9 @@ void setup() {
     mmu2.init();
   #endif
 
-  //ui.init();
+  HAL_idletask();           // DODANE BO BLOKUJE USB SERIAL PRZY BOOTOWANIU NA CZAS ZAKONCZENIA FUNKCJI NEXINIT
+  ui.init();
+  ui.reset_status();        // Print startup message after print statistics are loaded
 }
 
 /**

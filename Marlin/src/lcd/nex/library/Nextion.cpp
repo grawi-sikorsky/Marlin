@@ -678,7 +678,7 @@
   bool nexInit(char *buffer) {
 	  SERIAL_ECHOLN(" Wejscie w nex_init ");
     // Try default baudrate
-    nexSerial.begin(9600);
+    //nexSerial.begin(9600);
 
     ZERO(buffer);
 	  SERIAL_ECHOLN(" przed getConnect ");
