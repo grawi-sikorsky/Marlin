@@ -661,12 +661,6 @@ void idle(
     max7219.idle_tasks();
   #endif
 
-  #if ENABLED(NEXTION)
-    check_periodical_actions(); //dodane dla nextion
-  #endif
-
-  ui.update();
-
   #if ENABLED(HOST_KEEPALIVE_FEATURE)
     gcode.host_keepalive();
   #endif
@@ -724,6 +718,11 @@ void idle(
   #if ENABLED(POLL_JOG)
     joystick.inject_jog_moves();
   #endif
+
+  #if ENABLED(NEXTION)
+    check_periodical_actions(); //dodane dla nextion
+  #endif
+  ui.update();
 }
 
 /**
