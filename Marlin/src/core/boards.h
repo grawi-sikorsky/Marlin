@@ -217,6 +217,7 @@
 #define BOARD_BIGTREE_SKR_V1_1        2020  // BigTreeTech SKR v1.1 (Power outputs: Hotend0, Hotend1, Fan, Bed)
 #define BOARD_BIGTREE_SKR_V1_3        2021  // BigTreeTech SKR v1.3 (Power outputs: Hotend0, Hotend1, Fan, Bed)
 #define BOARD_BIGTREE_SKR_V1_4        2022  // BigTreeTech SKR v1.4 (Power outputs: Hotend0, Hotend1, Fan, Bed)
+#define BOARD_BIGTREE_SKR_V1_3_PH3    2033  // SKR v1.3 - pinouts configured for Printo H3 printer
 
 //
 // SAM3X8E ARM Cortex M3
