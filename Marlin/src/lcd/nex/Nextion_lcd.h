@@ -80,6 +80,8 @@ extern float feedrate_mm_s;
     void UploadNewFirmware();
   #endif
 
+    //bool g29_in_progress = false;
+ 
   #if ENABLED(PROBE_MANUALLY)
     void ProbelPopCallBack(void *ptr);
     float lcd_probe_pt(const float &lx, const float &ly);

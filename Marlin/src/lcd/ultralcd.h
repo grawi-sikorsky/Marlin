@@ -428,7 +428,7 @@ public:
     inline void lcd_eeprom_allert() {}
     inline void lcd_buttons_update() {}
 
-    void lcd_sdcard_stop();
+    //void lcd_sdcard_stop();
 
     //VLCS
     #if ENABLED(PLOSS_SUPPORT)
@@ -444,6 +444,7 @@ public:
       static inline void set_alert_status_P(PGM_P const) {}
       static void status_printf_P(const uint8_t level, PGM_P const fmt, ...);
       static constexpr bool has_status() { return false; }
+
       // kolejne z menu.h...
       static screenFunc_t currentScreen;
       static inline void go_back(){ }
