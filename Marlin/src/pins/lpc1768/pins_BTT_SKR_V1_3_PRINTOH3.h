@@ -329,6 +329,7 @@
 	//#define BTN_EN1 16
 	//#define BTN_EN2 17
 	//#define BTN_ENC 35
-	#define SD_DETECT_PIN SS_PIN
+	//#define SD_DETECT_PIN SS_PIN
+  #define SD_DETECT_PIN  P1_31
 	//#define KILL_PIN 25
 #endif

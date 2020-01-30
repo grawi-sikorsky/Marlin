@@ -2188,7 +2188,7 @@
     const millis_t now = millis();
     
     if (ELAPSED(now, cycle_1s)) {
-      cycle_1s = now + 200UL; // zmianka z 1000UL
+      cycle_1s = now + 300UL; // zmianka z 1000UL
 
       #if ENABLED(NEXTION)
         nextion_draw_update();
