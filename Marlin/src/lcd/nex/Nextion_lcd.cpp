@@ -62,6 +62,7 @@
     // 0 card not present, 1 SD not insert, 2 SD insert, 3 SD printing
     enum SDstatus_enum {NO_SD = 0, SD_NO_INSERT = 1, SD_INSERT = 2, SD_PRINTING = 3, SD_PAUSE = 4 };
     SDstatus_enum SDstatus    = NO_SD;
+
 		#if ENABLED(NEX_UPLOAD)
 			NexUpload Firmware(NEXTION_FIRMWARE_FILE, 57600);
 		#endif
@@ -552,16 +553,18 @@
   // Function pointer to menu functions.
   typedef void (*screenFunc_t)();
 
-  /**
-   *
-   * Menu actions
-   *
-   */
-  void lcd_sdcard_stop() {
-		// 2.0 did_pause_print = false;									// flaga pause_print na false, na wypadek gdyby drukarka byla w stanie pauzy @_@
+
+
+	/**
+	 * 	NEX LCD SDCARD STOP
+	 *	Nextion stop print button
+	 */
+  void nex_stop_printing() 
+	{
+		// 2.0 did_pause_print = false;					// flaga pause_print na false, na wypadek gdyby drukarka byla w stanie pauzy @_@
 	  card.stopSDPrint();											// wstrzymaj wydruk z kartysd
-		//clear_command_queue();									// czysc kolejke komend
-		//stepper.quick_stop_panic();								// pomocne z panic'a, trzeba to zaserwowac aby mozna bylo ponownie wykonac jakakolwiek komende
+		//clear_command_queue();								// czysc kolejke komend
+		//stepper.quick_stop_panic();						// pomocne z panic'a, trzeba to zaserwowac aby mozna bylo ponownie wykonac jakakolwiek komende
 		thermalManager.disable_all_heaters();		// wylacz grzalki
 		percentdone.setText("0", "printer");		// zeruj procenty
 		progressbar.setValue(0, "printer");			// zeruj progress bar
@@ -570,6 +573,7 @@
 			//_babystep_z_shift = 0;								// dodane - zeruje babystep po zatrzymaniu wydruku
 			persistentStore.writedata((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);	// zeruj babystepping w eeprom
 		#endif
+
 		#if FAN_COUNT > 0
 			for (uint8_t i = 0; i < FAN_COUNT; i++) thermalManager.fan_speed[i] = 0;
 		#endif
@@ -585,14 +589,41 @@
 		#endif
 				//KATT enqueue_and_echo_commands_P(PSTR("G28"));
 				//quickstop_stepper();
-}
+	}
 
-  void menu_action_back() { Pprinter.show(); }
-  void menu_action_function(screenFunc_t func) { (*func)(); }
+	/**
+	 * 	NEX Obsluga klikniecia przycisku  PLAY / PAUSE
+	 */
+  void PlayPausePopCallback(void *ptr) 
+	{
+    UNUSED(ptr);
+    if (card.isMounted && card.isFileOpen()) {
+      if (card.isPrinting) {														//pause
+        card.pauseSDPrint();
+        print_job_timer.pause();
+        #if ENABLED(PARK_HEAD_ON_PAUSE)
+        //KATT enqueue_and_echo_commands_P(PSTR("M125"));
+        #endif
+				ui.lcd_setstatusPGM(GET_TEXT(MSG_PRINT_PAUSED), 1);
+				//set_status_P(GET_TEXT(MSG_PRINT_PAUSED));
+      }
+      else {																					//resume
+				#if ENABLED(PARK_HEAD_ON_PAUSE)
+				//KATT enqueue_and_echo_commands_P(PSTR("M24"));
+				#else
+				card.startFileprint();
+				print_job_timer.start();
+				#endif
+				ui.lcd_setstatusPGM(GET_TEXT(MSG_RESUME_PRINT), 1);
+      }
+    }
+  }
 
-	// Ustawia strone statusu przypisujac zerowe wartosci do zmiennych tj. glowica, stol, fan, stan SD
-	// wywolywana raz w lcdinit()
-  void setpagePrinter() 
+	/**
+	 * 	Ustawia strone statusu przypisujac zerowe wartosci do zmiennych tj. glowica, stol, fan, stan SD
+	 *	wywolywana raz w lcdinit()
+	 */
+  void setpage_Status() 
 	{
     #if HOTENDS > 0
       Hotend00.setValue(0, "printer");
@@ -627,146 +658,62 @@
     Language.setText(NEXTION_LANGUAGE, "printer");
   }
 
-  void start_menu(const bool encoder=false, const bool push=false) 
-	{
-    Pselect.show();
-    LcdUp.SetVisibility(encoder);
-    LcdDown.SetVisibility(encoder);
-    LcdSend.SetVisibility(push);
-    lcdDrawUpdate = true;
-    lcd_clicked = !push;
-	}
 
 	/**
-	 * START_SCREEN  Opening code for a screen having only static items.s
-	 *               Do simplified scrolling of the entire screen.
-	 *
-	 * START_MENU    Opening code for a screen with menu items.
-	 *               Scroll as-needed to keep the selected line in view.
+	 * 	SDSUPPORT
 	 */
+	#if ENABLED(SDSUPPORT)
 
-#define WAIT_FOR_CLICK_F(TYPE, ...) \
-    if (lcd_clicked){ \
-		menu_action_ ## TYPE(__VA_ARGS__); \
-    return; }\
+		#if ENABLED(NEX_UPLOAD)
+			void UploadNewFirmware() {
+				if (IS_SD_INSERTED || card.isMounted) {
+					Firmware.startUpload();
+					nexSerial.end();
+					ui.init();
+				}
+			}
+		#endif
 
-#define WAIT_FOR_CLICK() \
-    if (lcd_clicked){ \
-			nex_m600_heatingup = 0;\
-			Pfilament.show();\
-    return; }\
-
-  #define START_SCREEN() \
-    start_menu(false, true); \
-    do { \
-      uint8_t _lcdLineNr = 0; \
-
-  #define START_MENU() \
-    start_menu(true, true); \
-    uint16_t encoderLine = 1; \
-    uint8_t _lcdLineNr = 0; \
-    do { \
-      _lcdLineNr = 0; \
-      encoderLine = LcdPos.getValue(); \
-      delay(100)
-
-  #define MENU_ITEM(TYPE, LABEL, ...) \
-      if (lcdDrawUpdate) { \
-        lcd_row_list[_lcdLineNr]->setText_PGM(PSTR(LABEL)); \
-        LcdMax.setValue(_lcdLineNr); \
-      } \
-      if (lcd_clicked && encoderLine == _lcdLineNr) { \
-        menu_action_ ## TYPE(__VA_ARGS__); \
-        return; \
-      } \
-      ++_lcdLineNr
-
-  #define MENU_BACK(LABEL) MENU_ITEM(back, LABEL)
-
-  #define STATIC_ITEM_P(LABEL) \
-      if (lcdDrawUpdate) { \
-        lcd_row_list[_lcdLineNr]->setText_PGM(LABEL); \
-        LcdMin.setValue(_lcdLineNr + 1); \
-      } \
-      ++_lcdLineNr \
-
-  #define STATIC_ITEM(LABEL) STATIC_ITEM_P(PSTR(LABEL))
-
-  #define END_MENU() \
-      idle(); \
-      lcdDrawUpdate = false; \
-    } while(1)
-
-  #define END_SCREEN() \
-      lcdDrawUpdate = false; \
-    } while(0)
-
-	 // Portions from STATIC_ITEM...
-	#define HOTEND_STATUS_ITEM() do { \
-        if (lcdDrawUpdate) { \
-          lcd_row_list[_lcdLineNr]->setText(i8tostr3(thermalManager.degHotend)); \
-        } \
-				lcdDrawUpdate = true; \
-				++_lcdLineNr; \
-    }while(0)
-
-
-
-// ========================
-// SDSUPPORT
-// ========================
-  #if ENABLED(SDSUPPORT)
-
-	#if ENABLED(NEX_UPLOAD)
-	void UploadNewFirmware() {
-		if (IS_SD_INSERTED || card.isMounted) {
-			Firmware.startUpload();
-			nexSerial.end();
-			ui.init();
-		}
-	}
-	#endif
-
-	#if ENABLED(NEXTION_SD_LONG_NAMES)
-		//Drukuje linijke na stronie SDCARD
-		//1 iterator
-		//2 folder
-		//3 nazwa 8.3
-		//4 nazwa do wyswietlenia
-		void printrowsd(uint8_t row, const bool folder, const char* filename, const char* longfilename) {
+		#if ENABLED(NEXTION_SD_LONG_NAMES)
+			//Drukuje linijke na stronie SDCARD
+			//1 iterator
+			//2 folder
+			//3 nazwa 8.3
+			//4 nazwa do wyswietlenia
+			void printrowsd(uint8_t row, const bool folder, const char* filename, const char* longfilename) {
+					if (folder) {
+						folder_list[row]->SetVisibility(true);
+						row_list[row]->attachPop(sdfolderPopCallback, row_list[row]);
+					} else if (filename == "") {
+						folder_list[row]->SetVisibility(false);
+						row_list[row]->detachPop();
+					} else {
+						folder_list[row]->SetVisibility(false);
+						row_list[row]->attachPop(sdfilePopCallback, row_list[row]);
+					}
+					file_list83[row]->setText(filename);
+					row_list[row]->setText(longfilename);
+				}
+		#else //SHORT 8.3 DOS NAMES
+			//1 iterator
+			//2 folder
+			//3 nazwa 8.3
+			void printrowsd(uint8_t row, const bool folder, const char* filename) {
 				if (folder) {
 					folder_list[row]->SetVisibility(true);
 					row_list[row]->attachPop(sdfolderPopCallback, row_list[row]);
-				} else if (filename == "") {
+				}
+				else if (filename == "") {
 					folder_list[row]->SetVisibility(false);
 					row_list[row]->detachPop();
-				} else {
+				}
+				else {
 					folder_list[row]->SetVisibility(false);
 					row_list[row]->attachPop(sdfilePopCallback, row_list[row]);
 				}
-				file_list83[row]->setText(filename);
-				row_list[row]->setText(longfilename);
+				row_list[row]->setText(filename);
 			}
-	#else
-		//1 iterator
-		//2 folder
-		//3 nazwa 8.3
-	void printrowsd(uint8_t row, const bool folder, const char* filename) {
-		if (folder) {
-			folder_list[row]->SetVisibility(true);
-			row_list[row]->attachPop(sdfolderPopCallback, row_list[row]);
-		}
-		else if (filename == "") {
-			folder_list[row]->SetVisibility(false);
-			row_list[row]->detachPop();
-		}
-		else {
-			folder_list[row]->SetVisibility(false);
-			row_list[row]->attachPop(sdfilePopCallback, row_list[row]);
-		}
-		row_list[row]->setText(filename);
-	}
-	#endif
+		#endif
 
 		//Ustawia liste plikow na stronie SDCARD
     static void setrowsdcard(uint32_t number = 0) {
@@ -813,9 +760,10 @@
       sendCommand("ref 0");
     }
 
-		//
-		// Funkcja z obsluga klikniecia w linijke z nazwa pliku
-		// Zapisuje do EEPROM sciezke pliku oraz babystep (VLCS)
+		/**
+		 * 	Funkcja z obsluga klikniecia w linijke z nazwa pliku
+		 *	Zapisuje do EEPROM sciezke pliku oraz babystep (VLCS)
+		*/
     static void menu_action_sdfile(const char* filename) 
 		{
 			#if ENABLED(PLOSS_SUPPORT) // jezeli VLCS wlaczony
@@ -839,9 +787,10 @@
       Pprinter.show();
     }
 
-		//
-		// Funkcja z obsluga klikniecia w linijke z nazwa FOLDERU
-		//
+
+		/**
+		 *	Funkcja z obsluga klikniecia w linijke z nazwa FOLDERU
+		*/
     static void menu_action_sddirectory(const char* filename) {
 			#if ENABLED(PLOSS_SUPPORT)
 				uint8_t depth = (uint8_t)card.getWorkDirDepth();	// dodane	
@@ -852,8 +801,9 @@
       setpageSD();
     }
 
-		// Ustawia strone z karta SD
-		// obsluga slidera
+		/**
+		 *	Ustawia strone z karta SD
+		*/
     void setpageSD() {
       uint16_t fileCnt = card.get_num_Files();
 
@@ -864,12 +814,13 @@
 
       sdlist.setMaxval(slidermaxval);
       sdlist.setValue(slidermaxval,"sdcard");
-      //sendCommand("ref 0"); ref 0 jest w setrowsdcard()
 
       setrowsdcard();
     }
 
-		// Obsluga slidera / suwaka
+		/**
+		 *	Obsluga slidera / suwaka
+		*/
     void sdlistPopCallback(void *ptr) {
       UNUSED(ptr);
       uint16_t number = slidermaxval - sdlist.getValue();
@@ -950,40 +901,98 @@
       card.cdup();
       setpageSD();
     }
-
-		// NEXTION: Obsluga klikniecia linijek przycisku PAUSE / PLAY
-    void PlayPausePopCallback(void *ptr) {
-      UNUSED(ptr);
-      if (card.isMounted && card.isFileOpen()) {
-        if (card.isPrinting) {														//pause
-          card.pauseSDPrint();
-          print_job_timer.pause();
-          #if ENABLED(PARK_HEAD_ON_PAUSE)
-            //KATT enqueue_and_echo_commands_P(PSTR("M125"));
-          #endif
-					ui.lcd_setstatusPGM(GET_TEXT(MSG_PRINT_PAUSED), 1);
-					//set_status_P(GET_TEXT(MSG_PRINT_PAUSED));
-        }
-        else {																					//resume
-					#if ENABLED(PARK_HEAD_ON_PAUSE)
-						//KATT enqueue_and_echo_commands_P(PSTR("M24"));
-					#else
-						card.startFileprint();
-						print_job_timer.start();
-					#endif
-					ui.lcd_setstatusPGM(GET_TEXT(MSG_RESUME_PRINT), 1);
-        }
-      }
-    }
-  #endif 
-// ========================
-// END OF SDSUPPORT
-// ========================
+	#endif 
+	/**
+	 * 	SDSUPPORT END
+	 */
 
 
-// ========================
-// FILAMENT CHANGE M600
-// ========================
+  void start_menu(const bool encoder=false, const bool push=false) 
+	{
+    Pselect.show();
+    LcdUp.SetVisibility(encoder);
+    LcdDown.SetVisibility(encoder);
+    LcdSend.SetVisibility(push);
+    lcdDrawUpdate = true;
+    lcd_clicked = !push;
+	}
+
+	/**
+	 * START_SCREEN  Opening code for a screen having only static items.s
+	 *               Do simplified scrolling of the entire screen.
+	 *
+	 * START_MENU    Opening code for a screen with menu items.
+	 *               Scroll as-needed to keep the selected line in view.
+	 */
+	#define WAIT_FOR_CLICK_F(TYPE, ...) \
+    if (lcd_clicked){ \
+		menu_action_ ## TYPE(__VA_ARGS__); \
+    return; }\
+
+	#define WAIT_FOR_CLICK() \
+    if (lcd_clicked){ \
+			nex_m600_heatingup = 0;\
+			Pfilament.show();\
+    return; }\
+
+  #define START_SCREEN() \
+    start_menu(false, true); \
+    do { \
+      uint8_t _lcdLineNr = 0; \
+
+  #define START_MENU() \
+    start_menu(true, true); \
+    uint16_t encoderLine = 1; \
+    uint8_t _lcdLineNr = 0; \
+    do { \
+      _lcdLineNr = 0; \
+      encoderLine = LcdPos.getValue(); \
+      delay(100)
+
+  #define MENU_ITEM(TYPE, LABEL, ...) \
+      if (lcdDrawUpdate) { \
+        lcd_row_list[_lcdLineNr]->setText_PGM(PSTR(LABEL)); \
+        LcdMax.setValue(_lcdLineNr); \
+      } \
+      if (lcd_clicked && encoderLine == _lcdLineNr) { \
+        menu_action_ ## TYPE(__VA_ARGS__); \
+        return; \
+      } \
+      ++_lcdLineNr
+
+  #define MENU_BACK(LABEL) MENU_ITEM(back, LABEL)
+
+  #define STATIC_ITEM_P(LABEL) \
+      if (lcdDrawUpdate) { \
+        lcd_row_list[_lcdLineNr]->setText_PGM(LABEL); \
+        LcdMin.setValue(_lcdLineNr + 1); \
+      } \
+      ++_lcdLineNr \
+
+  #define STATIC_ITEM(LABEL) STATIC_ITEM_P(PSTR(LABEL))
+
+  #define END_MENU() \
+      idle(); \
+      lcdDrawUpdate = false; \
+    } while(1)
+
+  #define END_SCREEN() \
+      lcdDrawUpdate = false; \
+    } while(0)
+
+	 // Portions from STATIC_ITEM...
+	#define HOTEND_STATUS_ITEM() do { \
+        if (lcdDrawUpdate) { \
+          lcd_row_list[_lcdLineNr]->setText(i8tostr3(thermalManager.degHotend)); \
+        } \
+				lcdDrawUpdate = true; \
+				++_lcdLineNr; \
+    }while(0)
+
+
+	// ========================
+	// FILAMENT CHANGE M600
+	// ========================
   #if ENABLED(ADVANCED_PAUSE_FEATURE)
 
     static PauseMenuResponse advanced_pause_mode = PAUSE_RESPONSE_WAIT_FOR;
@@ -1284,12 +1293,12 @@
     }
   #endif
 
-// =======================
-// BED LEVELING SUPPORT ==
-// =======================
-#if ENABLED(NEXTION_BED_LEVEL)
-    void ProbelPopCallBack(void *ptr) {
-
+	/**
+	 * 	BED LEVELING SUPPORT
+	 */
+	#if ENABLED(NEXTION_BED_LEVEL)
+    void ProbelPopCallBack(void *ptr) 
+		{
       if (ptr == &ProbeUp || ptr == &ProbeDown) {
 
 				set_destination_to_current();
@@ -1313,7 +1322,7 @@
 				SERIAL_ECHOLNPGM("probesend:");
         #if HAS_LEVELING && ENABLED(NEXTION_BED_LEVEL)
 				if (g29_in_progress == true) {
-					//KATT enqueue_and_echo_commands_P(PSTR("G29 S2")); 
+					queue.inject_P(PSTR("G29 S2")); 
 				}
         #endif
 					wait_for_user = false;
@@ -1327,11 +1336,10 @@
 				Pprinter.show();
 			}
 		}
-#endif
-// ==============================
-// END OF BED LEVELING SUPPORT ==
-// ==============================
-
+	#endif
+		/**
+	 * 	BED LEVELING SUPPORT END
+	 */
 
   void sethotPopCallback(void *ptr) {
     UNUSED(ptr);
@@ -1585,7 +1593,7 @@
         #if ENABLED(SDSUPPORT)
           case 1: // Stop Print
 						Pprinter.show();
-						lcd_sdcard_stop();
+						nex_stop_printing();
             break;
           case 2: // Upload Firmware
 						#if ENABLED(NEX_UPLOAD)
@@ -1778,7 +1786,7 @@
 			// SELECT PAGE
       LcdSend.attachPop(sendPopCallback);
 
-      setpagePrinter();
+      setpage_Status();
       startimer.enable();
 
 			buzzer.tone(100, 2300); // dodane - wejsciowy brzeczyk
@@ -1863,18 +1871,18 @@
 		// IS_SD_INSERTED ma odwrocona logike:
 		// 1 - brak karty
 		// 0 - karta wlozona
-		const bool sd_status = IS_SD_INSERTED;
+		const bool sd_status = IS_SD_INSERTED();
 		if (sd_status != lcd_sd_status && lcd_detected())								// sprawdz czy nastapila zmiana? SD DET ->
 		{																																// TAK:
 			SERIAL_ECHOLNPGM("zmiana sd det:");
 			if (!sd_status)																									// je�li SD_DETECT == false:
 			{
 				SERIAL_ECHOLNPGM("sd_status:false");
-				card.initsd();																								// inicjalizacja karty
+				card.mount();																								// inicjalizacja karty
 				setpageSD();																									// ustaw strone i przekaz flage do strony status
 				SDstatus = SD_INSERT;
 				SD.setValue(SDstatus, "printer");
-				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_SD_INSERTED);			// MSG
+				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_MEDIA_INSERTED);			// MSG
 			}
 			else																														// je�li SD_DETECT == true:
 			{
@@ -1883,7 +1891,7 @@
 				setpageSD();																									// ustaw strone i przekaz flage do strony status
 				SDstatus = SD_NO_INSERT;
 				SD.setValue(SDstatus, "printer");
-				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_SD_REMOVED);				// MSG
+				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_MEDIA_REMOVED);				// MSG
 			}
 			lcd_sd_status = sd_status;
 		} // CALY IF SPRAWDZA STAN SD_DETECT I JEGO ZMIANE: SD jest->init / SD niet->release
@@ -1911,6 +1919,7 @@
 // ===========================
 // == LCD PERIODICAL UPDATE	==
 // ===========================
+// ODSWIEZANE 0.2s
   void nextion_draw_update() {
 		SERIAL_ECHOLN(nexSerial.available());
     static uint8_t  	PreviousPage = 0,					// strona nex
@@ -2170,6 +2179,30 @@
 				}
 		}
 	#endif
+
+
+#if ENABLED (NEXTION)
+  void check_periodical_actions()
+  {
+    static millis_t cycle_1s = 0;
+    const millis_t now = millis();
+    
+    if (ELAPSED(now, cycle_1s)) {
+      cycle_1s = now + 200UL; // zmianka z 1000UL
+
+      #if ENABLED(NEXTION)
+        nextion_draw_update();
+        //SERIAL_ECHO("draw update"); //nextion
+        //sendCommand("page gcode"); //testinh
+      #if ENABLED(NEXTION_DEBUG)
+          //SERIAL_ECHOPGM("busystate:");
+          //SERIAL_ECHOLN(busy_state);
+      #endif
+      
+      #endif
+    }
+  }
+#endif
 
 
   #if ENABLED(NEXTION_GFX)

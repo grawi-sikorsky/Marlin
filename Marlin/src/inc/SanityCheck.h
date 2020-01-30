@@ -1281,7 +1281,7 @@ static_assert(Y_MAX_LENGTH >= Y_BED_SIZE, "Movement bounds (Y_MIN_POS, Y_MAX_POS
 #elif ENABLED(MESH_BED_LEVELING)
 
   // Hide PROBE_MANUALLY from the rest of the code
-  #undef PROBE_MANUALLY
+  //#undef PROBE_MANUALLY //PRINTO h3
 
   /**
    * Mesh Bed Leveling

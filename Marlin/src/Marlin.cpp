@@ -1151,7 +1151,7 @@ void loop() {
     idle(); // Do an idle first so boot is slightly faster
 
     #if ENABLED(NEXTION)
-      check_periodical_actions(); //dodane dla nextion
+      check_periodical_actions(); //dodane dla nextion PRINTO H3
     #endif
 
     #if ENABLED(SDSUPPORT)
@@ -1165,25 +1165,3 @@ void loop() {
   }
 }
 
-#if ENABLED (NEXTION)
-  void check_periodical_actions()
-  {
-    static millis_t cycle_1s = 0;
-    const millis_t now = millis();
-    
-    if (ELAPSED(now, cycle_1s)) {
-      cycle_1s = now + 200UL; // zmianka z 1000UL
-
-      #if ENABLED(NEXTION)
-        nextion_draw_update();
-        //SERIAL_ECHO("draw update"); //nextion
-        //sendCommand("page gcode"); //testinh
-      #if ENABLED(NEXTION_DEBUG)
-          //SERIAL_ECHOPGM("busystate:");
-          //SERIAL_ECHOLN(busy_state);
-      #endif
-      
-      #endif
-    }
-  }
-#endif
