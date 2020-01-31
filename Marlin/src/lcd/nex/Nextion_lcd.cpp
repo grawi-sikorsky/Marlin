@@ -1919,7 +1919,7 @@
 // ===========================
 // == LCD PERIODICAL UPDATE	==
 // ===========================
-// ODSWIEZANE 0.2s
+// ODSWIEZANE 0.3s ()
   void nextion_draw_update() {
 		SERIAL_ECHOLN(nexSerial.available());
     static uint8_t  	PreviousPage = 0,					// strona nex
