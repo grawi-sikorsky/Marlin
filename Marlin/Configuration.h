@@ -113,6 +113,8 @@
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
 #define SERIAL_PORT -1
+// FOR PRINTOH3 MKS GEN = 0
+// FOR PRINTOH3 MKS SKR = -1
 
 /**
  * Select a secondary serial port on the board to use for communication with the host.
@@ -140,6 +142,7 @@
 // Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
   #define MOTHERBOARD BOARD_BIGTREE_SKR_V1_3_PH3
+  //#define MOTHERBOARD BOARD_MKSGEN_PRINTOH3
 #endif
 
 // Name displayed in the LCD "Ready" message and Info menu

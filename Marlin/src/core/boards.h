@@ -102,6 +102,8 @@
 #define BOARD_TANGO                   1146  // BIQU Tango V1
 #define BOARD_MKS_GEN_L_V2            1147  // MKS GEN L V2
 
+#define BOARD_MKSGEN_PRINTOH3         1166  // MKS GEN v1.4 - pinouts configured for Printo H3 printer
+
 //
 // RAMBo and derivatives
 //
