@@ -681,6 +681,15 @@
 			//3 nazwa 8.3
 			//4 nazwa do wyswietlenia
 			void printrowsd(uint8_t row, const bool folder, const char* filename, const char* longfilename) {
+				if (card.isFilenameisDir() == true)
+				{
+					SERIAL_ECHO("true");
+				}
+				else if (card.isFilenameisDir() == false)
+				{
+					SERIAL_ECHO("false");
+				}
+				
 					if (folder) {
 						folder_list[row]->SetVisibility(true);
 						row_list[row]->attachPop(sdfolderPopCallback, row_list[row]);
@@ -724,7 +733,7 @@
       if (card.filename[0] != '/') {
         Folderup.SetVisibility(true);
         Folderup.attachPop(sdfolderUpPopCallback);
-        sdfolder.setText(card.filename);
+        sdfolder.setText(card.longFilename);
       } else {
         Folderup.detachPop();
         Folderup.SetVisibility(false);
@@ -742,9 +751,9 @@
             #endif
 
 						#if ENABLED(NEXTION_SD_LONG_NAMES)
-							printrowsd(row, card.isFilenameisDir, card.filename, card.longFilename);
+							printrowsd(row, card.isFilenameisDir(), card.filename, card.longFilename);
 						#else
-							printrowsd(row, card.isFilenameisDir, card.filename);
+							printrowsd(row, card.isFilenameisDir(), card.filename);
 						#endif
 
           } else {
