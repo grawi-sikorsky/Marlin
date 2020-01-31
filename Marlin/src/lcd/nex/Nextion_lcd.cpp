@@ -1,7 +1,7 @@
 /**
  * Nextion_lcd.cpp
  */
-#include "../../Marlin.h"
+#include "../../MarlinCore.h"
 #include "../../module/temperature.h"
 #include "../../sd/cardreader.h"
 #include "../../module/printcounter.h"

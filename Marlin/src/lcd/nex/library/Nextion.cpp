@@ -20,7 +20,7 @@
  *
  */
 
-#include "../Marlin/src/Marlin.h"
+#include "../Marlin/src/MarlinCore.h"
 #include "Arduino.h"
 #include "HardwareSerial.h"
 #if ENABLED(NEX_UPLOAD)
