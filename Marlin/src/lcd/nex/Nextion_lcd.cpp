@@ -7,14 +7,12 @@
 #include "../../module/printcounter.h"
 #include "../../libs/numtostr.h"
 #include "../../HAL/shared/persistent_store_api.h"
-//#include <MemoryFree.h>
 
 #if ENABLED(NEXTION_DISPLAY)
 	#include "../../module/stepper.h"
 	#include "../../feature/bedlevel/mbl/mesh_bed_leveling.h"
 	#include "../../module/configuration_store.h"
 	#include "../../lcd/ultralcd.h"
-	//MarlinUI ui;
 #endif
 
 #if ENABLED(SPEAKER)
@@ -34,7 +32,9 @@
   bool        NextionON                 = false,
               show_Wave                 = true,
               lcdDrawUpdate             = false,
-              lcd_clicked               = false;
+              lcd_clicked               = false,
+							nex_m600_heatingup 				= false;
+
   uint8_t     PageID                    = 0,
               lcd_status_message_level  = 0;
   uint16_t    slidermaxval              = 20;
@@ -43,13 +43,13 @@
   //const float manual_feedrate_mm_m[]    = MANUAL_FEEDRATE; //bylo w ultralcd, obecnie jest w planner.h 
 	millis_t		screen_timeout_millis;
 
-  extern uint8_t progress_printing; // dodane nex
-	extern bool nex_filament_runout_sensor_flag;
-	bool nex_m600_heatingup = 0;
 	#if PIN_EXISTS(SD_DETECT)
 	uint8_t lcd_sd_status;
 	#endif
-
+	
+	// ZMIENNE ZEWNETRZNE MARLINa
+	extern uint8_t progress_printing; // dodane nex
+	extern bool nex_filament_runout_sensor_flag;
 	extern xyze_pos_t destination;// = { 0.0 };
 	extern bool g29_in_progress;// = false;
 	extern inline void set_current_to_destination() { COPY(current_position, destination); }
@@ -1996,9 +1996,9 @@
  
         coordtoLCD();
 				
-				if (PreviouspercentDone != progress_printing) {
+				if (PreviouspercentDone != card.percentDone()) { // bylo progress_printing
 					// Progress bar solid part
-					progressbar.setValue(progress_printing,"printer");
+					progressbar.setValue(card.percentDone(),"printer");
 					// Estimate End Time
 					ZERO(bufferson);
 					char buffer1[10];
@@ -2007,7 +2007,7 @@
 					digit = Time.toDigital(buffer1, true);
 					strcat(bufferson, "S");
 					strcat(bufferson, buffer1);
-					Time = (print_job_timer.duration() * (100 - progress_printing)) / (progress_printing + 0.1);
+					Time = (print_job_timer.duration() * (100 - card.percentDone())) / (card.percentDone() + 0.1);
 					digit += Time.toDigital(buffer1, true);
 					if (digit > 14)
 						strcat(bufferson, "E");
@@ -2015,11 +2015,11 @@
 						strcat(bufferson, " E");
 					strcat(bufferson, buffer1);
 					LcdTime.setText(bufferson,"printer");
-					PreviouspercentDone = progress_printing;
+					PreviouspercentDone = card.percentDone();
 
 					// procenty t4
 					ZERO(bufferson);
-					strcat(bufferson, i8tostr3(progress_printing));
+					strcat(bufferson, i8tostr3(card.percentDone()));
 					strcat(bufferson, " %");
 					percentdone.setText(bufferson, "printer");
 				}
