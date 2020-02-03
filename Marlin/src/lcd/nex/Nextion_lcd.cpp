@@ -136,7 +136,7 @@
    * NEX komponenty strona: start
    *******************************************************************
    */
-  NexObject startimer     = NexObject(0,  1,  "tm0"); // out?
+  NexObject startimer     = NexObject(0,  3,  "tm1"); // out?
 	// 
 	// == 10
 
@@ -763,7 +763,7 @@
           }
         }
       }
-      sendCommand("ref 0");
+      //sendCommand("ref 0");
     }
 
 		/**
@@ -1794,12 +1794,11 @@
 
       setpage_Status();
       startimer.enable();
+			Pmenu.show();
 
 			buzzer.tone(100, 2300); // dodane - wejsciowy brzeczyk
 			buzzer.tone(100, 2600);
-			buzzer.tone(100, 3100);
-
-			Pmenu.show();
+			buzzer.tone(100, 3100);			
     }
   }
 // =======================
@@ -1874,13 +1873,10 @@
 	void nex_check_sdcard_present()
 	{
 	#if ENABLED(SDSUPPORT) && PIN_EXISTS(SD_DETECT)
-		// IS_SD_INSERTED ma odwrocona logike:
-		// 1 - brak karty
-		// 0 - karta wlozona
+
 		const bool sd_status = IS_SD_INSERTED();
 		if (sd_status != lcd_sd_status && lcd_detected())								// sprawdz czy nastapila zmiana? SD DET ->
 		{																																// TAK:
-			SERIAL_ECHOLNPGM("zmiana sd det:");
 			if (!sd_status)																									// je�li SD_DETECT == false:
 			{
 				SERIAL_ECHOLNPGM("sd_status:false");
@@ -1888,7 +1884,7 @@
 				setpageSD();																									// ustaw strone i przekaz flage do strony status
 				SDstatus = SD_INSERT;
 				SD.setValue(SDstatus, "printer");
-				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_MEDIA_INSERTED);			// MSG
+				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_MEDIA_INSERTED);			// MSG TRZEBA PRZEKSZTALCIC NA WYSIETLANIE NA PASKU 
 			}
 			else																														// je�li SD_DETECT == true:
 			{
@@ -1897,10 +1893,11 @@
 				setpageSD();																									// ustaw strone i przekaz flage do strony status
 				SDstatus = SD_NO_INSERT;
 				SD.setValue(SDstatus, "printer");
-				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_MEDIA_REMOVED);				// MSG
+				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_MEDIA_REMOVED);				// MSG TRZEBA PRZEKSZTALCIC NA WYSIETLANIE NA PASKU 
 			}
 			lcd_sd_status = sd_status;
 		} // CALY IF SPRAWDZA STAN SD_DETECT I JEGO ZMIANE: SD jest->init / SD niet->release
+
 	#endif
 	}
 
@@ -2063,10 +2060,10 @@
         break;
 	#if ENABLED(SDSUPPORT)
       case 3:
+					nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
 					if (PreviousPage != 3) {
 						setpageSD();
 					}
-					nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
           break;
 	#endif
       case 5:
@@ -2194,7 +2191,7 @@
     const millis_t now = millis();
     
     if (ELAPSED(now, cycle_1s)) {
-      cycle_1s = now + 350UL; // zmianka z 1000UL
+      cycle_1s = now + 400UL; // zmianka z 1000UL
 
       #if ENABLED(NEXTION)
         nextion_draw_update();
