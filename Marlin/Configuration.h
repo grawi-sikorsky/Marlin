@@ -2093,7 +2093,7 @@
 // Third-party or vendor-customized controller interfaces.
 // Sources should be installed in 'src/lcd/extensible_ui'.
 //
-//#define EXTENSIBLE_UI
+#define EXTENSIBLE_UI
 
 //=============================================================================
 //=============================== Graphical TFTs ==============================

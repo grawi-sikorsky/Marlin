@@ -1330,23 +1330,6 @@
 					wait_for_user = false;
       }
     }
-
-		void MarlinUI::nex_return_after_leveling(bool finish)
-		{
-			if (finish == true)
-			{
-				Pprinter.show();
-			}
-		}
-
-		void MarlinUI::nex_bedlevel_finish()
-		{
-      //ui.nex_return_after_leveling(true); //dodane, powrot do status
-			Pprinter.show();
-      queue.inject_P("M500");  // dodane aby zapisywało poziomowanie podczas trwania funkcji
-      g29_in_progress = false; // dodane po zakonczeniu g29
-			
-		}
 	#endif
 		/**
 	 * 	BED LEVELING SUPPORT END
@@ -2209,7 +2192,7 @@ void NextionLCD::init(){
  * DEFINICJE METOD MARLINA 
  * 
  * **************************/
-
+#ifndef EXTENSIBLE_UI //chwilowo przejsciowo nex
 	// MARLIN INIT
   void MarlinUI::init()		{ nexlcd.init(); }
 	// MARLIN UPDATE
@@ -2234,6 +2217,23 @@ void NextionLCD::init(){
 	// Resetuje status na domyslny WELCOME_MSG
 	void MarlinUI::reset_status(){ set_status_P(GET_TEXT(WELCOME_MSG),1); }
 
+	void MarlinUI::nex_return_after_leveling(bool finish)
+	{
+		if (finish == true)
+		{
+			Pprinter.show();
+		}
+	}
+
+	void MarlinUI::nex_bedlevel_finish()
+	{
+		//ui.nex_return_after_leveling(true); //dodane, powrot do status
+		Pprinter.show();
+		queue.inject_P("M500");  // dodane aby zapisywało poziomowanie podczas trwania funkcji
+		g29_in_progress = false; // dodane po zakonczeniu g29
+		
+	}
+#endif
 
 
 /*****************************
@@ -2242,9 +2242,81 @@ void NextionLCD::init(){
  * 
  * **************************/
 	// EXTUI INIT
+#ifdef EXTENSIBLE_UI
 	namespace ExtUI{
 
 		void onStartup()		{ nexlcd.init(); }
 		void onIdle()				{ nexlcd.update(); }
+
+
+
+		// Szkieletowe z example - do wypelnienia
+		void onPrinterKilled(PGM_P const error, PGM_P const component) {}
+		void onMediaInserted() {};
+		void onMediaError() {};
+		void onMediaRemoved() {};
+		void onPlayTone(const uint16_t frequency, const uint16_t duration) {}
+		void onPrintTimerStarted() {}
+		void onPrintTimerPaused() {}
+		void onPrintTimerStopped() {}
+		void onFilamentRunout(const extruder_t extruder) {}
+		void onUserConfirmRequired(const char * const msg) {}
+		void onStatusChanged(const char * const msg) {}
+		void onFactoryReset() {}
+
+		void onStoreSettings(char *buff) {
+			// Called when saving to EEPROM (i.e. M500). If the ExtUI needs
+			// permanent data to be stored, it can write up to eeprom_data_size bytes
+			// into buff.
+
+			// Example:
+			//  static_assert(sizeof(myDataStruct) <= ExtUI::eeprom_data_size);
+			//  memcpy(buff, &myDataStruct, sizeof(myDataStruct));
+		}
+
+		void onLoadSettings(const char *buff) {
+			// Called while loading settings from EEPROM. If the ExtUI
+			// needs to retrieve data, it should copy up to eeprom_data_size bytes
+			// from buff
+
+			// Example:
+			//  static_assert(sizeof(myDataStruct) <= ExtUI::eeprom_data_size);
+			//  memcpy(&myDataStruct, buff, sizeof(myDataStruct));
+		}
+
+		void onConfigurationStoreWritten(bool success) {
+			// Called after the entire EEPROM has been written,
+			// whether successful or not.
+		}
+
+		void onConfigurationStoreRead(bool success) {
+			// Called after the entire EEPROM has been read,
+			// whether successful or not.
+		}
+
+		void onMeshUpdate(const int8_t xpos, const int8_t ypos, const float zval) {
+			// Called when any mesh points are updated
+		}
+
+		#if ENABLED(POWER_LOSS_RECOVERY)
+			void OnPowerLossResume() {
+				// Called on resume from power-loss
+			}
+		#endif
+
+		#if HAS_PID_HEATING
+			void OnPidTuning(const result_t rst) {
+				// Called for temperature PID tuning result
+			}
+		#endif
+
+
+
+		void printFile(const char *filename);
+		void stopPrint();
+		void pausePrint();
+		void resumePrint();
+
+	#endif
 
 	};
