@@ -106,41 +106,41 @@
    *******************************************************************
    */
 
-  //NexObject Pstart        = NexObject(0,  0,  "start");
-  NexObject Pmenu         = NexObject(1,  0,  "menu");
-  NexObject Pprinter      = NexObject(2,  0,  "printer");
-  //NexObject Psdcard       = NexObject(3,  0,  "sdcard");
-  NexObject Psetup        = NexObject(4,  0,  "setup");
-	//NexObject Pmove         = NexObject(5,  0,  "move");// lipa
-  //NexObject Pspeed        = NexObject(6,  0,  "speed");// lipa
-  //NexObject Pgcode        = NexObject(7,  0,  "gcode");// lipa
-  //NexObject Prfid         = NexObject(8,  0,  "rfid");
-  //NexObject Pbrightness   = NexObject(9,  0,  "brightness");
-  //NexObject Pinfo         = NexObject(10, 0,  "info");
-  NexObject Pyesno        = NexObject(11, 0,  "yesno");
-  NexObject Pfilament     = NexObject(12, 0, "filament");
-  NexObject Pselect       = NexObject(13, 0,  "select");
-  NexObject Pprobe        = NexObject(14, 0,  "bedlevel");
-	NexObject Pheatup				= NexObject(15, 0,	"heatup");
-	NexObject Poptions			= NexObject(16, 0,	"maintain");//
-  //NexObject Ptime         = NexObject(17, 0,  "infomove");
-  //NexObject Pfanspeedpage = NexObject(18, 0,  "fanspeedpage");
-	//NexObject Pstats				= NexObject(19, 0,	"statscreen");
-	//NexObject Ptsettings		= NexObject(20, 0,  "tempsettings");
-	//NexObject Pinfobedlevel = NexObject(21, 0, "infobedlevel");
-	//NexObject Pservice			= NexObject(22, 0, "servicepage");
-	//NexObject Paccel				= NexObject(23, 0, "accelpage");
-	//NexObject Pjerk					= NexObject(25, 0, "jerkpage");
-	NexObject Pkill					= NexObject(30, 0, "killpage");
+  //NexObject Pstart        	= NexObject(0,  0,  "start");
+  NexObject PageMenu       		= NexObject(1,  0,  "menu");
+  NexObject PagePrinter    		= NexObject(2,  0,  "printer");
+  //NexObject Psdcard       	= NexObject(3,  0,  "sdcard");
+  NexObject PageSetup        	= NexObject(4,  0,  "setup");
+	//NexObject Pmove         	= NexObject(5,  0,  "move");// lipa
+  //NexObject Pspeed        	= NexObject(6,  0,  "speed");// lipa
+  //NexObject Pgcode        	= NexObject(7,  0,  "gcode");// lipa
+  //NexObject Prfid         	= NexObject(8,  0,  "rfid");
+  //NexObject Pbrightness   	= NexObject(9,  0,  "brightness");
+  //NexObject Pinfo         	= NexObject(10, 0,  "info");
+  NexObject PageYesNo        	= NexObject(11, 0,  "yesno");
+  NexObject PageFilament	   	= NexObject(12, 0, "filament");
+  NexObject PageSelect    		= NexObject(13, 0,  "select");
+  NexObject PageProbe  		  	= NexObject(14, 0,  "bedlevel");
+	NexObject PageHeatup				= NexObject(15, 0,	"heatup");
+	NexObject PageOptions				= NexObject(16, 0,	"maintain");//
+  //NexObject Ptime         	= NexObject(17, 0,  "infomove");
+  //NexObject Pfanspeedpage 	= NexObject(18, 0,  "fanspeedpage");
+	//NexObject Pstats					= NexObject(19, 0,	"statscreen");
+	//NexObject Ptsettings			= NexObject(20, 0,  "tempsettings");
+	//NexObject Pinfobedlevel 	= NexObject(21, 0, "infobedlevel");
+	//NexObject Pservice				= NexObject(22, 0, "servicepage");
+	//NexObject Paccel					= NexObject(23, 0, "accelpage");
+	//NexObject Pjerk						= NexObject(25, 0, "jerkpage");
+	NexObject PageKill					= NexObject(30, 0, "killpage");
 	// 
 	// == 9 
 
   /**
    *******************************************************************
-   * NEX komponenty strona: start
+   * NEX komponenty strona: SplashScreen
    *******************************************************************
    */
-  NexObject startimer     = NexObject(0,  3,  "tm1"); // out?
+  NexObject splashTimer	     = NexObject(0,  3,  "tm1");
 	// 
 	// == 10
 
@@ -272,7 +272,7 @@
 
   /**
    *******************************************************************
-   * NEX komponenty strona: Yesno
+   * NEX komponenty strona: YesNo
    *******************************************************************
    */
   NexObject Vyes        = NexObject(11, 2,  "yn0");
@@ -785,7 +785,7 @@
 			#endif // jezeli VLCS wlaczone
 
       card.openAndPrintFile(filename);
-      Pprinter.show();
+      PagePrinter.show();
     }
 
 
@@ -910,7 +910,7 @@
 
   void start_menu(const bool encoder=false, const bool push=false) 
 	{
-    Pselect.show();
+    PageSelect.show();
     LcdUp.SetVisibility(encoder);
     LcdDown.SetVisibility(encoder);
     LcdSend.SetVisibility(push);
@@ -933,7 +933,7 @@
 	#define WAIT_FOR_CLICK() \
     if (lcd_clicked){ \
 			nex_m600_heatingup = 0;\
-			Pfilament.show();\
+			PageFilament.show();\
     return; }\
 
   #define START_SCREEN() \
@@ -1021,13 +1021,13 @@
 					return;
 				}
 			#endif
-			Pselect.show();
+			PageSelect.show();
 			//kATT enqueue_and_echo_commands_P(PSTR("M600 B0"));
 		}
 
     void lcd_advanced_pause_resume_print() {
       pause_menu_response = PAUSE_RESPONSE_RESUME_PRINT;
-      Pprinter.show();
+      PagePrinter.show();
     }
 
     void lcd_advanced_pause_extrude_more() {
@@ -1154,7 +1154,7 @@
             break;
           //case ADVANCED_PAUSE_MESSAGE_STATUS:
           default:
-            Pprinter.show();
+            PagePrinter.show();
             break;
         }
         old_message = message;
@@ -1190,7 +1190,7 @@
 		}
 
 		void ploss_recovery_menu_resuming() {
-			Pselect.show();
+			PageSelect.show();
 			screen_timeout_millis = millis(); //wlaczamy screen timeout
 			START_SCREEN();
 			LcdSend.SetVisibility(false);
@@ -1200,7 +1200,7 @@
 	}
 
 		void ploss_recovery_menu_last_confirm() {
-			Pselect.show();
+			PageSelect.show();
 			screen_timeout_millis = 0; // wylaczamy screen timeout
 			START_SCREEN();
 			STATIC_ITEM("Usun nadmiar");
@@ -1338,31 +1338,23 @@
   void NextionLCD::sethotPopCallback(void *ptr) {
     UNUSED(ptr);
 
-		uint16_t	temp_hotend = temphe.getValue(), //dodane
-							temp_bed = tempbe.getValue();    //dodane
+		uint16_t	temp_hotend = temphe.getValue(),
+							temp_bed = tempbe.getValue();
 
-		thermalManager.setTargetHotend(temp_hotend, 0);
-		thermalManager.setTargetBed(temp_bed);
+		if (ptr == &heatupenter || ptr == &chillenter){
+			thermalManager.setTargetHotend(temp_hotend, 0);
+			thermalManager.setTargetBed(temp_bed);
+		}
+		else if(ptr == &hotendenter){
+			thermalManager.setTargetHotend(temp_hotend, 0);
+		}
+		else if(ptr == &heatbedenter){
+			thermalManager.setTargetBed(temp_bed);
+		}
 
-    Pprinter.show();
+    PagePrinter.show();
 		buzzer.tone(100,2300);
   }
-
-	void NextionLCD::sethotendPopCallback(void *ptr) {
-		UNUSED(ptr);
-		uint16_t	temp_hotend = temphe.getValue();
-		thermalManager.setTargetHotend(temp_hotend, 0);
-		Pprinter.show();
-		buzzer.tone(100, 2300);
-	}
-
-	void NextionLCD::setheatbedPopCallback(void *ptr) {
-		UNUSED(ptr);
-		uint16_t temp_bed = tempbe.getValue();    //dodane
-		thermalManager.setTargetBed(temp_bed);
-		Pprinter.show();
-		buzzer.tone(100, 2300);
-	}
 
 	void NextionLCD::setfanandgoPopCallback(void *ptr) {
 		uint8_t fanpagefrom, vfanbuff;
@@ -1373,11 +1365,11 @@
 		thermalManager.fan_speed[0] = vfanbuff;
 		if (fanpagefrom == 0) // wejscie z status
 		{
-			Pprinter.show();
+			PagePrinter.show();
 		}
 		else if (fanpagefrom == 1) // wejscie z heatup
 		{
-			Pheatup.show();
+			PageHeatup.show();
 		}
 	}
 	#if ENABLED(NEX_STAT_PAGE)
@@ -1508,7 +1500,7 @@
 		vspeedbuff = (int)SpeedNex.getValue("speed");
 
 		feedrate_percentage = vspeedbuff;
-		Pprinter.show();
+		PagePrinter.show();
 	}
 	void NextionLCD::setflowPopCallback(void *ptr)
 	{
@@ -1522,11 +1514,11 @@
 
 		if (flowfrom == 0) // wejscie z status
 		{
-			Pprinter.show();
+			PagePrinter.show();
 		}
 		else if (flowfrom == 1) // wejscie z heatup
 		{
-			Poptions.show();
+			PageOptions.show();
 		}
 	}
 
@@ -1578,7 +1570,7 @@
 		if (screen_timeout_millis != 0)
 		{
 			screen_timeout_millis = 0;
-			Pprinter.show();
+			PagePrinter.show();
 		}
   }
 
@@ -1588,7 +1580,7 @@
       switch(Vyes.getValue()) {
         #if ENABLED(SDSUPPORT)
           case 1: // Stop Print
-						Pprinter.show();
+						PagePrinter.show();
 						nexlcd.nex_stop_printing();
             break;
           case 2: // Upload Firmware
@@ -1599,17 +1591,17 @@
         #endif
         #if HAS_SD_RESTART
           case 3: // Restart file
-            Pprinter.show();
+            PagePrinter.show();
             restart.start_job();
             break;
         #endif
         case 4: // Unconditional stop
-          Pprinter.show();
+          PagePrinter.show();
           break;
 				case 5: // ustaw czujnik filamentu
 					nex_filament_runout_sensor_flag = 1;
 					//KATT PersistentStore.write_data(0x0F0F0F, (uint8_t*)EEPROM_NEX_FILAMENT_SENSOR);
-					Psetup.show();
+					PageSetup.show();
 					break;
         default: break;
       }
@@ -1618,21 +1610,21 @@
       switch(Vyes.getValue()) {
         #if ENABLED(SDSUPPORT)
           case 2:
-            Psetup.show(); break;
+            PageSetup.show(); break;
         #endif
         #if HAS_SD_RESTART
           case 3:
             card.printingHasFinished();
-            Pprinter.show();
+            PagePrinter.show();
             break;
         #endif
 					case 5: // ustaw czujnik filamentu
 						nex_filament_runout_sensor_flag = 0;
 						//KATT eeprom_update_byte((uint8_t*)EEPROM_NEX_FILAMENT_SENSOR, 0);
-						Psetup.show();
+						PageSetup.show();
 						break;
         default:
-          Pprinter.show(); break;
+          PagePrinter.show(); break;
       }
     }
   }
@@ -1745,9 +1737,11 @@ void NextionLCD::init(){
 
 			// TEMPERATURA
 			heatupenter.attachPop(sethotPopCallback, &heatupenter); // obsluga przycisku rozgrzej oba
-			hotendenter.attachPop(sethotendPopCallback, &hotendenter); //obsluga przycisku rozgrzej hotend
-			heatbedenter.attachPop(setheatbedPopCallback, &heatbedenter); //obsluga przycisku rozgrzej bed
+			hotendenter.attachPop(sethotPopCallback, &hotendenter); //obsluga przycisku rozgrzej hotend
+			heatbedenter.attachPop(sethotPopCallback, &heatbedenter); //obsluga przycisku rozgrzej bed
 			chillenter.attachPop(sethotPopCallback, &chillenter); //obs�uga przycisku chlodzenie
+
+			
 
 			FanSetBtn.attachPop(setfanandgoPopCallback); //obsluga przycisku fan set
 
@@ -1784,8 +1778,8 @@ void NextionLCD::init(){
       LcdSend.attachPop(sendPopCallback);
 
       nexlcd.setpage_Status();
-      startimer.enable();
-			Pmenu.show();
+      splashTimer	;
+			PageMenu.show();
 
 			buzzer.tone(100, 2300); // dodane - wejsciowy brzeczyk
 			buzzer.tone(100, 2600);
@@ -1906,7 +1900,7 @@ void NextionLCD::init(){
 		timeout_check = millis();
 		if (timeout_check > screen_timeout_millis + NEX_SCREEN_TIME && screen_timeout_millis != 0)
 		{
-			Pprinter.show();
+			PagePrinter.show();
 			screen_timeout_millis = 0;
 		}
 	}
@@ -2099,15 +2093,15 @@ void NextionLCD::init(){
 
   void lcd_yesno(const uint8_t val, const char* msg1, const char* msg2, const char* msg3) {
     Vyes.setValue(val, "yesno");
-    Pyesno.show();
+    PageYesNo.show();
     Riga0.setText(msg1);
     Riga1.setText(msg2);
     Riga3.setText(msg3);
   }
 
-	void lcd_nextion_kill_msg(const char* lcd_msg)
+	void NextionLCD::kill_screen_msg(const char* lcd_msg, PGM_P const component)
 	{
-		Pkill.show();
+		PageKill.show();
 		Kmsg.setText_PGM(lcd_msg,"killpage");
 	}
 
@@ -2221,14 +2215,14 @@ void NextionLCD::init(){
 	{
 		if (finish == true)
 		{
-			Pprinter.show();
+			PagePrinter.show();
 		}
 	}
 
 	void MarlinUI::nex_bedlevel_finish()
 	{
 		//ui.nex_return_after_leveling(true); //dodane, powrot do status
-		Pprinter.show();
+		PagePrinter.show();
 		queue.inject_P("M500");  // dodane aby zapisywało poziomowanie podczas trwania funkcji
 		g29_in_progress = false; // dodane po zakonczeniu g29
 		
@@ -2247,11 +2241,11 @@ void NextionLCD::init(){
 
 		void onStartup()		{ nexlcd.init(); }
 		void onIdle()				{ nexlcd.update(); }
+		void onPrinterKilled(PGM_P const error, PGM_P const component) { nexlcd.kill_screen_msg(error, component); }
 
 
 
 		// Szkieletowe z example - do wypelnienia
-		void onPrinterKilled(PGM_P const error, PGM_P const component) {}
 		void onMediaInserted() {};
 		void onMediaError() {};
 		void onMediaRemoved() {};

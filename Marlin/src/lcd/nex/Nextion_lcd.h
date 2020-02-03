@@ -41,14 +41,14 @@ class NextionLCD
     void nextion_draw_update();       //Odswieza aktualny ekran -> switch
     void init();                      //Inicjalizacja LCD
     void update();                    //Nextion Update 5ms (odswieza i sprawdza komponenty Nex Pop Push)
+    void kill_screen_msg(const char* lcd_msg, PGM_P const component); // Wyswietla ekran kill wraz z komunikatem
+    
 
-    void lcd_setstatusPGM(PGM_P const message, int8_t level);
 
-    void nex_return_after_leveling(bool finish);
 
+    void return_after_leveling(bool finish);    //powrot do ekranu statusu po zakonczeniu levelingu //wait for user = false
     void lcd_yesno(const uint8_t val, const char* msg1="", const char* msg2="", const char* msg3="");
     void nextion_babystep_z(bool dir);
-    void lcd_nextion_kill_msg(const char* lcd_msg);
 
     void nex_stop_printing();
     void setpage_Status();
@@ -61,10 +61,10 @@ class NextionLCD
     void printrowsd(uint8_t row, const bool folder, const char* filename, const char* longfilename);
 
 
-    static void YesNoPopCallback(void *ptr);
+
     static void sethotPopCallback(void *ptr);
-    static void sethotendPopCallback(void *ptr);
-    static void setheatbedPopCallback(void *ptr);
+
+    static void YesNoPopCallback(void *ptr);
     static void setmovePopCallback(void *ptr);
     static void setfanandgoPopCallback(void *ptr);
     static void setgcodePopCallback(void *ptr);
