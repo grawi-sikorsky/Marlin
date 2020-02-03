@@ -1335,6 +1335,7 @@
 	 * 	BED LEVELING SUPPORT END
 	 */
 
+	// Rozgrzewanie głowicy/blatu/chlodzenie
   void NextionLCD::sethotPopCallback(void *ptr) {
     UNUSED(ptr);
 
@@ -1356,6 +1357,7 @@
 		buzzer.tone(100,2300);
   }
 
+	// Wentylator chlodzacy wydruki
 	void NextionLCD::setfanandgoPopCallback(void *ptr) {
 		uint8_t fanpagefrom, vfanbuff;
 		UNUSED(ptr);
@@ -1363,15 +1365,16 @@
 		vfanbuff = FanSpeedNex.getValue("fanspeedpage");
 		fanpagefrom = FanPageIDfrom.getValue("fanspeedpage");
 		thermalManager.fan_speed[0] = vfanbuff;
-		if (fanpagefrom == 0) // wejscie z status
+		if (fanpagefrom == 0) // Wejscie z ekranu statusu
 		{
 			PagePrinter.show();
 		}
-		else if (fanpagefrom == 1) // wejscie z heatup
+		else if (fanpagefrom == 1) // Wejscie z ekranu rozgrzewania heatup
 		{
 			PageHeatup.show();
 		}
 	}
+	
 	#if ENABLED(NEX_STAT_PAGE)
 		void NextionLCD::setsetupstatPopCallback(void *ptr)
 		{
