@@ -48,7 +48,7 @@
 	#endif
 	
 	// ZMIENNE ZEWNETRZNE MARLINa
-	extern uint8_t progress_printing; // dodane nex
+	//extern uint8_t progress_printing; // dodane nex
 	extern bool nex_filament_runout_sensor_flag;
 	extern xyze_pos_t destination;// = { 0.0 };
 	extern bool g29_in_progress;// = false;
@@ -2026,10 +2026,10 @@
 				else
 				{
 					ZERO(bufferson);
-					strcat(bufferson, i8tostr3(progress_printing));
+					strcat(bufferson, i8tostr3(card.percentDone()));
 					strcat(bufferson, " %");
 					percentdone.setText(bufferson, "printer");
-					progressbar.setValue(progress_printing, "printer"); // dodatkowo odswiez progressbar
+					progressbar.setValue(card.percentDone(), "printer"); // dodatkowo odswiez progressbar
 				}
 
 				#if ENABLED(SDSUPPORT)
