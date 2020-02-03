@@ -677,16 +677,7 @@
 			//2 folder
 			//3 nazwa 8.3
 			//4 nazwa do wyswietlenia
-			void printrowsd(uint8_t row, const bool folder, const char* filename, const char* longfilename) {
-				if (card.isFilenameisDir() == true)
-				{
-					SERIAL_ECHO("true");
-				}
-				else if (card.isFilenameisDir() == false)
-				{
-					SERIAL_ECHO("false");
-				}
-				
+			void printrowsd(uint8_t row, const bool folder, const char* filename, const char* longfilename) {			
 					if (folder) {
 						folder_list[row]->SetVisibility(true);
 						row_list[row]->attachPop(sdfolderPopCallback, row_list[row]);
@@ -1303,7 +1294,7 @@
 	 * 	BED LEVELING SUPPORT
 	 */
 	#if ENABLED(NEXTION_BED_LEVEL)
-    void ProbelPopCallBack(void *ptr) 
+    void ProbelPopCallBack(void *ptr) // TRZEBA W TEN SAM SPOSOB OBSLUZYC WIEKSZA ILOSC GUZIKOW (JEDNYA FUNKCJA Z ROZNYMI WSKAZNIKAMI NA ODPOWIEDNIE BUTTONY) !!! CLEEEEEAN
 		{
       if (ptr == &ProbeUp || ptr == &ProbeDown) {
 
@@ -1327,20 +1318,29 @@
       else if (ptr == &ProbeSend) {
 				SERIAL_ECHOLNPGM("probesend:");
         #if HAS_LEVELING && ENABLED(NEXTION_BED_LEVEL)
-				if (g29_in_progress == true) {
-					queue.inject_P(PSTR("G29 S2")); 
-				}
+				//if (g29_in_progress == true) {
+					queue.inject_P("G29 S2"); 
+			//	}
         #endif
 					wait_for_user = false;
       }
     }
 
-		void nex_return_after_leveling(bool finish)
+		void MarlinUI::nex_return_after_leveling(bool finish)
 		{
 			if (finish == true)
 			{
 				Pprinter.show();
 			}
+		}
+
+		void MarlinUI::nex_bedlevel_finish()
+		{
+      //ui.nex_return_after_leveling(true); //dodane, powrot do status
+			Pprinter.show();
+      queue.inject_P("M500");  // dodane aby zapisywało poziomowanie podczas trwania funkcji
+      g29_in_progress = false; // dodane po zakonczeniu g29
+			
 		}
 	#endif
 		/**
@@ -1552,6 +1552,7 @@
 		if (strcmp(bufferson,"M600") == 0)
 		{
 			//KATT nex_enqueue_filament_change();
+			buzzer.tone(100, 2300);
 		}
 		else if (strcmp(bufferson, "M78 S78") == 0)
 		{
@@ -1561,6 +1562,7 @@
 		else
 		{ 
 			queue.inject_P(bufferson);
+			buzzer.tone(100, 2300);
 		}
   }
 

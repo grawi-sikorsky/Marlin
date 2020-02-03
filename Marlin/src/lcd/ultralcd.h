@@ -428,6 +428,9 @@ public:
     inline void lcd_eeprom_allert() {}
     inline void lcd_buttons_update() {}
 
+    void nex_return_after_leveling(bool finish);
+    void nex_bedlevel_finish();
+
     //void lcd_sdcard_stop();
 
     //VLCS

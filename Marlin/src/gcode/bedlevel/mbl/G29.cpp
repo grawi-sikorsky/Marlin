@@ -92,6 +92,9 @@ void GcodeSuite::G29() {
         queue.inject_P(PSTR("G28\nG29 S2"));
         return;
       }
+      #ifdef NEXTION_DISPLAY
+        g29_in_progress = true; // dodane dla manual probe
+      #endif
       state = MeshNext;
 
     case MeshNext:
@@ -137,6 +140,10 @@ void GcodeSuite::G29() {
         SERIAL_ECHOLNPGM("Mesh probing done.");
         BUZZ(100, 659);
         BUZZ(100, 698);
+
+        #if ENABLED(NEXTION_DISPLAY)
+          ui.nex_bedlevel_finish();
+        #endif
 
         home_all_axes();
         set_bed_leveling_enabled(true);
