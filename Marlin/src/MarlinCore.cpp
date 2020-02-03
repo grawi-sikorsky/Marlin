@@ -726,7 +726,7 @@ void idle(
   #endif
 
   #if ENABLED(NEXTION)
-    check_periodical_actions(); //dodane dla nextion
+    nexlcd.check_periodical_actions(); //dodane dla nextion
   #endif
   ui.update();
 }
@@ -1143,6 +1143,7 @@ void setup() {
 
   //idle();           // DODANE BO BLOKUJE USB SERIAL PRZY BOOTOWANIU NA CZAS ZAKONCZENIA FUNKCJI NEXINIT
   ui.init();
+  //nexlcd.init();
   ui.reset_status();        // Print startup message after print statistics are loaded
 }
 

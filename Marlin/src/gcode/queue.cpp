@@ -373,7 +373,7 @@ void GCodeQueue::get_serial_commands() {
 
         #if ENABLED(NEXTION_DISPLAY)
           if (!serial_count) { 
-            nextion_draw_update();//dodane dla nextiona
+            nexlcd.nextion_draw_update(); //dodane dla nextiona
             continue; 
           } // skip empty lines           
         #endif

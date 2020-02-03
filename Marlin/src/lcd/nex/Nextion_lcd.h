@@ -1,7 +1,7 @@
  /**
  * Nextion_lcd.h
  *
- * Copyright (c) 2014-2016 Alberto Cotronei @MagoKimbra
+ * Copyright (c) 2020 
  *
  * Grbl is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,69 +27,85 @@
 #include "library/Nextion.h"
 #include "HardwareSerial.h"
 
+#if ENABLED(ADVANCED_PAUSE_FEATURE)
+	#include "../../core/types.h"
+#endif
+
+
 #if ENABLED(NEXTION)
 
-extern float feedrate_mm_s;
+class NextionLCD 
+{
+  public:
+    void check_periodical_actions(); //Aktualizacja LCD z mniejsza czestotliwosca - 0.4s
+    void nextion_draw_update();
+    void init();
 
-  #if ENABLED(ADVANCED_PAUSE_FEATURE)
-		#include "../../core/types.h"
-  #endif
+    void nex_return_after_leveling(bool finish);
 
-  void sethotPopCallback(void *ptr);
+    void lcd_yesno(const uint8_t val, const char* msg1="", const char* msg2="", const char* msg3="");
+    void nextion_babystep_z(bool dir);
+    void lcd_nextion_kill_msg(const char* lcd_msg);
 
-  #if FAN_COUNT > 0
+    void nex_stop_printing();
+    void setpage_Status();
+    void menu_action_sdfile(const char* filename);
+    void nex_check_sdcard_present();
+
+    void menu_action_sddirectory(const char* filename);
+  
+    void setrowsdcard(uint32_t number = 0);
+    void printrowsd(uint8_t row, const bool folder, const char* filename, const char* longfilename);
+
+
+    static void YesNoPopCallback(void *ptr);
+    static void sethotPopCallback(void *ptr);
+    static void sethotendPopCallback(void *ptr);
+    static void setheatbedPopCallback(void *ptr);
+    static void setmovePopCallback(void *ptr);
+    static void setfanandgoPopCallback(void *ptr);
+    static void setgcodePopCallback(void *ptr);
+    static void sendPopCallback(void *ptr);
+    static void setsetupstatPopCallback(void *ptr);
+    static void getaccelPagePopCallback(void *ptr);
+    static void setaccelpagePopCallback(void *ptr);
+    static void setaccelsavebtnPopCallback(void *ptr);
+    static void setaccelloadbtnPopCallback(void *ptr);
+    static void setBabystepUpPopCallback(void *ptr);
+    static void setBabystepDownPopCallback(void *ptr);
+    static void setBabystepEEPROMPopCallback(void *ptr);
+    static void setspeedPopCallback(void *ptr);
+    static void setflowPopCallback(void *ptr);
+    static void motoroffPopCallback(void *ptr);
+
+
+    #if FAN_COUNT > 0
     void setfanPopCallback(void *ptr);
-  #endif
+    #endif
 
-  #if HAS_CASE_LIGHT
-    void setlightPopCallback(void *ptr);
-  #endif
-
-  void setmovePopCallback(void *ptr);
-  void setgcodePopCallback(void *ptr);
-  void sendPopCallback(void *ptr);
-  //void filamentPopCallback(void *ptr);
-  void nextion_draw_update();
-  //void lcd_scrollinfo(const char* titolo, const char* message);
-  void lcd_yesno(const uint8_t val, const char* msg1="", const char* msg2="", const char* msg3="");
-	void check_periodical_actions();
-
-	void nextion_babystep_z(bool dir);
-	void lcd_nextion_kill_msg(const char* lcd_msg);
-	void nex_return_after_leveling(bool finish);
-
-  #if ENABLED(NEXTION_GFX)
-    void gfx_origin(const float x, const float y, const float z);
-    void gfx_scale(const float scale);
-    void gfx_clear(const float x, const float y, const float z, bool force_clear=false);
-    void gfx_cursor_to(const float x, const float y, const float z, bool force_cursor=false);
-    void gfx_line_to(const float x, const float y, const float z);
-    void gfx_plane_to(const float x, const float y, const float z);
-  #endif
-
-  #if ENABLED(SDSUPPORT)
-    void sdmountdismountPopCallback(void *ptr);
-    void sdlistPopCallback(void *ptr);
-    void sdfilePopCallback(void *ptr);
-    void sdfolderPopCallback(void *ptr);
-    void sdfolderUpPopCallback(void *ptr);
-    void PlayPausePopCallback(void *ptr);
-    void StopPopCallback(void *ptr);
-    void DFirmwareCallback(void *ptr);
+    #if ENABLED(SDSUPPORT)
+    static void sdmountdismountPopCallback(void *ptr);
+    static void sdlistPopCallback(void *ptr);
+    static void sdfilePopCallback(void *ptr);
+    static void sdfolderPopCallback(void *ptr);
+    static void sdfolderUpPopCallback(void *ptr);
+    static void PlayPausePopCallback(void *ptr);
+    static void StopPopCallback(void *ptr);
+    static void DFirmwareCallback(void *ptr);
     void setpageSD();
     void UploadNewFirmware();
-  #endif
+    #endif
 
     //bool g29_in_progress = false;
  
-  #if ENABLED(PROBE_MANUALLY)
-    void ProbelPopCallBack(void *ptr);
-    float lcd_probe_pt(const float &lx, const float &ly);
-    #if HAS_LEVELING
-      void Nextion_ProbeOn();
-      void Nextion_ProbeOff();
+    #if ENABLED(PROBE_MANUALLY)
+      static void ProbelPopCallBack(void *ptr);
+      float lcd_probe_pt(const float &lx, const float &ly);
+      #if HAS_LEVELING
+        void Nextion_ProbeOn();
+        void Nextion_ProbeOff();
+      #endif
     #endif
-  #endif
 
   #if ENABLED(ADVANCED_PAUSE_FEATURE)
     void lcd_advanced_pause_show_message(const PauseMessage message,
@@ -101,7 +117,35 @@ extern float feedrate_mm_s;
     void rfid_setText(const char* message, uint32_t color = 65535);
   #endif
 
+  #if ENABLED(NEXTION_GFX)
+    void gfx_origin(const float x, const float y, const float z);
+    void gfx_scale(const float scale);
+    void gfx_clear(const float x, const float y, const float z, bool force_clear=false);
+    void gfx_cursor_to(const float x, const float y, const float z, bool force_cursor=false);
+    void gfx_line_to(const float x, const float y, const float z);
+    void gfx_plane_to(const float x, const float y, const float z);
+  #endif
+
+  #if HAS_CASE_LIGHT
+    void setlightPopCallback(void *ptr);
+  #endif
+    //void filamentPopCallback(void *ptr);
+    
+    //void lcd_scrollinfo(const char* titolo, const char* message);
+  private:
+  protected:
+};
+
+extern NextionLCD nexlcd;
+
+
+extern float feedrate_mm_s; //
+
+
+
   void lcd_setstatusPGM(PGM_P const message, int8_t level);
+
+
 
 #endif // ENABLED(NEXTION)
 

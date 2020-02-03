@@ -29,6 +29,8 @@
   #include "Nextion_gfx.h"
   #include "library/Nextion.h"
 
+	NextionLCD nexlcd;
+
   bool        NextionON                 = false,
               show_Wave                 = true,
               lcdDrawUpdate             = false,
@@ -40,7 +42,7 @@
   uint16_t    slidermaxval              = 20;
   char        bufferson[70]             = { 0 };
   char        lcd_status_message[24]    = "TRAAA"; //{Language_pl::WELCOME_MSG}; //PROBLEMOOOOO
-  //const float manual_feedrate_mm_m[]    = MANUAL_FEEDRATE; //bylo w ultralcd, obecnie jest w planner.h 
+  //const float manual_feedrate_mm_s[]    = MANUAL_FEEDRATE; //bylo w ultralcd, obecnie jest w planner.h 
 	millis_t		screen_timeout_millis;
 
 	#if PIN_EXISTS(SD_DETECT)
@@ -559,7 +561,7 @@
 	 * 	NEX LCD SDCARD STOP
 	 *	Nextion stop print button
 	 */
-  void nex_stop_printing() 
+  void NextionLCD::nex_stop_printing() 
 	{
 		// 2.0 did_pause_print = false;					// flaga pause_print na false, na wypadek gdyby drukarka byla w stanie pauzy @_@
 	  card.stopSDPrint();											// wstrzymaj wydruk z kartysd
@@ -592,7 +594,7 @@
 	/**
 	 * 	NEX Obsluga klikniecia przycisku  PLAY / PAUSE
 	 */
-  void PlayPausePopCallback(void *ptr) 
+  void NextionLCD::PlayPausePopCallback(void *ptr) 
 	{
     UNUSED(ptr);
     if (card.isMounted && card.isFileOpen()) {
@@ -620,7 +622,7 @@
 	 * 	Ustawia strone statusu przypisujac zerowe wartosci do zmiennych tj. glowica, stol, fan, stan SD
 	 *	wywolywana raz w lcdinit()
 	 */
-  void setpage_Status() 
+  void NextionLCD::setpage_Status()
 	{
     #if HOTENDS > 0
       Hotend00.setValue(0, "printer");
@@ -677,16 +679,16 @@
 			//2 folder
 			//3 nazwa 8.3
 			//4 nazwa do wyswietlenia
-			void printrowsd(uint8_t row, const bool folder, const char* filename, const char* longfilename) {			
+			void NextionLCD::printrowsd(uint8_t row, const bool folder, const char* filename, const char* longfilename) {			
 					if (folder) {
 						folder_list[row]->SetVisibility(true);
-						row_list[row]->attachPop(sdfolderPopCallback, row_list[row]);
+						row_list[row]->attachPop(nexlcd.sdfolderPopCallback, row_list[row]);
 					} else if (filename == "") {
 						folder_list[row]->SetVisibility(false);
 						row_list[row]->detachPop();
 					} else {
 						folder_list[row]->SetVisibility(false);
-						row_list[row]->attachPop(sdfilePopCallback, row_list[row]);
+						row_list[row]->attachPop(nexlcd.sdfilePopCallback, row_list[row]);
 					}
 					file_list83[row]->setText(filename);
 					row_list[row]->setText(longfilename);
@@ -695,10 +697,10 @@
 			//1 iterator
 			//2 folder
 			//3 nazwa 8.3
-			void printrowsd(uint8_t row, const bool folder, const char* filename) {
+			void NextionLCD::printrowsd(uint8_t row, const bool folder, const char* filename) {
 				if (folder) {
 					folder_list[row]->SetVisibility(true);
-					row_list[row]->attachPop(sdfolderPopCallback, row_list[row]);
+					row_list[row]->attachPop(nexlcd.sdfolderPopCallback, row_list[row]);
 				}
 				else if (filename == "") {
 					folder_list[row]->SetVisibility(false);
@@ -713,14 +715,14 @@
 		#endif
 
 		//Ustawia liste plikow na stronie SDCARD
-    static void setrowsdcard(uint32_t number = 0) {
+    void NextionLCD::setrowsdcard(uint32_t number) {
       uint16_t fileCnt = card.get_num_Files(); // nalezaloby przeniesc funkcje get_num_files z mk4duo / jakis tweak
       uint32_t i = 0;
       card.getWorkDirName();
 
       if (card.filename[0] != '/') {
         Folderup.SetVisibility(true);
-        Folderup.attachPop(sdfolderUpPopCallback);
+        Folderup.attachPop(nexlcd.sdfolderUpPopCallback);
         sdfolder.setText(card.longFilename);
       } else {
         Folderup.detachPop();
@@ -761,7 +763,7 @@
 		 * 	Funkcja z obsluga klikniecia w linijke z nazwa pliku
 		 *	Zapisuje do EEPROM sciezke pliku oraz babystep (VLCS)
 		*/
-    static void menu_action_sdfile(const char* filename) 
+    void NextionLCD::menu_action_sdfile(const char* filename) 
 		{
 			#if ENABLED(PLOSS_SUPPORT) // jezeli VLCS wlaczony
 				for (int i = 0; i < 8; i++) {
@@ -788,7 +790,7 @@
 		/**
 		 *	Funkcja z obsluga klikniecia w linijke z nazwa FOLDERU
 		*/
-    static void menu_action_sddirectory(const char* filename) {
+    void NextionLCD::menu_action_sddirectory(const char* filename) {
 			#if ENABLED(PLOSS_SUPPORT)
 				uint8_t depth = (uint8_t)card.getWorkDirDepth();	// dodane	
 				strcpy(dir_names[depth], filename);								// dodane
@@ -801,7 +803,7 @@
 		/**
 		 *	Ustawia strone z karta SD
 		*/
-    void setpageSD() {
+    void NextionLCD::setpageSD() {
       uint16_t fileCnt = card.get_num_Files();
 
       if (fileCnt <= 6)
@@ -818,14 +820,14 @@
 		/**
 		 *	Obsluga slidera / suwaka
 		*/
-    void sdlistPopCallback(void *ptr) {
+    void NextionLCD::sdlistPopCallback(void *ptr) {
       UNUSED(ptr);
       uint16_t number = slidermaxval - sdlist.getValue();
-      setrowsdcard(number);
+      nexlcd.setrowsdcard(number);
     }
 
 		// NEXTION: Obsluga klikniecia linijek tekstu z nazwa pliku do druku
-    void sdfilePopCallback(void *ptr) {
+    void NextionLCD::sdfilePopCallback(void *ptr) {
       ZERO(bufferson);
 			#if ENABLED(NEXTION_SD_LONG_NAMES)
 				if (ptr == &sdrow0)
@@ -856,11 +858,11 @@
 			#endif
 
 			buzzer.tone(100, 2300);
-      menu_action_sdfile(bufferson);
+      nexlcd.menu_action_sdfile(bufferson);
     }
 
 		// NEXTION: Obsluga klikniecia linijek tekstu z nazwa FOLDERU
-    void sdfolderPopCallback(void *ptr) {
+    void NextionLCD::sdfolderPopCallback(void *ptr) {
       ZERO(bufferson);
 			#if ENABLED(NEXTION_SD_LONG_NAMES)
 				if (ptr == &sdrow0)
@@ -889,14 +891,14 @@
 				else if (ptr == &sdrow5)
 					sdrow5.getText(bufferson, sizeof(bufferson));
 			#endif
-      menu_action_sddirectory(bufferson);
+      nexlcd.menu_action_sddirectory(bufferson);
     }
 
 		// NEXTION: Obsluga klikniecia przycisku Folder Up
-    void sdfolderUpPopCallback(void *ptr) {
+    void NextionLCD::sdfolderUpPopCallback(void *ptr) {
       UNUSED(ptr);
       card.cdup();
-      setpageSD();
+      nexlcd.setpageSD();
     }
 	#endif 
 	/**
@@ -1294,7 +1296,7 @@
 	 * 	BED LEVELING SUPPORT
 	 */
 	#if ENABLED(NEXTION_BED_LEVEL)
-    void ProbelPopCallBack(void *ptr) // TRZEBA W TEN SAM SPOSOB OBSLUZYC WIEKSZA ILOSC GUZIKOW (JEDNYA FUNKCJA Z ROZNYMI WSKAZNIKAMI NA ODPOWIEDNIE BUTTONY) !!! CLEEEEEAN
+    void NextionLCD::ProbelPopCallBack(void *ptr) // TRZEBA W TEN SAM SPOSOB OBSLUZYC WIEKSZA ILOSC GUZIKOW (JEDNYA FUNKCJA Z ROZNYMI WSKAZNIKAMI NA ODPOWIEDNIE BUTTONY) !!! CLEEEEEAN
 		{
       if (ptr == &ProbeUp || ptr == &ProbeDown) {
 
@@ -1308,8 +1310,9 @@
         NOLESS(destination[Z_AXIS], -(LCD_PROBE_Z_RANGE) * 0.5);
         NOMORE(destination[Z_AXIS], (LCD_PROBE_Z_RANGE) * 0.5);
 
+				//ZMIANA W OSTATNIM BUGFIXIE manual feedrate mm m -> manual_feedrate_mm_s
         const float old_feedrate = feedrate_mm_s;
-        feedrate_mm_s = MMM_TO_MMS(manual_feedrate_mm_m[Z_AXIS]);
+        feedrate_mm_s = manual_feedrate_mm_s[Z_AXIS];
         prepare_move_to_destination(); // will call set_current_from_destination()
         feedrate_mm_s = old_feedrate;
 
@@ -1347,7 +1350,7 @@
 	 * 	BED LEVELING SUPPORT END
 	 */
 
-  void sethotPopCallback(void *ptr) {
+  void NextionLCD::sethotPopCallback(void *ptr) {
     UNUSED(ptr);
 
 		uint16_t	temp_hotend = temphe.getValue(), //dodane
@@ -1360,7 +1363,7 @@
 		buzzer.tone(100,2300);
   }
 
-	void sethotendPopCallback(void *ptr) {
+	void NextionLCD::sethotendPopCallback(void *ptr) {
 		UNUSED(ptr);
 		uint16_t	temp_hotend = temphe.getValue();
 		thermalManager.setTargetHotend(temp_hotend, 0);
@@ -1368,7 +1371,7 @@
 		buzzer.tone(100, 2300);
 	}
 
-	void setheatbedPopCallback(void *ptr) {
+	void NextionLCD::setheatbedPopCallback(void *ptr) {
 		UNUSED(ptr);
 		uint16_t temp_bed = tempbe.getValue();    //dodane
 		thermalManager.setTargetBed(temp_bed);
@@ -1376,7 +1379,7 @@
 		buzzer.tone(100, 2300);
 	}
 
-	void setfanandgoPopCallback(void *ptr) {
+	void NextionLCD::setfanandgoPopCallback(void *ptr) {
 		uint8_t fanpagefrom, vfanbuff;
 		UNUSED(ptr);
 		ZERO(bufferson);
@@ -1393,7 +1396,7 @@
 		}
 	}
 	#if ENABLED(NEX_STAT_PAGE)
-		void setsetupstatPopCallback(void *ptr)
+		void NextionLCD::setsetupstatPopCallback(void *ptr)
 		{
 			UNUSED(ptr);
 				// PRINTSTATS START
@@ -1446,7 +1449,7 @@
 		}
 	#endif
 #if ENABLED(NEX_ACC_PAGE)
-	void setaccelpagePopCallback(void *ptr)
+	void NextionLCD::setaccelpagePopCallback(void *ptr)
 	{
 			UNUSED(ptr); 
 			Awork.setValue(planner.settings.acceleration, "accelpage"); //va0
@@ -1457,7 +1460,7 @@
 			Amaxz.setValue(planner.settings.max_acceleration_mm_per_s2[Z_AXIS], "accelpage");
 			Amaxe.setValue(planner.settings.max_acceleration_mm_per_s2[E_AXIS+active_extruder], "accelpage");
 	}
-	void getaccelPagePopCallback(void *ptr)
+	void NextionLCD::getaccelPagePopCallback(void *ptr)
 	{
 		planner.settings.acceleration = Awork.getValue("accelpage");
 		planner.settings.retract_acceleration = Aretr.getValue("accelpage");
@@ -1468,7 +1471,7 @@
 		planner.settings.max_acceleration_mm_per_s2[E_AXIS + active_extruder] = Amaxe.getValue("accelpage");
 	}
 	#ifdef CLASSIC_JERK
-		void setjerkpagePopCallback(void *ptr)
+		void NextionLCD::setjerkpagePopCallback(void *ptr)
 		{
 				UNUSED(ptr);
 				Awork.setValue(planner.max_jerk[X_AXIS], "accelpage"); //va0
@@ -1490,30 +1493,30 @@
 	#endif
 
 #endif
-	void setaccelsavebtnPopCallback(void *ptr)
+	void NextionLCD::setaccelsavebtnPopCallback(void *ptr)
 	{
 		settings.save();
 		SERIAL_ECHOPGM("zapisane");
 	}
-	void setaccelloadbtnPopCallback(void *ptr)
+	void NextionLCD::setaccelloadbtnPopCallback(void *ptr)
 	{
 		settings.load();
 		SERIAL_ECHOPGM("zaladowane");
 	}
 
-	void setBabystepUpPopCallback(void *ptr)
+	void NextionLCD::setBabystepUpPopCallback(void *ptr)
 	{
-		nextion_babystep_z(false);
+		nexlcd.nextion_babystep_z(false);
 	}
-	void setBabystepDownPopCallback(void *ptr)
+	void NextionLCD::setBabystepDownPopCallback(void *ptr)
 	{
-		nextion_babystep_z(true);
+		nexlcd.nextion_babystep_z(true);
 	}
-	void setBabystepEEPROMPopCallback(void *ptr)
+	void NextionLCD::setBabystepEEPROMPopCallback(void *ptr)
 	{
 		//KATT eeprom_update_dword((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);
 	}
-	void setspeedPopCallback(void *ptr) 
+	void NextionLCD::setspeedPopCallback(void *ptr) 
 	{
 		int vspeedbuff;
 		UNUSED(ptr);
@@ -1522,7 +1525,7 @@
 		feedrate_percentage = vspeedbuff;
 		Pprinter.show();
 	}
-	void setflowPopCallback(void *ptr)
+	void NextionLCD::setflowPopCallback(void *ptr)
 	{
 		uint8_t flowfrom;
 		int vflowbuff;
@@ -1542,7 +1545,7 @@
 		}
 	}
 
-  void setgcodePopCallback(void *ptr) {
+  void NextionLCD::setgcodePopCallback(void *ptr) {
     UNUSED(ptr);
     ZERO(bufferson);
 		SERIAL_ECHOLN("setgcodepopcallbac");
@@ -1566,7 +1569,7 @@
 		}
   }
 
-  void setmovePopCallback(void *ptr) {
+  void NextionLCD::setmovePopCallback(void *ptr) {
     UNUSED(ptr);
     ZERO(bufferson);
     movecmd.getText(bufferson, sizeof(bufferson));
@@ -1575,13 +1578,13 @@
 		queue.inject_P("G90");			//KATT enqueue_and_echo_commands_P(PSTR("G90"));
   }
 
-  void motoroffPopCallback(void *ptr) {
+  void NextionLCD::motoroffPopCallback(void *ptr) {
     UNUSED(ptr);
 		queue.inject_P("M84");
   }
 
 	// NEXTION: Obsluga klikniecia przycisku SEND na SELECT PAGE
-  void sendPopCallback(void *ptr) {
+  void NextionLCD::sendPopCallback(void *ptr) {
     UNUSED(ptr);
     lcd_clicked = true;
 		wait_for_user = false;
@@ -1595,13 +1598,13 @@
   }
 
 	// NEXTION: Obsluga klikniecia YES oraz NO
-  void YesNoPopCallback(void *ptr) {
+  void NextionLCD::YesNoPopCallback(void *ptr) {
     if (ptr == &Yes) {
       switch(Vyes.getValue()) {
         #if ENABLED(SDSUPPORT)
           case 1: // Stop Print
 						Pprinter.show();
-						nex_stop_printing();
+						nexlcd.nex_stop_printing();
             break;
           case 2: // Upload Firmware
 						#if ENABLED(NEX_UPLOAD)
@@ -1652,8 +1655,9 @@
 // =======================
 // ==	LCD INIT					==
 // =======================
-  void MarlinUI::init() {
-    for (uint8_t i = 0; i < 10; i++) {
+void NextionLCD::init(){
+
+	  for (uint8_t i = 0; i < 10; i++) {
       ZERO(bufferson);
       NextionON = nexInit(bufferson);
       if (NextionON) break;
@@ -1794,7 +1798,7 @@
 			// SELECT PAGE
       LcdSend.attachPop(sendPopCallback);
 
-      setpage_Status();
+      nexlcd.setpage_Status();
       startimer.enable();
 			Pmenu.show();
 
@@ -1803,6 +1807,10 @@
 			buzzer.tone(100, 3100);			
     }
   }
+
+  void MarlinUI::init() {
+		nexlcd.init();
+	}
 // =======================
 // == END OF	LCD INIT	==
 // =======================
@@ -1872,7 +1880,7 @@
 	// IS_SD_INSERTED ma odwrocona logike:
 	// 1 - brak karty
 	// 0 - karta wlozona
-	void nex_check_sdcard_present()
+	void NextionLCD::nex_check_sdcard_present()
 	{
 	#if ENABLED(SDSUPPORT) && PIN_EXISTS(SD_DETECT)
 
@@ -1925,7 +1933,7 @@
 // == LCD PERIODICAL UPDATE	==
 // ===========================
 // ODSWIEZANE 0.3s ()
-  void nextion_draw_update() {
+  void NextionLCD::nextion_draw_update() {
 		SERIAL_ECHOLN(nexSerial.available());
     static uint8_t  	PreviousPage = 0,					// strona nex
                     	Previousfeedrate = 0,			// dotychczasowa predkosc druku
@@ -2169,7 +2177,7 @@
 
 	// dodana obsluga babystep
 	#if ENABLED(BABYSTEPPING)
-		void nextion_babystep_z(bool dir) {
+		void NextionLCD::nextion_babystep_z(bool dir) {
 				const int16_t babystep_increment = 8;
 
 				if (dir == true)
@@ -2187,7 +2195,7 @@
 
 
 #if ENABLED (NEXTION)
-  void check_periodical_actions()
+  void NextionLCD::check_periodical_actions()
   {
     static millis_t cycle_1s = 0;
     const millis_t now = millis();
