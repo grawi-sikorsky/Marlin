@@ -579,16 +579,14 @@
 		#endif
 
 		wait_for_heatup = false;					// flaga false
-		//lcd_setstatusPGM(PSTR(MSG_PRINT_ABORTED), -1);	// status info
-		//KATT lcd_setstatusPGM(PSTR("chwilowka"), -1);	// podmiana tego co wyzej na chwile dla kompilacji
+		ui.lcd_setstatusPGM(GET_TEXT(MSG_PRINT_ABORTED), -1);	// status info
 		print_job_timer.stop();						// wstrzymujemy timer
 
 		//G28 on stop print
 		#if ENABLED(STOP_PRINT_G28)
 				//home_all_axes();						// bazujemy osie
 		#endif
-				//KATT enqueue_and_echo_commands_P(PSTR("G28"));
-				//quickstop_stepper();
+				queue.inject_P(PSTR("G28"));
 	}
 
 	/**
@@ -602,14 +600,13 @@
         card.pauseSDPrint();
         print_job_timer.pause();
         #if ENABLED(PARK_HEAD_ON_PAUSE)
-        //KATT enqueue_and_echo_commands_P(PSTR("M125"));
+        	queue.inject_P(PSTR("M125"));
         #endif
 				ui.lcd_setstatusPGM(GET_TEXT(MSG_PRINT_PAUSED), 1);
-				//set_status_P(GET_TEXT(MSG_PRINT_PAUSED));
       }
       else {																					//resume
 				#if ENABLED(PARK_HEAD_ON_PAUSE)
-				//KATT enqueue_and_echo_commands_P(PSTR("M24"));
+					queue.inject_P(PSTR("M24"));
 				#else
 				card.startFileprint();
 				print_job_timer.start();
