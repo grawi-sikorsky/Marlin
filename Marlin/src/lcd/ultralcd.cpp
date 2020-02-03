@@ -1579,6 +1579,7 @@ void MarlinUI::update() {
   // Send the status line as a host notification
   //
 
+  #ifndef NEXTION_DISPLAY //dodane nextion
   void MarlinUI::set_status(const char * const message, const bool) {
     #if ENABLED(HOST_PROMPT_SUPPORT)
       host_action_notify(message);
@@ -1602,5 +1603,6 @@ void MarlinUI::update() {
       UNUSED(message);
     #endif
   }
+  #endif
 
 #endif // !HAS_DISPLAY

@@ -37,9 +37,12 @@
 class NextionLCD 
 {
   public:
-    void check_periodical_actions(); //Aktualizacja LCD z mniejsza czestotliwosca - 0.4s
-    void nextion_draw_update();
-    void init();
+    void check_periodical_actions();  //Aktualizacja LCD z mniejsza czestotliwosca - 0.4s -> nextion_draw_update();
+    void nextion_draw_update();       //Odswieza aktualny ekran -> switch
+    void init();                      //Inicjalizacja LCD
+    void update();                    //Nextion Update 5ms (odswieza i sprawdza komponenty Nex Pop Push)
+
+    void lcd_setstatusPGM(PGM_P const message, int8_t level);
 
     void nex_return_after_leveling(bool finish);
 
@@ -78,9 +81,8 @@ class NextionLCD
     static void setflowPopCallback(void *ptr);
     static void motoroffPopCallback(void *ptr);
 
-
     #if FAN_COUNT > 0
-    void setfanPopCallback(void *ptr);
+    static void setfanPopCallback(void *ptr);
     #endif
 
     #if ENABLED(SDSUPPORT)
@@ -92,6 +94,7 @@ class NextionLCD
     static void PlayPausePopCallback(void *ptr);
     static void StopPopCallback(void *ptr);
     static void DFirmwareCallback(void *ptr);
+
     void setpageSD();
     void UploadNewFirmware();
     #endif
@@ -140,12 +143,6 @@ extern NextionLCD nexlcd;
 
 
 extern float feedrate_mm_s; //
-
-
-
-  void lcd_setstatusPGM(PGM_P const message, int8_t level);
-
-
 
 #endif // ENABLED(NEXTION)
 

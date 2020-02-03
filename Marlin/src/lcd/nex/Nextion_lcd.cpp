@@ -8,6 +8,8 @@
 #include "../../libs/numtostr.h"
 #include "../../HAL/shared/persistent_store_api.h"
 
+#include "../../lcd/extensible_ui/ui_api.h"
+
 #if ENABLED(NEXTION_DISPLAY)
 	#include "../../module/stepper.h"
 	#include "../../feature/bedlevel/mbl/mesh_bed_leveling.h"
@@ -581,7 +583,7 @@
 		#endif
 
 		wait_for_heatup = false;					// flaga false
-		ui.lcd_setstatusPGM(GET_TEXT(MSG_PRINT_ABORTED), -1);	// status info
+		ui.set_status_P(GET_TEXT(MSG_PRINT_ABORTED), -1);	// status info
 		print_job_timer.stop();						// wstrzymujemy timer
 
 		//G28 on stop print
@@ -604,7 +606,7 @@
         #if ENABLED(PARK_HEAD_ON_PAUSE)
         	queue.inject_P(PSTR("M125"));
         #endif
-				ui.lcd_setstatusPGM(GET_TEXT(MSG_PRINT_PAUSED), 1);
+				ui.set_status_P(GET_TEXT(MSG_PRINT_PAUSED), 1);
       }
       else {																					//resume
 				#if ENABLED(PARK_HEAD_ON_PAUSE)
@@ -613,7 +615,7 @@
 				card.startFileprint();
 				print_job_timer.start();
 				#endif
-				ui.lcd_setstatusPGM(GET_TEXT(MSG_RESUME_PRINT), 1);
+				ui.set_status_P(GET_TEXT(MSG_RESUME_PRINT), 1);
       }
     }
   }
@@ -1807,10 +1809,6 @@ void NextionLCD::init(){
 			buzzer.tone(100, 3100);			
     }
   }
-
-  void MarlinUI::init() {
-		nexlcd.init();
-	}
 // =======================
 // == END OF	LCD INIT	==
 // =======================
@@ -1914,8 +1912,9 @@ void NextionLCD::init(){
 // =======================
 // == LCD UPDATE				==
 // =======================
-  void MarlinUI::update() {
-    if (!NextionON) return;
+	void NextionLCD::update()
+	{
+		if (!NextionON) return;
 		
     nexLoop(nex_listen_list); // odswieza sie z delayem 5 ms
 
@@ -1927,12 +1926,11 @@ void NextionLCD::init(){
 			Pprinter.show();
 			screen_timeout_millis = 0;
 		}
-  }
-
+	}
 // ===========================
 // == LCD PERIODICAL UPDATE	==
 // ===========================
-// ODSWIEZANE 0.3s ()
+// ODSWIEZANE 0.4s ()
   void NextionLCD::nextion_draw_update() {
 		SERIAL_ECHOLN(nexSerial.available());
     static uint8_t  	PreviousPage = 0,					// strona nex
@@ -1955,7 +1953,7 @@ void NextionLCD::init(){
       case 2:
         if (PreviousPage != 2) 
 				{
-					ui.lcd_setstatusPGM(lcd_status_message,1);
+					ui.set_status_P(lcd_status_message,1);
           #if ENABLED(NEXTION_GFX)
             #if MECH(DELTA)
               gfx_clear(mechanics.delta_print_radius * 2, mechanics.delta_print_radius * 2, mechanics.delta_height);
@@ -2113,52 +2111,7 @@ void NextionLCD::init(){
     PreviousPage = PageID;
   }
 	
-  void MarlinUI::lcd_setstatus(const char* message, bool persist) {
-    UNUSED(persist);
-    if (lcd_status_message_level > 0 || !NextionON) return;
-    strncpy(lcd_status_message, message, 24);
-    if (PageID == 2) LcdStatus.setText(lcd_status_message);
-  }
 
-  void MarlinUI::lcd_setstatusPGM(PGM_P const message, int8_t level) {
-    if (level < 0) level = lcd_status_message_level = 0;
-    if (level < lcd_status_message_level || !NextionON) return;
-    strncpy_P(lcd_status_message, message, 24);
-    lcd_status_message_level = level;
-    if (PageID == 2) LcdStatus.setText(lcd_status_message);
-  }
-
-	/*void MarlinUI::set_status_P(PGM_P const message, int8_t level) { //TO SAMO ^
-				if (level < 0) level = lcd_status_message_level = 0;
-				if (level < lcd_status_message_level || !NextionON) return;
-				strncpy_P(lcd_status_message, message, 24);
-				lcd_status_message_level = level;
-				if (PageID == 2) LcdStatus.setText(lcd_status_message);
-	};
-	void MarlinUI::set_status(const char* message, bool persist) {
-    UNUSED(persist);
-    if (lcd_status_message_level > 0 || !NextionON) return;
-    strncpy(lcd_status_message, message, 24);
-    if (PageID == 2) LcdStatus.setText(lcd_status_message);
-  }*/
-
-  void lcd_status_printf_P(const uint8_t level, const char * const fmt, ...) {
-    //if (level < lcd_status_message_level || !NextionON) return;
-    //lcd_status_message_level = level;
-    //va_list args;
-    //va_start(args, fmt);
-    //vsnprintf(lcd_status_message, 24, fmt, args);
-    //va_end(args);
-    //if (PageID == 2) LcdStatus.setText(lcd_status_message);
-  }
-
-  void lcd_setalertstatusPGM(const char * const message) {
-    ui.lcd_setstatusPGM(message, 1);
-  }
-
-  void reset_alert_level() { lcd_status_message_level = 0; }
-
-	void MarlinUI::reset_status(){ lcd_setstatusPGM(GET_TEXT(WELCOME_MSG),1); }
 
 
   void lcd_yesno(const uint8_t val, const char* msg1, const char* msg2, const char* msg3) {
@@ -2194,28 +2147,17 @@ void NextionLCD::init(){
 	#endif
 
 
-#if ENABLED (NEXTION)
-  void NextionLCD::check_periodical_actions()
-  {
-    static millis_t cycle_1s = 0;
-    const millis_t now = millis();
-    
-    if (ELAPSED(now, cycle_1s)) {
-      cycle_1s = now + 400UL; // zmianka z 1000UL
 
-      #if ENABLED(NEXTION)
-        nextion_draw_update();
-        //SERIAL_ECHO("draw update"); //nextion
-        //sendCommand("page gcode"); //testinh
-      #if ENABLED(NEXTION_DEBUG)
-          //SERIAL_ECHOPGM("busystate:");
-          //SERIAL_ECHOLN(busy_state);
-      #endif
-      
-      #endif
-    }
-  }
-#endif
+	void NextionLCD::check_periodical_actions()
+	{
+		static millis_t cycle_1s = 0;
+		const millis_t now = millis();
+		
+		if (ELAPSED(now, cycle_1s)) {
+			cycle_1s = now + 400UL; // zmianka z 1000UL
+			nextion_draw_update();				
+		}
+	}
 
 
   #if ENABLED(NEXTION_GFX)
@@ -2261,3 +2203,48 @@ void NextionLCD::init(){
   #endif
 
 #endif
+
+/*****************************
+ * 
+ * DEFINICJE METOD MARLINA 
+ * 
+ * **************************/
+
+	// MARLIN INIT
+  void MarlinUI::init()		{ nexlcd.init(); }
+	// MARLIN UPDATE
+  void MarlinUI::update()	{ nexlcd.update(); }
+
+
+	// Ustawia pasek statusu progmem
+	void MarlinUI::set_status_P(PGM_P const message, int8_t level) { //TO SAMO ^
+				if (level < 0) level = lcd_status_message_level = 0;
+				if (level < lcd_status_message_level || !NextionON) return;
+				strncpy_P(lcd_status_message, message, 24);
+				lcd_status_message_level = level;
+				if (PageID == 2) LcdStatus.setText(lcd_status_message);
+	};
+	// Ustawia pasek statusu
+	void MarlinUI::set_status(const char* message, bool persist) {
+    UNUSED(persist);
+    if (lcd_status_message_level > 0 || !NextionON) return;
+    strncpy(lcd_status_message, message, 24);
+    if (PageID == 2) LcdStatus.setText(lcd_status_message);
+  }
+	// Resetuje status na domyslny WELCOME_MSG
+	void MarlinUI::reset_status(){ set_status_P(GET_TEXT(WELCOME_MSG),1); }
+
+
+
+/*****************************
+ * 
+ * DEFINICJE EXTUI MARLINA WSTEP
+ * 
+ * **************************/
+	// EXTUI INIT
+	namespace ExtUI{
+
+		void onStartup()		{ nexlcd.init(); }
+		void onIdle()				{ nexlcd.update(); }
+
+	};
