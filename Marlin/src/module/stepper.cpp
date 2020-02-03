@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -2460,10 +2460,10 @@ void Stepper::report_positions() {
 
   #define BABYSTEP_AXIS(AXIS, INVERT, DIR) {            \
       const uint8_t old_dir = _READ_DIR(AXIS);          \
-      _ENABLE_AXIS(AXIS);                                    \
-      DELAY_NS(MINIMUM_STEPPER_PRE_DIR_DELAY);              \
+      _ENABLE_AXIS(AXIS);                               \
+      DELAY_NS(MINIMUM_STEPPER_PRE_DIR_DELAY);          \
       _APPLY_DIR(AXIS, _INVERT_DIR(AXIS)^DIR^INVERT);   \
-      DELAY_NS(MINIMUM_STEPPER_POST_DIR_DELAY);              \
+      DELAY_NS(MINIMUM_STEPPER_POST_DIR_DELAY);         \
       _SAVE_START;                                      \
       _APPLY_STEP(AXIS)(!_INVERT_STEP_PIN(AXIS), true); \
       _PULSE_WAIT;                                      \

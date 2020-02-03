@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -389,14 +389,14 @@ namespace ExtUI {
     #endif
 
     current_position[axis] = constrain(position, min, max);
-    line_to_current_position(MMM_TO_MMS(manual_feedrate_mm_m[axis]));
+    line_to_current_position(manual_feedrate_mm_s[axis]);
   }
 
   void setAxisPosition_mm(const float position, const extruder_t extruder) {
     setActiveTool(extruder, true);
 
     current_position.e = position;
-    line_to_current_position(MMM_TO_MMS(manual_feedrate_mm_m.e));
+    line_to_current_position(manual_feedrate_mm_s.e);
   }
 
   void setActiveTool(const extruder_t extruder, bool no_move) {
@@ -733,7 +733,7 @@ namespace ExtUI {
           #if EXTRUDERS > 1
             && (linked_nozzles || active_extruder == 0)
           #endif
-        ) probe_offset.z += mm;
+        ) probe.offset.z += mm;
       #else
         UNUSED(mm);
       #endif
@@ -771,7 +771,7 @@ namespace ExtUI {
 
   float getZOffset_mm() {
     #if HAS_BED_PROBE
-      return probe_offset.z;
+      return probe.offset.z;
     #elif ENABLED(BABYSTEP_DISPLAY_TOTAL)
       return (planner.steps_to_mm[Z_AXIS] * babystep.axis_total[BS_TODO_AXIS(Z_AXIS)]);
     #else
@@ -782,7 +782,7 @@ namespace ExtUI {
   void setZOffset_mm(const float value) {
     #if HAS_BED_PROBE
       if (WITHIN(value, Z_PROBE_OFFSET_RANGE_MIN, Z_PROBE_OFFSET_RANGE_MAX))
-        probe_offset.z = value;
+        probe.offset.z = value;
     #elif ENABLED(BABYSTEP_DISPLAY_TOTAL)
       babystep.add_mm(Z_AXIS, (value - getZOffset_mm()));
     #else
