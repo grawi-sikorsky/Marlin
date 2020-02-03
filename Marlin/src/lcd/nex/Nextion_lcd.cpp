@@ -1558,12 +1558,12 @@
 		}
 		else if (strcmp(bufferson, "M78 S78") == 0)
 		{
-			queue.enqueue_one_now(bufferson); //KATT enqueue_and_echo_command(bufferson);
+			queue.inject_P(bufferson); //KATT enqueue_and_echo_command(bufferson);
 			buzzer.tone(100, 2300);
 		}
 		else
 		{ 
-			queue.enqueue_one_now(bufferson);
+			queue.inject_P(bufferson);
 		}
   }
 
@@ -1571,14 +1571,14 @@
     UNUSED(ptr);
     ZERO(bufferson);
     movecmd.getText(bufferson, sizeof(bufferson));
-		queue.enqueue_one_now("G91");			//KATT enqueue_and_echo_commands_P(PSTR("G91"));
-		queue.enqueue_one_now(bufferson);	//KATT enqueue_and_echo_command(bufferson);
-		queue.enqueue_one_now("G90");			//KATT enqueue_and_echo_commands_P(PSTR("G90"));
+		queue.inject_P("G91");			//KATT enqueue_and_echo_commands_P(PSTR("G91"));
+		queue.inject_P(bufferson);	//KATT enqueue_and_echo_command(bufferson);
+		queue.inject_P("G90");			//KATT enqueue_and_echo_commands_P(PSTR("G90"));
   }
 
   void motoroffPopCallback(void *ptr) {
     UNUSED(ptr);
-		queue.enqueue_one_now("M84");
+		queue.inject_P("M84");
   }
 
 	// NEXTION: Obsluga klikniecia przycisku SEND na SELECT PAGE
@@ -2197,7 +2197,7 @@
     const millis_t now = millis();
     
     if (ELAPSED(now, cycle_1s)) {
-      cycle_1s = now + 300UL; // zmianka z 1000UL
+      cycle_1s = now + 350UL; // zmianka z 1000UL
 
       #if ENABLED(NEXTION)
         nextion_draw_update();
