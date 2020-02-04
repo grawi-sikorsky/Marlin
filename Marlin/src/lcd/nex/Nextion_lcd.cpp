@@ -2315,5 +2315,7 @@ void NextionLCD::init(){
 		void pausePrint();
 		void resumePrint();
 
+	};
+
 	#endif
 
