@@ -348,7 +348,7 @@
 
     // Page 3 touch listen
     &sdlist, &ScrollUp, &ScrollDown, &sdrow0, &sdrow1, &sdrow2,
-    &sdrow3, &sdrow4, &sdrow5, &Folderup,// &sd_mount, &sd_dismount,
+    &sdrow3, &sdrow4, &sdrow5, &Folderup,
 
     // Page 4 touch listen setup
 		#if ENABLED(NEX_STAT_PAGE)
@@ -363,10 +363,7 @@
 
     // Page 5 touch listen
     &MotorOff, &XYHome, &XYUp, &XYRight, &XYDown, &XYLeft,
-    &ZHome, &ZUp, &ZDown,
-    &Extrude, &Retract,
-
-		&speedsetbtn,
+    &ZHome, &ZUp, &ZDown, &Extrude, &Retract, &speedsetbtn,
 
     // Page 7 touch listen
     &Send,
@@ -397,7 +394,6 @@
 
 		// Page 31 Flow
 		&SetFlowBtn,
-
     NULL
   };
 
@@ -461,7 +457,6 @@
 	
   // Function pointer to menu functions.
   typedef void (*screenFunc_t)();
-
 
 
 	/**
@@ -1266,7 +1261,7 @@
 		else if(ptr == &heatbedenter){
 			thermalManager.setTargetBed(temp_bed);
 		}
-
+		
     PagePrinter.show();
 		buzzer.tone(100,2300);
   }
