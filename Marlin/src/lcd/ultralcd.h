@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -430,6 +430,8 @@ public:
 
     void nex_return_after_leveling(bool finish);
     void nex_bedlevel_finish();
+    void nex_buzz_confirm(int repeat);
+    void nex_buzz_fail(int repeat);
 
     //void lcd_sdcard_stop();
 

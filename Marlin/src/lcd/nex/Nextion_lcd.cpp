@@ -1553,9 +1553,9 @@
     UNUSED(ptr);
     ZERO(bufferson);
     movecmd.getText(bufferson, sizeof(bufferson));
-		queue.inject_P("G91");			//KATT enqueue_and_echo_commands_P(PSTR("G91"));
-		queue.inject_P(bufferson);	//KATT enqueue_and_echo_command(bufferson);
-		queue.inject_P("G90");			//KATT enqueue_and_echo_commands_P(PSTR("G90"));
+		queue.inject_P("G91");
+		queue.inject_P(bufferson);
+		queue.inject_P("G90");
   }
 
   void NextionLCD::motoroffPopCallback(void *ptr) {
@@ -1781,7 +1781,7 @@ void NextionLCD::init(){
       LcdSend.attachPop(sendPopCallback);
 
       nexlcd.setpage_Status();
-      splashTimer	;
+      splashTimer.enable();
 			PageMenu.show();
 
 			buzzer.tone(100, 2300); // dodane - wejsciowy brzeczyk
@@ -2245,6 +2245,7 @@ void NextionLCD::init(){
 		void onStartup()		{ nexlcd.init(); }
 		void onIdle()				{ nexlcd.update(); }
 		void onPrinterKilled(PGM_P const error, PGM_P const component) { nexlcd.kill_screen_msg(error, component); }
+		void onPlayTone(const uint16_t frequency, const uint16_t duration) { BUZZ(frequency, duration); }
 
 
 
@@ -2252,7 +2253,7 @@ void NextionLCD::init(){
 		void onMediaInserted() {};
 		void onMediaError() {};
 		void onMediaRemoved() {};
-		void onPlayTone(const uint16_t frequency, const uint16_t duration) {}
+		
 		void onPrintTimerStarted() {}
 		void onPrintTimerPaused() {}
 		void onPrintTimerStopped() {}
@@ -2316,4 +2317,3 @@ void NextionLCD::init(){
 
 	#endif
 
-	};
