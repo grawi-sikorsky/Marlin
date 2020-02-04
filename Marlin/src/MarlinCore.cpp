@@ -1159,7 +1159,7 @@ void loop() {
     idle();
 
     #if ENABLED(NEXTION)
-      //check_periodical_actions(); //dodane dla nextion PRINTO H3
+      nexlcd.check_periodical_actions(); //dodane dla nextion PRINTO H3
     #endif
 
     #if ENABLED(SDSUPPORT)

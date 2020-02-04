@@ -1074,7 +1074,7 @@ void MarlinUI::update() {
     const bool sd_status = IS_SD_INSERTED();
     if (sd_status != last_sd_status) {
       last_sd_status = sd_status;
-      if (sd_status) {
+      if (!sd_status) {
         card.mount();
         if (card.isMounted())
           ExtUI::onMediaInserted();
@@ -1088,6 +1088,7 @@ void MarlinUI::update() {
       }
     }
   #endif // SDSUPPORT
+
   ExtUI::onIdle();
 }
 

@@ -43,7 +43,6 @@
               lcd_status_message_level  = 0;
   uint16_t    slidermaxval              = 20;
   char        bufferson[70]             = { 0 };
-  char        lcd_status_message[24]    = "TRAAA"; //{Language_pl::WELCOME_MSG}; //PROBLEMOOOOO
   //const float manual_feedrate_mm_s[]    = MANUAL_FEEDRATE; //bylo w ultralcd, obecnie jest w planner.h 
 	millis_t		screen_timeout_millis;
 
@@ -725,7 +724,15 @@
       if (card.filename[0] != '/') {
         Folderup.SetVisibility(true);
         Folderup.attachPop(nexlcd.sdfolderUpPopCallback);
-        sdfolder.setText(card.longFilename);
+				if(card.isMounted())
+				{
+					sdfolder.setText(card.longFilename);
+				}else
+				{
+					sdfolder.setText(GET_TEXT(MSG_MEDIA_WAITING));
+				}
+				
+        
       } else {
         Folderup.detachPop();
         Folderup.SetVisibility(false);
@@ -1872,7 +1879,7 @@ void NextionLCD::init(){
 				setpageSD();																									// ustaw strone i przekaz flage do strony status
 				SDstatus = SD_INSERT;
 				SD.setValue(SDstatus, "printer");
-				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_MEDIA_INSERTED);			// MSG TRZEBA PRZEKSZTALCIC NA WYSIETLANIE NA PASKU 
+				ui.set_status_P(GET_TEXT(MSG_MEDIA_INSERTED));			// MSG TRZEBA PRZEKSZTALCIC NA WYSIETLANIE NA PASKU
 			}
 			else																														// je�li SD_DETECT == true:
 			{
@@ -1881,7 +1888,7 @@ void NextionLCD::init(){
 				setpageSD();																									// ustaw strone i przekaz flage do strony status
 				SDstatus = SD_NO_INSERT;
 				SD.setValue(SDstatus, "printer");
-				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_MEDIA_REMOVED);				// MSG TRZEBA PRZEKSZTALCIC NA WYSIETLANIE NA PASKU 
+				ui.set_status_P(GET_TEXT(MSG_MEDIA_REMOVED));				// MSG TRZEBA PRZEKSZTALCIC NA WYSIETLANIE NA PASKU 
 			}
 			lcd_sd_status = sd_status;
 		} // CALY IF SPRAWDZA STAN SD_DETECT I JEGO ZMIANE: SD jest->init / SD niet->release
@@ -1933,7 +1940,7 @@ void NextionLCD::init(){
       case 2:
         if (PreviousPage != 2) 
 				{
-					ui.set_status_P(lcd_status_message,1);
+					LcdStatus.setText(lcd_status_message);
           #if ENABLED(NEXTION_GFX)
             #if MECH(DELTA)
               gfx_clear(mechanics.delta_print_radius * 2, mechanics.delta_print_radius * 2, mechanics.delta_height);
@@ -2000,7 +2007,7 @@ void NextionLCD::init(){
 					else
 						strcat(bufferson, " E");
 					strcat(bufferson, buffer1);
-					LcdTime.setText(bufferson,"printer");
+					LcdTime.setText(bufferson, "printer");
 					PreviouspercentDone = card.percentDone();
 
 					// procenty t4
@@ -2091,7 +2098,8 @@ void NextionLCD::init(){
     PreviousPage = PageID;
   }
 	
-
+	void NextionLCD::print_status_msg(){
+	}
 
 
   void lcd_yesno(const uint8_t val, const char* msg1, const char* msg2, const char* msg3) {
@@ -2243,23 +2251,51 @@ void NextionLCD::init(){
 	namespace ExtUI{
 
 		void onStartup()		{ nexlcd.init(); }
-		void onIdle()				{ nexlcd.update(); }
+		void onIdle()				{ nexlcd.update(); nexlcd.check_periodical_actions();}
 		void onPrinterKilled(PGM_P const error, PGM_P const component) { nexlcd.kill_screen_msg(error, component); }
-		void onPlayTone(const uint16_t frequency, const uint16_t duration) { BUZZ(frequency, duration); }
+		void onPlayTone(const unsigned int frequency, const unsigned long duration) {}
 
+		void onMediaInserted() {
+			SDstatus = SD_INSERT; // przekaz flage do strony status
+			SD.setValue(SDstatus, "printer");
+			ui.set_status_P(GET_TEXT(MSG_MEDIA_INSERTED));	// MSG TRZEBA PRZEKSZTALCIC NA WYSIETLANIE NA PASKU
 
+			PageID = Nextion_PageID();
+			if (PageID == 3)
+			{
+				nexlcd.setpageSD();	// ustaw strone i 
+			}
+		};
+
+		void onMediaRemoved() { 
+			SDstatus = SD_NO_INSERT; // przekaz flage do strony status
+			SD.setValue(SDstatus, "printer");
+			ui.set_status_P(GET_TEXT(MSG_MEDIA_REMOVED));
+			PageID = Nextion_PageID();
+			if (PageID == 3)
+			{
+				nexlcd.setpageSD();	// ustaw strone i 
+			}
+		};
+
+		void onMediaError() {  };		
+
+		void onStatusChanged(const char * const msg) { 
+			strncpy_P(nexlcd.lcd_status_message, msg, 24);
+			nexlcd.print_status_msg();
+			if(PageID == 2) // Jeżeli strona statusu
+			{
+				LcdStatus.setText(nexlcd.lcd_status_message, "printer");
+			}
+		}
 
 		// Szkieletowe z example - do wypelnienia
-		void onMediaInserted() {};
-		void onMediaError() {};
-		void onMediaRemoved() {};
-		
+
 		void onPrintTimerStarted() {}
 		void onPrintTimerPaused() {}
 		void onPrintTimerStopped() {}
 		void onFilamentRunout(const extruder_t extruder) {}
 		void onUserConfirmRequired(const char * const msg) {}
-		void onStatusChanged(const char * const msg) {}
 		void onFactoryReset() {}
 
 		void onStoreSettings(char *buff) {

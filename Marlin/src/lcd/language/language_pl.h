@@ -42,10 +42,10 @@ namespace Language_pl {
   PROGMEM Language_Str MSG_NO                              = _UxGT("NIE");
   PROGMEM Language_Str MSG_BACK                            = _UxGT("Wstecz");
   PROGMEM Language_Str MSG_MEDIA_ABORTING                  = _UxGT("Przerywanie...");
-  PROGMEM Language_Str MSG_MEDIA_INSERTED                  = _UxGT("Karta włożona");
-  PROGMEM Language_Str MSG_MEDIA_REMOVED                   = _UxGT("Karta usunięta");
+  PROGMEM Language_Str MSG_MEDIA_INSERTED                  = _UxGT("Karta wlozona");
+  PROGMEM Language_Str MSG_MEDIA_REMOVED                   = _UxGT("Karta usunieta");
   PROGMEM Language_Str MSG_MEDIA_RELEASED                  = _UxGT("Karta zwolniona");
-  PROGMEM Language_Str MSG_MEDIA_WAITING                   = _UxGT("Oczekiwanie na kartę");
+  PROGMEM Language_Str MSG_MEDIA_WAITING                   = _UxGT("Oczekiwanie na karte");
   PROGMEM Language_Str MSG_MEDIA_READ_ERROR                = _UxGT("Bład odczytu karty");
   PROGMEM Language_Str MSG_MEDIA_USB_REMOVED               = _UxGT("Urządzenie USB usunięte");
   PROGMEM Language_Str MSG_MEDIA_USB_FAILED                = _UxGT("Błąd uruchomienia USB");

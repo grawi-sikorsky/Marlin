@@ -37,12 +37,15 @@
 class NextionLCD 
 {
   public:
+    //Zmienne
+    char lcd_status_message[24] = "T";
+
     void check_periodical_actions();  //Aktualizacja LCD z mniejsza czestotliwosca - 0.4s -> nextion_draw_update();
     void nextion_draw_update();       //Odswieza aktualny ekran -> switch
     void init();                      //Inicjalizacja LCD
     void update();                    //Nextion Update 5ms (odswieza i sprawdza komponenty Nex Pop Push)
     void kill_screen_msg(const char* lcd_msg, PGM_P const component); // Wyswietla ekran kill wraz z komunikatem
-    
+    void print_status_msg();
 
 
 

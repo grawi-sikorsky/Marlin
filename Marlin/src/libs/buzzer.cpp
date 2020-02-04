@@ -64,7 +64,8 @@ void Buzzer::tick() {
     if (state.tone.frequency > 0) {
       #if ENABLED(EXTENSIBLE_UI)
         CRITICAL_SECTION_START;
-        ExtUI::onPlayTone(state.tone.frequency, state.tone.duration);
+        //ExtUI::onPlayTone(state.tone.frequency, state.tone.duration);
+        ::tone(BEEPER_PIN, state.tone.frequency, state.tone.duration); // dodane nextion
         CRITICAL_SECTION_END;
       #elif ENABLED(SPEAKER)
         CRITICAL_SECTION_START;
