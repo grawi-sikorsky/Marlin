@@ -717,10 +717,10 @@
 
 		//Ustawia liste plikow na stronie SDCARD
     void NextionLCD::setrowsdcard(uint32_t number) {
-      uint16_t fileCnt = card.get_num_Files(); // nalezaloby przeniesc funkcje get_num_files z mk4duo / jakis tweak
+      uint16_t fileCnt = card.get_num_Files();
       uint32_t i = 0;
       card.getWorkDirName();
-
+			
       if (card.filename[0] != '/') {
         Folderup.SetVisibility(true);
         Folderup.attachPop(nexlcd.sdfolderUpPopCallback);
@@ -731,8 +731,7 @@
 				{
 					sdfolder.setText(GET_TEXT(MSG_MEDIA_WAITING));
 				}
-				
-        
+
       } else {
         Folderup.detachPop();
         Folderup.SetVisibility(false);
@@ -901,6 +900,7 @@
 					sdrow5.getText(bufferson, sizeof(bufferson));
 			#endif
       nexlcd.menu_action_sddirectory(bufferson);
+			buzzer.tone(10, 500);
     }
 
 		// NEXTION: Obsluga klikniecia przycisku Folder Up
@@ -908,6 +908,7 @@
       UNUSED(ptr);
       card.cdup();
       nexlcd.setpageSD();
+			buzzer.tone(10, 500);
     }
 	#endif 
 	/**
@@ -1546,7 +1547,7 @@
 		}
 		else if (strcmp(bufferson, "M78 S78") == 0)
 		{
-			queue.inject_P(bufferson); //KATT enqueue_and_echo_command(bufferson);
+			queue.inject_P(bufferson);
 			buzzer.tone(100, 2300);
 		}
 		else
