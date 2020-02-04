@@ -59,7 +59,6 @@
 	extern inline void set_destination_to_current() { COPY(destination, current_position); }
 	extern void home_all_axes();
 
-
   #if ENABLED(SDSUPPORT)
 		extern CardReader card;
     // 0 card not present, 1 SD not insert, 2 SD insert, 3 SD printing
@@ -101,10 +100,9 @@
 
   /**
    *******************************************************************
-   * NEX lista stron uzytych
+   * NEX lista stron
    *******************************************************************
    */
-
   //NexObject Pstart        	= NexObject(0,  0,  "start");
   NexObject PageMenu       		= NexObject(1,  0,  "menu");
   NexObject PagePrinter    		= NexObject(2,  0,  "printer");
@@ -131,32 +129,20 @@
 	//NexObject Paccel					= NexObject(23, 0, "accelpage");
 	//NexObject Pjerk						= NexObject(25, 0, "jerkpage");
 	NexObject PageKill					= NexObject(30, 0, "killpage");
-	// 
-	// == 9 
 
-  /**
-   *******************************************************************
+   /*******************************************************************
    * NEX komponenty strona: SplashScreen
-   *******************************************************************
-   */
+   *******************************************************************/
   NexObject splashTimer	     = NexObject(0,  3,  "tm1");
-	// 
-	// == 10
 
-  /**
-   *******************************************************************
+  /*******************************************************************
    * NEX komponenty strona: menu
-   *******************************************************************
-   */
+   *******************************************************************/
   NexObject Version     = NexObject(1, 6,  "t0"); // out? nieuzywane
-	// 
-	// == 11
 
-  /**
-   *******************************************************************
+	/*******************************************************************
    * NEX komponenty strona: status/printer
-   *******************************************************************
-   */
+   *******************************************************************/
   NexObject LcdX						= NexObject(2,  4,  "vx");
   NexObject LcdY						= NexObject(2,  5,  "vy");
   NexObject LcdZ						= NexObject(2,  6,  "vz");
@@ -175,16 +161,10 @@
   NexObject progressbar			= NexObject(2, 22,  "j0");
   NexObject Wavetemp				= NexObject(2, 23,  "s0");
 	NexObject percentdone			= NexObject(2, 49,	"t4");
-	//
-	// == 18
-	// == 29
 
-
-  /**
-   *******************************************************************
+	/*******************************************************************
    * NEX komponenty strona: SDCard
-   *******************************************************************
-   */
+   *******************************************************************/
   NexObject sdlist      = NexObject(3,   1, "h0");
   NexObject sdrow0      = NexObject(3,   2, "t0");
   NexObject sdrow1      = NexObject(3,   3, "t1");
@@ -210,16 +190,10 @@
 	NexObject file4				= NexObject(3, 16, "n5");
 	NexObject file5				= NexObject(3, 17, "n6");
 #endif
-	// 
-	// == 25
-	// == 54
 
-
-  /**
-   *******************************************************************
+   /*******************************************************************
    * NEX komponenty strona: MOVE
-   *******************************************************************
-   */
+   *******************************************************************/
   NexObject XYHome      = NexObject(5,   2, "p4");
   NexObject XYUp        = NexObject(5,   3, "p5");
   NexObject XYRight     = NexObject(5,   4, "p6");
@@ -233,47 +207,28 @@
   NexObject MotorOff    = NexObject(5,  17, "p0");
   NexObject Extrude     = NexObject(5,  19, "p12");	
   NexObject Retract     = NexObject(5,  20, "p14");
-	// 
-	// == 13
-	// == 67
 
-	/**
-	*******************************************************************
+	/*******************************************************************
 	* NEX komponenty strona: SPEED
-	*******************************************************************
-	*/
+	*******************************************************************/
 	NexObject speedsetbtn	= NexObject(6, 9, "m0");
 	NexObject SpeedNex		= NexObject(6, 7, "vspeed");
-	// 
-	// == 2
-	// == 69
 
-  /**
-   *******************************************************************
+   /*******************************************************************
    * NEX komponenty strona: GCode
-   *******************************************************************
-   */
+   *******************************************************************/
   NexObject Tgcode      = NexObject(7,   1, "tgcode");
   NexObject Send        = NexObject(7,  25, "bsend");
-	// 
-	// == 2
-	// == 71
 
-  /**
-   *******************************************************************
+   /*******************************************************************
    * NEX komponenty strona: Info
-   *******************************************************************
-   */
+   *******************************************************************/
   //NexObject InfoText    = NexObject(10, 2,  "t0");
   //NexObject ScrollText  = NexObject(10, 3,  "g0");
-	// 
-	//
 
-  /**
-   *******************************************************************
+   /*******************************************************************
    * NEX komponenty strona: YesNo
-   *******************************************************************
-   */
+   *******************************************************************/
   NexObject Vyes        = NexObject(11, 2,  "yn0");
   NexObject Riga0       = NexObject(11, 4,  "tl0");
   NexObject Riga1       = NexObject(11, 5,  "tl1");
@@ -281,15 +236,10 @@
   NexObject Riga3       = NexObject(11, 7,  "tl3");
   NexObject Yes         = NexObject(11, 8,  "p1");
   NexObject No          = NexObject(11, 9,  "p2");
-	// 
-	// == 7
-	// == 78
 
-  /**
-   *******************************************************************
+   /*******************************************************************
    * NEX komponenty strona:: Select
-   *******************************************************************
-   */
+   *******************************************************************/
   NexObject LcdRiga1    = NexObject(13,  2, "t0");
   NexObject LcdRiga2    = NexObject(13,  3, "t1");
   NexObject LcdRiga3    = NexObject(13,  4, "t2");
@@ -300,57 +250,36 @@
   NexObject LcdMin      = NexObject(13,  7, "min");
   NexObject LcdMax      = NexObject(13, 8, "max");
   NexObject LcdPos      = NexObject(13, 9, "pos");
-	// 
-	// == 10
-	// == 88
 
-  /**
-   *******************************************************************
+   /*******************************************************************
    * NEX komponenty strona: Probe
-   *******************************************************************
-   */
+   *******************************************************************/
   NexObject ProbeUp     = NexObject(14, 1,  "p0");
   NexObject ProbeSend   = NexObject(14, 2,  "p1");
   NexObject ProbeDown   = NexObject(14, 3,  "p2");
   //NexObject ProbeMsg    = NexObject(14, 4,  "t0");
   NexObject ProbeZ      = NexObject(14, 5,  "t1");
-	// 
-	// == 4
-	// == 92
 
-
-	/**
-	*******************************************************************
+	/*******************************************************************
 	* NEX komponenty strona: HEATUP 15
-	*******************************************************************
-	*/
+	*******************************************************************/
 	NexObject heatupenter		= NexObject(15, 7, "m3");
 	NexObject temphe				= NexObject(15, 8, "temphe");
 	NexObject tempbe				= NexObject(15, 9, "tempbe");
 	NexObject heatbedenter	= NexObject(15, 12, "m4");
 	NexObject hotendenter		= NexObject(15, 13, "m5");
 	NexObject chillenter		= NexObject(15, 14, "m6");
-	// 
-	// == 6
-	// == 98
 
-	/**
-	*******************************************************************
+	/*******************************************************************
 	* NEX komponenty strona:: FAN SPEED 18
-	*******************************************************************
-	*/
+	*******************************************************************/
 	NexObject FanSpeedNex			= NexObject(18, 7, "vfan");
 	NexObject FanSetBtn				= NexObject(18, 9, "m1");
 	NexObject FanPageIDfrom		= NexObject(18, 10, "fanpagefrom");
-	// 
-	// == 3
-	// == 101
 
-	/**
-	*******************************************************************
+	/*******************************************************************
 	* NEX komponenty strona:: STAT SCREEN 19
-	*******************************************************************
-	*/
+	*******************************************************************/
 	#if ENABLED(NEX_STAT_PAGE)
 		NexObject statin			= NexObject(4, 1, "m2"); //przycisk z innej strony -> setup
 		NexObject Sprints			= NexObject(19, 2, "t0");
@@ -366,25 +295,16 @@
 		NexObject Svlcs				= NexObject(19, 12, "t9");
 		NexObject Sfilsensor	= NexObject(19, 13, "t10");
 	#endif
-	// 
-	// == 12
-	// == 113
 
-	/**
-	*******************************************************************
+	/*******************************************************************
 	* NEX komponenty strona:: SERVICE PAGE 22
-	*******************************************************************
-	*/
+	*******************************************************************/
 	//NexObject SvJerk				= NexObject(22, 4, "m2"); //wejscie w jerk -> przekazuje zmienne float na nuber nextion (brak dziesietnych)
 	NexObject SvSteps				= NexObject(22, 5, "m3");	//wejscie w steps -> przekazuje zmienne float na nuber nextion (brak dziesietnych)
-	// 
-	// == 114
 
-	/**
-	*******************************************************************
+	/*******************************************************************
 	* NEX komponenty strona:: ACCEL SCREEN 23
-	*******************************************************************
-	*/
+	*******************************************************************/
 #if ENABLED(NEX_ACC_PAGE)
 	NexObject accelin		= NexObject(4, 4, "m5");	// setaccelpagePopCallback -> przekazuje zmienne float do strony z akceleracja
 	NexObject Awork			= NexObject(23, 22, "a0");
@@ -398,40 +318,26 @@
 	NexObject Asave			= NexObject(23, 30, "p10");	// setaccelsavebtnPopCallback -> wywo�uje settings.save();
 	NexObject Aload			= NexObject(23, 31, "p11"); // setaccelloadbtnPopCallback	-> wywo�uje settings.load();
 #endif
-	// 
-	// == 11
-	// == 125
 
-	/**
-	*******************************************************************
+	/*******************************************************************
 	* NEX komponenty strona:: BABYSTEP SCREEN 28
-	*******************************************************************
-	*/
+	*******************************************************************/
 	NexObject ZbabyUp			= NexObject(28, 1, "m0");
 	NexObject ZbabyDown		= NexObject(28, 2, "m1");
 	NexObject ZbabyBack_Save = NexObject(28, 3, "m2");
-	// 
-	// == 3
-	// == 128
 
-	/**
-	*******************************************************************
+	/*******************************************************************
 	* NEX komponenty strona: KILL SCREEN 30
-	*******************************************************************
-	*/
+	*******************************************************************/
 	NexObject Kmsg				= NexObject(30, 2, "tkmsg");
 	// == 129
 
-	/**
-	*******************************************************************
+	/*******************************************************************
 	* NEX komponenty strona:: FLOWPAGE 31
-	*******************************************************************
-	*/
+	*******************************************************************/
 	NexObject vFlowNex					= NexObject(31, 7, "vflow");
 	NexObject SetFlowBtn				= NexObject(31, 9, "m0");
 	NexObject FlowPageFrom			= NexObject(31, 10, "flowfrom");
-	// 
-	// == 3
 	// == 132
 	// 132*13 = 1716 bajt�w
 
@@ -640,7 +546,7 @@
 		#endif
 
 		VSpeed.setValue(100, "printer");
-
+/*
     #if ENABLED(SDSUPPORT)
       if (!card.isMounted) card.mount();
       delay(100);
@@ -651,7 +557,7 @@
       else SDstatus = SD_NO_INSERT;
 
       SD.setValue(SDstatus, "printer");
-    #endif
+    #endif*/
 
     #define LANGUAGE_STRING(M) STRINGIFY(M)
     #define NEXTION_LANGUAGE LANGUAGE_STRING(LCD_LANGUAGE)
