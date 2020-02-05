@@ -44,6 +44,8 @@ class NextionLCD
     void check_periodical_actions();  //Aktualizacja LCD z mniejsza czestotliwosca - 0.4s -> nextion_draw_update();
     void nextion_draw_update();       //Odswieza aktualny ekran -> switch
     void init();                      //Inicjalizacja LCD
+    void connect();                   //Funkcja laczaca sie z ekranem
+    void setup_callbacks();           //Ustawia i przypisuje funkcje obslugi zdarzen
     void update();                    //Nextion Update 5ms (odswieza i sprawdza komponenty Nex Pop Push)
     void kill_screen_msg(const char* lcd_msg, PGM_P const component); // Wyswietla ekran kill wraz z komunikatem
     void print_status_msg();          // testowa - wyswiela dany mesydz na ekranie statusu
@@ -53,23 +55,23 @@ class NextionLCD
     void return_after_leveling(bool finish);    //powrot do ekranu statusu po zakonczeniu levelingu //wait for user = false
     void lcd_yesno(const uint8_t val, const char* msg1="", const char* msg2="", const char* msg3="");
     void nextion_babystep_z(bool dir);
-
     void nex_stop_printing();
     void setpage_Status();
     void menu_action_sdfile(const char* filename);
     void nex_check_sdcard_present();
-
     void menu_action_sddirectory(const char* filename);
-  
     void setrowsdcard(uint32_t number = 0);
     void printrowsd(uint8_t row, const bool folder, const char* filename, const char* longfilename);
     void nex_enqueue_filament_change();
 
-    static void handle_heatingPopCallback(void *ptr);
+
+    // Obsluga przyciskow na stronach
+    static void handle_heatingPopCallback(void *ptr);       // Obsluga strony Rozgrzej
+    static void handle_fanPage_PopCallback(void *ptr);      // Obsluga strony Fan
+
 
     static void YesNoPopCallback(void *ptr);
     static void setmovePopCallback(void *ptr);
-    static void setfanandgoPopCallback(void *ptr);
     static void setgcodePopCallback(void *ptr);
     static void sendPopCallback(void *ptr);
     static void setsetupstatPopCallback(void *ptr);

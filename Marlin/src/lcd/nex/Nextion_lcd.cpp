@@ -1265,7 +1265,7 @@
   }
 
 	// Wentylator chlodzacy wydruki
-	void NextionLCD::setfanandgoPopCallback(void *ptr) {
+	void NextionLCD::handle_fanPage_PopCallback(void *ptr) {
 		uint8_t fanpagefrom, vfanbuff;
 		UNUSED(ptr);
 		ZERO(bufferson);
@@ -1541,163 +1541,170 @@
     }
   }
 
+
 // =======================
 // ==	LCD INIT					==
 // =======================
-void NextionLCD::init(){
+// Connect
+void NextionLCD::connect(){
+		for (uint8_t i = 0; i < 10; i++) {
+		ZERO(bufferson);
+		NextionON = nexInit(bufferson);
+		if (NextionON) break;
+		delay(50);
+	}
+	if (!NextionON) { SERIAL_ECHOPGM("Nextion NOT connected..."); return; }
+	else {
+	SERIAL_ECHO_START();
+	SERIAL_ECHOPGM("Nextion");
 
-	  for (uint8_t i = 0; i < 10; i++) {
-      ZERO(bufferson);
-      NextionON = nexInit(bufferson);
-      if (NextionON) break;
-      delay(50);
-    }
-
-		#if ENABLED(FSENSOR_STATE)
-			nex_filament_runout_sensor_flag = eeprom_read_byte((uint8_t*)EEPROM_NEX_FILAMENT_SENSOR);
-		#endif
-
-		#if ENABLED(SDSUPPORT) && PIN_EXISTS(SD_DETECT)
-			SET_INPUT_PULLUP(SD_DETECT_PIN);
-			lcd_sd_status = 2; // UNKNOWN
-		#endif
-
-    if (!NextionON) {
-	  SERIAL_ECHOPGM("Nextion NOT connected...");
-      return;
-    }
-    else {
-		SERIAL_ECHO_START();
-	  SERIAL_ECHOPGM("Nextion");
-
-    if (strstr(bufferson, "3224")) {       // Model 2.4" or 2.8" Normal or Enhanced
-			SERIAL_ECHOPGM(" 2.4");
-        #if ENABLED(NEXTION_GFX)
-          gfx.set_position(1, 24, 250, 155);
-        #endif
-      }
-    else if (strstr(bufferson, "4024")) {  // Model 3.2" Normal or Enhanced
-			SERIAL_ECHOPGM(" 3.2");
-       #if ENABLED(NEXTION_GFX)
-          gfx.set_position(1, 24, 250, 155);
-       #endif
-      }
-		else if (strstr(bufferson, "4832")) {  // Model 3.2" Normal or Enhanced
-			SERIAL_ECHOPGM(" 3.5");
+	if (strstr(bufferson, "3224")) {       // Model 2.4" or 2.8" Normal or Enhanced
+		SERIAL_ECHOPGM(" 2.4");
 			#if ENABLED(NEXTION_GFX)
 				gfx.set_position(1, 24, 250, 155);
 			#endif
-			}
-    else if (strstr(bufferson, "4827")) {  // Model 4.3" Normal or Enhanced
-			SERIAL_ECHOPGM(" 4.3");
-      #if ENABLED(NEXTION_GFX)
-          gfx.set_position(1, 24, 250, 155);
-      #endif
-      }
-    else if (strstr(bufferson, "8048")) {  // Model 7" Normal or Enhanced
-			SERIAL_ECHOPGM(" 7");
-      #if ENABLED(NEXTION_GFX)
-          gfx.set_position(274, 213, 250, 155);
-      #endif
-      }
-	  SERIAL_CHAR('"'); SERIAL_ECHOLNPGM(" connected!");
-
-      #if ENABLED(NEXTION_GFX)
-        gfx.color_set(NX_AXIS + X_AXIS, 63488);
-        gfx.color_set(NX_AXIS + Y_AXIS, 2016);
-        gfx.color_set(NX_AXIS + Z_AXIS, 31);
-        gfx.color_set(NX_MOVE, 2047);
-        gfx.color_set(NX_TOOL, 65535);
-        gfx.color_set(NX_LOW, 2047);
-        gfx.color_set(NX_HIGH, 63488);
-      #endif
-
-			//
-			// NEX USTAWIENIE PRZYCISKOW
-			//
-			// SDSUPPORT
-      #if ENABLED(SDSUPPORT)
-        sdlist.attachPop(sdlistPopCallback);
-        ScrollUp.attachPop(sdlistPopCallback);
-        ScrollDown.attachPop(sdlistPopCallback);
-        NPlay.attachPop(PlayPausePopCallback);
-      #endif
-
-			// BED LEVEL
-      #if ENABLED(NEXTION_BED_LEVEL)
-        ProbeUp.attachPush(ProbelPopCallBack, &ProbeUp);
-        ProbeSend.attachPop(ProbelPopCallBack, &ProbeSend);
-        ProbeDown.attachPush(ProbelPopCallBack, &ProbeDown);
-      #endif
-
-			// STATS
-			#if ENABLED(NEX_STAT_PAGE)
-				statin.attachPop(setsetupstatPopCallback); //dodane info o wejsciu w statystyki
+		}
+	else if (strstr(bufferson, "4024")) {  // Model 3.2" Normal or Enhanced
+		SERIAL_ECHOPGM(" 3.2");
+			#if ENABLED(NEXTION_GFX)
+				gfx.set_position(1, 24, 250, 155);
 			#endif
+		}
+	else if (strstr(bufferson, "4832")) {  // Model 3.2" Normal or Enhanced
+		SERIAL_ECHOPGM(" 3.5");
+		#if ENABLED(NEXTION_GFX)
+			gfx.set_position(1, 24, 250, 155);
+		#endif
+		}
+	else if (strstr(bufferson, "4827")) {  // Model 4.3" Normal or Enhanced
+		SERIAL_ECHOPGM(" 4.3");
+		#if ENABLED(NEXTION_GFX)
+				gfx.set_position(1, 24, 250, 155);
+		#endif
+		}
+	else if (strstr(bufferson, "8048")) {  // Model 7" Normal or Enhanced
+		SERIAL_ECHOPGM(" 7");
+		#if ENABLED(NEXTION_GFX)
+				gfx.set_position(274, 213, 250, 155);
+		#endif
+		}
+	SERIAL_CHAR('"'); SERIAL_ECHOLNPGM(" connected!");
 
-			// ACCELERATION
-			#if ENABLED(NEX_ACC_PAGE)
-				accelin.attachPop(setaccelpagePopCallback); //setaccelpagePopCallback
-				Asend.attachPop(getaccelPagePopCallback);
-				Asave.attachPop(setaccelsavebtnPopCallback);
-				Aload.attachPop(setaccelloadbtnPopCallback);
-			#endif
+	}
+}
+// SETUP CALLBACKS
+void NextionLCD::setup_callbacks(){
+		//
+	// NEX USTAWIENIE PRZYCISKOW
+	//
+	// SDSUPPORT
+	#if ENABLED(SDSUPPORT)
+		sdlist.attachPop(sdlistPopCallback);
+		ScrollUp.attachPop(sdlistPopCallback);
+		ScrollDown.attachPop(sdlistPopCallback);
+		NPlay.attachPop(PlayPausePopCallback);
+	#endif
 
-			#ifdef NEXTION_STEP_SETTINGS
-			//KATT SvSteps.attachPop(setstepspagePopCallback);
-			#endif
+	// BED LEVEL
+	#if ENABLED(NEXTION_BED_LEVEL)
+		ProbeUp.attachPush(ProbelPopCallBack, &ProbeUp);
+		ProbeSend.attachPop(ProbelPopCallBack, &ProbeSend);
+		ProbeDown.attachPush(ProbelPopCallBack, &ProbeDown);
+	#endif
 
-			// TEMPERATURA
-			heatupenter.attachPop	(handle_heatingPopCallback, &heatupenter); // obsluga przycisku rozgrzej oba
-			hotendenter.attachPop	(handle_heatingPopCallback, &hotendenter); //obsluga przycisku rozgrzej hotend
-			heatbedenter.attachPop(handle_heatingPopCallback, &heatbedenter); //obsluga przycisku rozgrzej bed
-			chillenter.attachPop	(handle_heatingPopCallback, &chillenter); //obsluga przycisku chlodzenie
+	// STATS
+	#if ENABLED(NEX_STAT_PAGE)
+		statin.attachPop(setsetupstatPopCallback); //dodane info o wejsciu w statystyki
+	#endif
 
-			
+	// ACCELERATION
+	#if ENABLED(NEX_ACC_PAGE)
+		accelin.attachPop(setaccelpagePopCallback); //setaccelpagePopCallback
+		Asend.attachPop(getaccelPagePopCallback);
+		Asave.attachPop(setaccelsavebtnPopCallback);
+		Aload.attachPop(setaccelloadbtnPopCallback);
+	#endif
 
-			FanSetBtn.attachPop(setfanandgoPopCallback); //obsluga przycisku fan set
+	#ifdef NEXTION_STEP_SETTINGS
+	//KATT SvSteps.attachPop(setstepspagePopCallback);
+	#endif
 
-			speedsetbtn.attachPop(setspeedPopCallback); //obsluga przycisku speed set
+	// TEMPERATURA
+	heatupenter.attachPop	(handle_heatingPopCallback, &heatupenter); // obsluga przycisku rozgrzej oba
+	hotendenter.attachPop	(handle_heatingPopCallback, &hotendenter); //obsluga przycisku rozgrzej hotend
+	heatbedenter.attachPop(handle_heatingPopCallback, &heatbedenter); //obsluga przycisku rozgrzej bed
+	chillenter.attachPop	(handle_heatingPopCallback, &chillenter); //obsluga przycisku chlodzenie
 
-			SetFlowBtn.attachPop(setflowPopCallback); //obsluga przycisku set flow
+	
 
-			// BABYSTEP
-			ZbabyUp.attachPush(setBabystepUpPopCallback);	// obsluga przycisku babystep up
-			ZbabyDown.attachPush(setBabystepDownPopCallback); // obsluga przycisku babystep down
-			ZbabyBack_Save.attachPop(setBabystepEEPROMPopCallback);
-			
-			// MOVE PAGE
-      XYHome.attachPop(setmovePopCallback);
-			XYUp.attachPush(setmovePopCallback);
-      XYRight.attachPush(setmovePopCallback);
-      XYDown.attachPush(setmovePopCallback);
-      XYLeft.attachPush(setmovePopCallback);
-      ZHome.attachPop(setmovePopCallback);
-      ZUp.attachPush(setmovePopCallback);
-      ZDown.attachPush(setmovePopCallback);
-      Extrude.attachPush(setmovePopCallback);
-      Retract.attachPush(setmovePopCallback);
-      MotorOff.attachPop(motoroffPopCallback);
+	FanSetBtn.attachPop(handle_fanPage_PopCallback); //obsluga przycisku fan set
 
-			// GCODE
-      Send.attachPop(setgcodePopCallback); //SERIAL_ECHOLN("attachpop-SEND.");
+	speedsetbtn.attachPop(setspeedPopCallback); //obsluga przycisku speed set
 
-			// YESNO
-      Yes.attachPop(YesNoPopCallback, &Yes);
-      No.attachPop(YesNoPopCallback, &No);
+	SetFlowBtn.attachPop(setflowPopCallback); //obsluga przycisku set flow
 
-			// SELECT PAGE
-      LcdSend.attachPop(sendPopCallback);
+	// BABYSTEP
+	ZbabyUp.attachPush(setBabystepUpPopCallback);	// obsluga przycisku babystep up
+	ZbabyDown.attachPush(setBabystepDownPopCallback); // obsluga przycisku babystep down
+	ZbabyBack_Save.attachPop(setBabystepEEPROMPopCallback);
+	
+	// MOVE PAGE
+	XYHome.attachPop(setmovePopCallback);
+	XYUp.attachPush(setmovePopCallback);
+	XYRight.attachPush(setmovePopCallback);
+	XYDown.attachPush(setmovePopCallback);
+	XYLeft.attachPush(setmovePopCallback);
+	ZHome.attachPop(setmovePopCallback);
+	ZUp.attachPush(setmovePopCallback);
+	ZDown.attachPush(setmovePopCallback);
+	Extrude.attachPush(setmovePopCallback);
+	Retract.attachPush(setmovePopCallback);
+	MotorOff.attachPop(motoroffPopCallback);
 
-      nexlcd.setpage_Status();
-      splashTimer.enable();
-			PageMenu.show();
+	// GCODE
+	Send.attachPop(setgcodePopCallback); //SERIAL_ECHOLN("attachpop-SEND.");
 
-			buzzer.tone(100, 2300); // dodane - wejsciowy brzeczyk
-			buzzer.tone(100, 2600);
-			buzzer.tone(100, 3100);			
-    }
-  }
+	// YESNO
+	Yes.attachPop(YesNoPopCallback, &Yes);
+	No.attachPop(YesNoPopCallback, &No);
+
+	// SELECT PAGE
+	LcdSend.attachPop(sendPopCallback);
+}
+// LCD INIT
+void NextionLCD::init(){
+
+	nexlcd.connect();
+	nexlcd.setup_callbacks();
+
+
+	#if ENABLED(FSENSOR_STATE)
+		nex_filament_runout_sensor_flag = eeprom_read_byte((uint8_t*)EEPROM_NEX_FILAMENT_SENSOR);
+	#endif
+
+	#if ENABLED(SDSUPPORT) && PIN_EXISTS(SD_DETECT)
+		SET_INPUT_PULLUP(SD_DETECT_PIN);
+		lcd_sd_status = 2; // UNKNOWN
+	#endif
+
+	#if ENABLED(NEXTION_GFX)
+		gfx.color_set(NX_AXIS + X_AXIS, 63488);
+		gfx.color_set(NX_AXIS + Y_AXIS, 2016);
+		gfx.color_set(NX_AXIS + Z_AXIS, 31);
+		gfx.color_set(NX_MOVE, 2047);
+		gfx.color_set(NX_TOOL, 65535);
+		gfx.color_set(NX_LOW, 2047);
+		gfx.color_set(NX_HIGH, 63488);
+	#endif
+
+	nexlcd.setpage_Status();
+	splashTimer.enable();
+	PageMenu.show();
+
+	buzzer.tone(100, 2300); // dodane - wejsciowy brzeczyk
+	buzzer.tone(100, 2600);
+	buzzer.tone(100, 3100);			
+}
 // =======================
 // == END OF	LCD INIT	==
 // =======================
