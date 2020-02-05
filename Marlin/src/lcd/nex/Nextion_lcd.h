@@ -40,12 +40,13 @@ class NextionLCD
     //Zmienne
     char lcd_status_message[24] = "T";
 
+    //Główne metody ekranu
     void check_periodical_actions();  //Aktualizacja LCD z mniejsza czestotliwosca - 0.4s -> nextion_draw_update();
     void nextion_draw_update();       //Odswieza aktualny ekran -> switch
     void init();                      //Inicjalizacja LCD
     void update();                    //Nextion Update 5ms (odswieza i sprawdza komponenty Nex Pop Push)
     void kill_screen_msg(const char* lcd_msg, PGM_P const component); // Wyswietla ekran kill wraz z komunikatem
-    void print_status_msg();
+    void print_status_msg();          // testowa - wyswiela dany mesydz na ekranie statusu
 
 
 
@@ -62,10 +63,9 @@ class NextionLCD
   
     void setrowsdcard(uint32_t number = 0);
     void printrowsd(uint8_t row, const bool folder, const char* filename, const char* longfilename);
+    void nex_enqueue_filament_change();
 
-
-
-    static void sethotPopCallback(void *ptr);
+    static void handle_heatingPopCallback(void *ptr);
 
     static void YesNoPopCallback(void *ptr);
     static void setmovePopCallback(void *ptr);
@@ -73,10 +73,13 @@ class NextionLCD
     static void setgcodePopCallback(void *ptr);
     static void sendPopCallback(void *ptr);
     static void setsetupstatPopCallback(void *ptr);
+
+    // Acceleration PAGE BUTTONS
     static void getaccelPagePopCallback(void *ptr);
     static void setaccelpagePopCallback(void *ptr);
     static void setaccelsavebtnPopCallback(void *ptr);
     static void setaccelloadbtnPopCallback(void *ptr);
+
     static void setBabystepUpPopCallback(void *ptr);
     static void setBabystepDownPopCallback(void *ptr);
     static void setBabystepEEPROMPopCallback(void *ptr);
@@ -102,6 +105,23 @@ class NextionLCD
     void UploadNewFirmware();
     #endif
 
+    #if ENABLED(ADVANCED_PAUSE_FEATURE)
+    void lcd_advanced_pause_toocold_menu();
+    void lcd_advanced_pause_resume_print();
+    void lcd_advanced_pause_extrude_more();
+    void lcd_advanced_pause_option_menu();
+    void lcd_advanced_pause_init_message();
+    void lcd_advanced_pause_unload_message();
+    void lcd_advanced_pause_wait_for_nozzles_to_heat();
+    void lcd_advanced_pause_heat_nozzle();
+    void lcd_advanced_pause_insert_message();
+    static void lcd_advanced_pause_load_message();
+    static void lcd_advanced_pause_purge_message();
+    static void lcd_advanced_pause_resume_message();
+    void lcd_advanced_pause_show_message(const PauseMessage message,const PauseMenuResponse mode/*=ADVANCED_PAUSE_MODE_PAUSE_PRINT*/);
+    void lcd_advanced_pause_show_message(const PauseMessage message,const PauseMenuResponse mode = PAUSE_RESPONSE_WAIT_FOR);
+    #endif
+
     //bool g29_in_progress = false;
  
     #if ENABLED(PROBE_MANUALLY)
@@ -113,10 +133,6 @@ class NextionLCD
       #endif
     #endif
 
-  #if ENABLED(ADVANCED_PAUSE_FEATURE)
-    void lcd_advanced_pause_show_message(const PauseMessage message,
-                                         const PauseMenuResponse mode = PAUSE_RESPONSE_WAIT_FOR);
-  #endif
 
   #if ENABLED(RFID_MODULE)
     void rfidPopCallback(void *ptr);
@@ -136,16 +152,15 @@ class NextionLCD
     void setlightPopCallback(void *ptr);
   #endif
     //void filamentPopCallback(void *ptr);
-    
     //void lcd_scrollinfo(const char* titolo, const char* message);
+
   private:
   protected:
 };
 
 extern NextionLCD nexlcd;
 
-
-extern float feedrate_mm_s; //
+extern float feedrate_mm_s; 
 
 #endif // ENABLED(NEXTION)
 

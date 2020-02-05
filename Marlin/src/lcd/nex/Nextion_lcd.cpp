@@ -306,7 +306,7 @@
 	* NEX komponenty strona:: ACCEL SCREEN 23
 	*******************************************************************/
 #if ENABLED(NEX_ACC_PAGE)
-	NexObject accelin		= NexObject(4, 4, "m5");	// setaccelpagePopCallback -> przekazuje zmienne float do strony z akceleracja
+	NexObject accelin		= NexObject(4, 4, "m5");	// przycisk na stronie ustawienia - przekazuje zmienne float do strony z akceleracja
 	NexObject Awork			= NexObject(23, 22, "a0");
 	NexObject Aretr			= NexObject(23, 23, "a1");
 	NexObject Atravel		= NexObject(23, 24, "a2");
@@ -566,7 +566,7 @@
 	#if ENABLED(SDSUPPORT)
 
 		#if ENABLED(NEX_UPLOAD)
-			void UploadNewFirmware() {
+			void NextionLCD::UploadNewFirmware() {
 				if (IS_SD_INSERTED || card.isMounted) {
 					Firmware.startUpload();
 					nexSerial.end();
@@ -907,7 +907,7 @@
 
     static PauseMenuResponse advanced_pause_mode = PAUSE_RESPONSE_WAIT_FOR;
 
-		void lcd_advanced_pause_toocold_menu() {
+		void NextionLCD::lcd_advanced_pause_toocold_menu() {
 			nex_m600_heatingup = 1; // wlacz wyswietlanie temperatury
 			//screen_timeout_millis = millis(); // wlaczamy timer
 			START_SCREEN();
@@ -919,7 +919,7 @@
 			END_MENU();
 		}
 
-		void nex_enqueue_filament_change() {
+		void NextionLCD::nex_enqueue_filament_change() {
 			#if ENABLED(PREVENT_COLD_EXTRUSION)
 				if (!DEBUGGING(DRYRUN) && !thermalManager.allow_cold_extrude &&
 					thermalManager.degTargetHotend(active_extruder) < thermalManager.extrude_min_temp) {
@@ -934,16 +934,16 @@
 			//kATT enqueue_and_echo_commands_P(PSTR("M600 B0"));
 		}
 
-    void lcd_advanced_pause_resume_print() {
+    void NextionLCD::lcd_advanced_pause_resume_print() {
       pause_menu_response = PAUSE_RESPONSE_RESUME_PRINT;
       PagePrinter.show();
     }
 
-    void lcd_advanced_pause_extrude_more() {
+    void NextionLCD::lcd_advanced_pause_extrude_more() {
       pause_menu_response = PAUSE_RESPONSE_EXTRUDE_MORE;
     }
 
-    void lcd_advanced_pause_option_menu() {
+    void NextionLCD::lcd_advanced_pause_option_menu() {
       START_MENU();
       STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_OPTION_HEADER));
       MENU_ITEM(function, GET_TEXT(MSG_FILAMENT_CHANGE_OPTION_RESUME), lcd_advanced_pause_resume_print);
@@ -951,7 +951,7 @@
       END_MENU();
     }
 
-    void lcd_advanced_pause_init_message() {
+    void NextionLCD::lcd_advanced_pause_init_message() {
       START_SCREEN();
 		STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_INIT_1));
@@ -959,7 +959,7 @@
       END_SCREEN();
     }
 
-    void lcd_advanced_pause_unload_message() {
+    void NextionLCD::lcd_advanced_pause_unload_message() {
       START_SCREEN();
 		STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
 		STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_UNLOAD_1));
@@ -967,7 +967,7 @@
       END_SCREEN();
     }
 
-    void lcd_advanced_pause_wait_for_nozzles_to_heat() {
+    void NextionLCD::lcd_advanced_pause_wait_for_nozzles_to_heat() {
       START_SCREEN();
 		STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_HEATING_1));
@@ -975,7 +975,7 @@
       END_SCREEN();
     }
 
-    void lcd_advanced_pause_heat_nozzle() {
+    void NextionLCD::lcd_advanced_pause_heat_nozzle() {
       START_SCREEN();
 		STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_HEAT_1));
@@ -983,7 +983,7 @@
       END_SCREEN();
     }
 
-    void lcd_advanced_pause_insert_message() {
+    void NextionLCD::lcd_advanced_pause_insert_message() {
       START_SCREEN();
 		STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_INSERT_1));
@@ -992,7 +992,7 @@
       END_SCREEN();
     }
 
-    static void lcd_advanced_pause_load_message() {
+    static void NextionLCD::lcd_advanced_pause_load_message() {
       START_SCREEN();
 		STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_LOAD_1));
@@ -1000,7 +1000,7 @@
       END_SCREEN();
     }
 
-    static void lcd_advanced_pause_purge_message() {
+    static void NextionLCD::lcd_advanced_pause_purge_message() {
       START_SCREEN();
 			//STATIC_ITEM(MSG_NEX_FILAMENT_CHANGE_HEADER); usuniete bo przy pauzie rowniez bylo wyswietlane
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_EXTRUDE_1));
@@ -1008,7 +1008,7 @@
       END_SCREEN();
     }
 
-    static void lcd_advanced_pause_resume_message() {
+    static void NextionLCD::lcd_advanced_pause_resume_message() {
       START_SCREEN();
 		//STATIC_ITEM(MSG_NEX_FILAMENT_CHANGE_HEADER); jw.
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_RESUME_1));
@@ -1016,7 +1016,7 @@
       END_SCREEN();
     }
 
-    void lcd_advanced_pause_show_message(const PauseMessage message,const PauseMenuResponse mode/*=ADVANCED_PAUSE_MODE_PAUSE_PRINT*/) 
+    void NextionLCD::lcd_advanced_pause_show_message(const PauseMessage message,const PauseMenuResponse mode/*=ADVANCED_PAUSE_MODE_PAUSE_PRINT*/) 
 		{
       //UNUSED(extruder);
       static PauseMessage old_message;
@@ -1245,23 +1245,21 @@
 	 */
 
 	// Rozgrzewanie głowicy/blatu/chlodzenie
-  void NextionLCD::sethotPopCallback(void *ptr) {
+  void NextionLCD::handle_heatingPopCallback(void *ptr) {
     UNUSED(ptr);
-
 		uint16_t	temp_hotend = temphe.getValue(),
 							temp_bed = tempbe.getValue();
 
-		if (ptr == &heatupenter || ptr == &chillenter){
+		if (ptr == &heatupenter || ptr == &chillenter){		// ROZGRZEJ OBA LUB COOLING
 			thermalManager.setTargetHotend(temp_hotend, 0);
 			thermalManager.setTargetBed(temp_bed);
 		}
-		else if(ptr == &hotendenter){
+		else if(ptr == &hotendenter){											// ROZGRZEJ GLOWICE
 			thermalManager.setTargetHotend(temp_hotend, 0);
 		}
-		else if(ptr == &heatbedenter){
+		else if(ptr == &heatbedenter){										// ROZGRZEJ PLATFORME
 			thermalManager.setTargetBed(temp_bed);
 		}
-		
     PagePrinter.show();
 		buzzer.tone(100,2300);
   }
@@ -1337,17 +1335,18 @@
 
 		}
 	#endif
-#if ENABLED(NEX_ACC_PAGE)
+
+	#if ENABLED(NEX_ACC_PAGE)
 	void NextionLCD::setaccelpagePopCallback(void *ptr)
 	{
-			UNUSED(ptr); 
-			Awork.setValue(planner.settings.acceleration, "accelpage"); //va0
-			Aretr.setValue(planner.settings.retract_acceleration, "accelpage");	//va1
-			Atravel.setValue(planner.settings.travel_acceleration, "accelpage");
-			Amaxx.setValue(planner.settings.max_acceleration_mm_per_s2[X_AXIS], "accelpage");
-			Amaxy.setValue(planner.settings.max_acceleration_mm_per_s2[Y_AXIS], "accelpage");
-			Amaxz.setValue(planner.settings.max_acceleration_mm_per_s2[Z_AXIS], "accelpage");
-			Amaxe.setValue(planner.settings.max_acceleration_mm_per_s2[E_AXIS+active_extruder], "accelpage");
+		UNUSED(ptr); 
+		Awork.setValue(planner.settings.acceleration, "accelpage"); //va0
+		Aretr.setValue(planner.settings.retract_acceleration, "accelpage");	//va1
+		Atravel.setValue(planner.settings.travel_acceleration, "accelpage");
+		Amaxx.setValue(planner.settings.max_acceleration_mm_per_s2[X_AXIS], "accelpage");
+		Amaxy.setValue(planner.settings.max_acceleration_mm_per_s2[Y_AXIS], "accelpage");
+		Amaxz.setValue(planner.settings.max_acceleration_mm_per_s2[Z_AXIS], "accelpage");
+		Amaxe.setValue(planner.settings.max_acceleration_mm_per_s2[E_AXIS+active_extruder], "accelpage");
 	}
 	void NextionLCD::getaccelPagePopCallback(void *ptr)
 	{
@@ -1359,6 +1358,19 @@
 		planner.settings.max_acceleration_mm_per_s2[Z_AXIS] = Amaxz.getValue("accelpage");
 		planner.settings.max_acceleration_mm_per_s2[E_AXIS + active_extruder] = Amaxe.getValue("accelpage");
 	}
+
+	void NextionLCD::setaccelsavebtnPopCallback(void *ptr)
+	{
+		settings.save();
+		SERIAL_ECHOPGM("zapisane");
+	}
+	void NextionLCD::setaccelloadbtnPopCallback(void *ptr)
+	{
+		settings.load();
+		SERIAL_ECHOPGM("zaladowane");
+	}
+	#endif
+
 	#ifdef CLASSIC_JERK
 		void NextionLCD::setjerkpagePopCallback(void *ptr)
 		{
@@ -1380,18 +1392,6 @@
 				Amaxx.setValue(planner.axis_steps_per_mm[E_AXIS+active_extruder], "accelpage");	//va3
 		}
 	#endif
-
-#endif
-	void NextionLCD::setaccelsavebtnPopCallback(void *ptr)
-	{
-		settings.save();
-		SERIAL_ECHOPGM("zapisane");
-	}
-	void NextionLCD::setaccelloadbtnPopCallback(void *ptr)
-	{
-		settings.load();
-		SERIAL_ECHOPGM("zaladowane");
-	}
 
 	void NextionLCD::setBabystepUpPopCallback(void *ptr)
 	{
@@ -1648,10 +1648,10 @@ void NextionLCD::init(){
 			#endif
 
 			// TEMPERATURA
-			heatupenter.attachPop(sethotPopCallback, &heatupenter); // obsluga przycisku rozgrzej oba
-			hotendenter.attachPop(sethotPopCallback, &hotendenter); //obsluga przycisku rozgrzej hotend
-			heatbedenter.attachPop(sethotPopCallback, &heatbedenter); //obsluga przycisku rozgrzej bed
-			chillenter.attachPop(sethotPopCallback, &chillenter); //obs�uga przycisku chlodzenie
+			heatupenter.attachPop	(handle_heatingPopCallback, &heatupenter); // obsluga przycisku rozgrzej oba
+			hotendenter.attachPop	(handle_heatingPopCallback, &hotendenter); //obsluga przycisku rozgrzej hotend
+			heatbedenter.attachPop(handle_heatingPopCallback, &heatbedenter); //obsluga przycisku rozgrzej bed
+			chillenter.attachPop	(handle_heatingPopCallback, &chillenter); //obsluga przycisku chlodzenie
 
 			
 
@@ -2004,7 +2004,7 @@ void NextionLCD::init(){
 	}
 
 
-  void lcd_yesno(const uint8_t val, const char* msg1, const char* msg2, const char* msg3) {
+  void NextionLCD::lcd_yesno(const uint8_t val, const char* msg1, const char* msg2, const char* msg3) {
     Vyes.setValue(val, "yesno");
     PageYesNo.show();
     Riga0.setText(msg1);
@@ -2051,15 +2051,15 @@ void NextionLCD::init(){
 
 
   #if ENABLED(NEXTION_GFX)
-    void gfx_origin(const float x, const float y, const float z) {
+    void NextionLCD::gfx_origin(const float x, const float y, const float z) {
       gfx.origin(x, y, z);
     }
 
-    void gfx_scale(const float scale) {
+    void NextionLCD::gfx_scale(const float scale) {
       gfx.set_scale(scale);
     }
 
-    void gfx_clear(const float x, const float y, const float z, bool force_clear) {
+    void NextionLCD::gfx_clear(const float x, const float y, const float z, bool force_clear) {
       if (PageID == 2 && (print_job_counter.isRunning() || card.isPrinting || force_clear)) {
         Wavetemp.SetVisibility(false);
         show_Wave = !force_clear;
@@ -2067,12 +2067,12 @@ void NextionLCD::init(){
       }
     }
 
-    void gfx_cursor_to(const float x, const float y, const float z, bool force_cursor) {
+    void NextionLCD::gfx_cursor_to(const float x, const float y, const float z, bool force_cursor) {
       if (PageID == 2 && (print_job_counter.isRunning() || card.isPrinting || force_cursor))
         gfx.cursor_to(x, y, z);
     }
 
-    void gfx_line_to(const float x, const float y, const float z) {
+    void NextionLCD::gfx_line_to(const float x, const float y, const float z) {
       if (PageID == 2 && (print_job_counter.isRunning() || card.isPrinting)) {
         #if ENABLED(ARDUINO_ARCH_SAM)
           gfx.line_to(NX_TOOL, x, y, z, true);
@@ -2082,7 +2082,7 @@ void NextionLCD::init(){
       }
     }
 
-    void gfx_plane_to(const float x, const float y, const float z) {
+    void NextionLCD::gfx_plane_to(const float x, const float y, const float z) {
       uint8_t color;
       if (PageID == 2) {
         if (z < 10) color = NX_LOW;
