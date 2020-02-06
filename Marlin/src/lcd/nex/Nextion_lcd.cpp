@@ -105,32 +105,18 @@
 	 *	Nextion stop print button
 	 */
   void NextionLCD::nex_stop_printing() {
-		// 2.0 did_pause_print = false;					// flaga pause_print na false, na wypadek gdyby drukarka byla w stanie pauzy @_@
-	  card.stopSDPrint();											// wstrzymaj wydruk z kartysd
-		//clear_command_queue();								// czysc kolejke komend
-		//stepper.quick_stop_panic();						// pomocne z panic'a, trzeba to zaserwowac aby mozna bylo ponownie wykonac jakakolwiek komende
-		thermalManager.disable_all_heaters();		// wylacz grzalki
-		percentdone.setText("0", "printer");		// zeruj procenty
-		progressbar.setValue(0, "printer");			// zeruj progress bar
+		card.flag.abort_sd_printing = true; 		// Ta flaga zatrzymuje wydruk w kolejnej wolnej instrukcji idle();
 
+		// 2.0 did_pause_print = false;					// flaga pause_print na false, na wypadek gdyby drukarka byla w stanie pauzy @_@
+		//stepper.quick_stop_panic();						// pomocne z panic'a, trzeba to zaserwowac aby mozna bylo ponownie wykonac jakakolwiek komende
 		#if ENABLED(PLOSS_SUPPORT)
 			//_babystep_z_shift = 0;								// dodane - zeruje babystep po zatrzymaniu wydruku
 			persistentStore.writedata((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);	// zeruj babystepping w eeprom
 		#endif
 
-		#if FAN_COUNT > 0
-			for (uint8_t i = 0; i < FAN_COUNT; i++) thermalManager.fan_speed[i] = 0;
-		#endif
-
-		wait_for_heatup = false;					// flaga false
-		ui.set_status_P(GET_TEXT(MSG_PRINT_ABORTED), -1);	// status info
-		print_job_timer.stop();						// wstrzymujemy timer
-
-		//G28 on stop print
-		#if ENABLED(STOP_PRINT_G28)
-				//home_all_axes();						// bazujemy osie
-		#endif
-				queue.inject_P(PSTR("G28"));
+		percentdone.setText("0", "printer");		// zeruj procenty
+		progressbar.setValue(0, "printer");			// zeruj progress bar
+		ui.set_status_P(GET_TEXT(MSG_PRINT_ABORTED), -1);	// status bar info
 	}
 
 	/**
@@ -1124,10 +1110,8 @@
         #if ENABLED(SDSUPPORT)
           case 1: // Stop Print
 						PagePrinter.show();
-						card.flag.abort_sd_printing = true;
-						//abortSDPrinting();
-						//ui.abort_print();
-						//nexlcd.nex_stop_printing();
+						card.flag.abort_sd_printing = true; // Ta flaga zatrzymuje wydruk w kolejnej wolnej instrukcji idle();
+						nexlcd.nex_stop_printing();
             break;
           case 2: // Upload Firmware
 						#if ENABLED(NEX_UPLOAD)
