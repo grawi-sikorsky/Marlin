@@ -22,7 +22,7 @@
   NexObject PagePrinter    		= NexObject(2,  0,  "printer");
   //NexObject Psdcard       	= NexObject(3,  0,  "sdcard");
   NexObject PageSetup        	= NexObject(4,  0,  "setup");
-	//NexObject Pmove         	= NexObject(5,  0,  "move");// lipa
+	//NexObject Pmove         	  = NexObject(5,  0,  "move");
   //NexObject Pspeed        	= NexObject(6,  0,  "speed");// lipa
   //NexObject Pgcode        	= NexObject(7,  0,  "gcode");// lipa
   //NexObject Prfid         	= NexObject(8,  0,  "rfid");

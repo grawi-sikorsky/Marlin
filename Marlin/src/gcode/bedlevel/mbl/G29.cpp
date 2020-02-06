@@ -131,7 +131,7 @@ void GcodeSuite::G29() {
       }
       else {
         // One last "return to the bed" (as originally coded) at completion
-        current_position.z = MANUAL_PROBE_HEIGHT;
+        current_position.z = LOGICAL_Z_POSITION(Z_MIN_POS) + MANUAL_PROBE_HEIGHT;
         line_to_current_position();
         planner.synchronize();
 
