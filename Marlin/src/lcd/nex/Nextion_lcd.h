@@ -45,6 +45,7 @@ class NextionLCD
     void nextion_draw_update();       //Odswieza aktualny ekran -> switch
     void init();                      //Inicjalizacja LCD
     void connect();                   //Funkcja laczaca sie z ekranem
+    void setup_components();          //Ustawia liste komponentow
     void setup_callbacks();           //Ustawia i przypisuje funkcje obslugi zdarzen
     void update();                    //Nextion Update 5ms (odswieza i sprawdza komponenty Nex Pop Push)
     void kill_screen_msg(const char* lcd_msg, PGM_P const component); // Wyswietla ekran kill wraz z komunikatem
@@ -157,6 +158,8 @@ class NextionLCD
     //void lcd_scrollinfo(const char* titolo, const char* message);
 
   private:
+
+      NexObject PageMenu       		= NexObject(1,  0,  "menu");
   protected:
 };
 
