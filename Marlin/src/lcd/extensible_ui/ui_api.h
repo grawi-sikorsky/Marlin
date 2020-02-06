@@ -134,7 +134,6 @@ namespace ExtUI {
   #if HAS_LEVELING
     #if ENABLED(NEXTION_DISPLAY)
       void onMeshProbingDone();   // dodane dla nextion H3
-      void onHomingAllDoneG28();  // dodane dla nextion H3
     #endif
     bool getLevelingActive();
     void setLevelingActive(const bool);

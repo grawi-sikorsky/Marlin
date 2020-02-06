@@ -47,7 +47,8 @@
    /*******************************************************************
    * NEX komponenty strona: SplashScreen
    *******************************************************************/
-  NexObject splashTimer	     = NexObject(0,  3,  "tm1");
+  NexObject splashRandomNr    = NexObject(0, 6, "randomnr");
+  NexObject splashTimer	      = NexObject(0,  3,  "tm1");
 
   /*******************************************************************
    * NEX komponenty strona: menu
@@ -79,7 +80,7 @@
 	/*******************************************************************
    * NEX komponenty strona: SDCard
    *******************************************************************/
-  NexObject sdlist      = NexObject(3,   1, "h0");
+  NexObject sdscrollbar = NexObject(3,   1, "h0");
   NexObject sdrow0      = NexObject(3,   2, "t0");
   NexObject sdrow1      = NexObject(3,   3, "t1");
   NexObject sdrow2      = NexObject(3,   4, "t2");
@@ -262,7 +263,7 @@
     &NPlay,
 
     // Page 3 touch listen
-    &sdlist, &ScrollUp, &ScrollDown, &sdrow0, &sdrow1, &sdrow2,
+    &sdscrollbar, &ScrollUp, &ScrollDown, &sdrow0, &sdrow1, &sdrow2,
     &sdrow3, &sdrow4, &sdrow5, &Folderup,
 
     // Page 4 touch listen setup

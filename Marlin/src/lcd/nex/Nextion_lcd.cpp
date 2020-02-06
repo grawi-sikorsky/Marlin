@@ -331,8 +331,8 @@
       else
         slidermaxval  = fileCnt - 6;
 
-      sdlist.setMaxval(slidermaxval);
-      sdlist.setValue(slidermaxval,"sdcard");
+      sdscrollbar.setMaxval(slidermaxval);
+      sdscrollbar.setValue(slidermaxval,"sdcard");
 
       setrowsdcard();
     }
@@ -342,7 +342,7 @@
 		*/
     void NextionLCD::sdlistPopCallback(void *ptr) {
       UNUSED(ptr);
-      uint16_t number = slidermaxval - sdlist.getValue();
+      uint16_t number = slidermaxval - sdscrollbar.getValue();
       nexlcd.setrowsdcard(number);
     }
 
@@ -1171,7 +1171,7 @@ void NextionLCD::connect(){
 		if (NextionON) break;
 		delay(50);
 	}
-	if (!NextionON) { SERIAL_ECHOPGM("Nextion NOT connected..."); return; }
+	if (!NextionON) { SERIAL_ECHOPGM("Nextion NOT connected.."); return; }
 	else {
 	SERIAL_ECHO_START();
 	SERIAL_ECHOPGM("Nextion");
@@ -1207,8 +1207,13 @@ void NextionLCD::connect(){
 		#endif
 		}
 	SERIAL_CHAR('"'); SERIAL_ECHOLNPGM(" connected!");
-
 	}
+	nexlcd.sendRandomSplashMessage(); 		// Funkcja ma wysylac randomowa liczbe dla nextiona ktory na jej podstawie wyswietli mesydz
+}
+// Random Splash Message
+void NextionLCD::sendRandomSplashMessage(){
+	int32_t randtemp = random(0,21);
+	splashRandomNr.setValue(randtemp,"start");
 }
 // SETUP CALLBACKS
 void NextionLCD::setup_callbacks(){
@@ -1217,7 +1222,7 @@ void NextionLCD::setup_callbacks(){
 	//
 	// SDSUPPORT
 	#if ENABLED(SDSUPPORT)
-		sdlist.attachPop(sdlistPopCallback);
+		sdscrollbar.attachPop(sdlistPopCallback);
 		ScrollUp.attachPop(sdlistPopCallback);
 		ScrollDown.attachPop(sdlistPopCallback);
 		NPlay.attachPop(PlayPausePopCallback);
@@ -1426,8 +1431,7 @@ void NextionLCD::init(){
 // =======================
 // == LCD UPDATE				==
 // =======================
-	void NextionLCD::update()
-	{
+	void NextionLCD::update(){
 		if (!NextionON) return;
 		
     nexLoop(nex_listen_list); // odswieza sie z delayem 5 ms
@@ -1439,6 +1443,16 @@ void NextionLCD::init(){
 		{
 			PagePrinter.show();
 			screen_timeout_millis = 0;
+		}
+	}
+
+	void NextionLCD::check_periodical_actions(){
+		static millis_t cycle_1s = 0;
+		const millis_t now = millis();
+		
+		if (ELAPSED(now, cycle_1s)) {
+			cycle_1s = now + 400UL; // zmianka z 1000UL
+			nextion_draw_update();				
 		}
 	}
 // ===========================
@@ -1463,9 +1477,8 @@ void NextionLCD::init(){
 
     switch(PageID)
 		{
-      case 2:
-        if (PreviousPage != 2) 
-				{
+      case 2: //STATUS PAGE
+        if (PreviousPage != 2) {
 					LcdStatus.setText(lcd_status_message);
           #if ENABLED(NEXTION_GFX)
             #if MECH(DELTA)
@@ -1476,10 +1489,10 @@ void NextionLCD::init(){
           #endif
 				}
 				//Wentylator
-         if (PreviousfanSpeed != thermalManager.fan_speed[0]) {
+        if (PreviousfanSpeed != thermalManager.fan_speed[0]) {
 					PrinterFanspeed.setValue(((float)(thermalManager.fan_speed[0]) / 255) * 100,"printer");
           PreviousfanSpeed = thermalManager.fan_speed[0]; 
-         }
+        }
 				//feedrate
         if (Previousfeedrate != feedrate_percentage) {
           VSpeed.setValue(feedrate_percentage,"printer");
@@ -1579,27 +1592,27 @@ void NextionLCD::init(){
           }
         #endif 
         break;
-	#if ENABLED(SDSUPPORT)
-      case 3:
+		#if ENABLED(SDSUPPORT)
+      case 3: // SD CARD LIST
 					nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
 					if (PreviousPage != 3) {
 						setpageSD();
 					}
           break;
-	#endif
-      case 5:
+		#endif
+      case 5:	// MOVE PAGE
         coordtoLCD();
         break;
-      case 6:
+      case 6:	// FEEDRATE PAGE?
         //Previousfeedrate = feedrate_percentage = (int)VSpeed.getValue("printer");
         break;
-			case 12:
+			case 12:	// 
 				// odswiez temp glowicy na ekranie filament [przyciski]
 					degtoLCD(0, thermalManager.degHotend(0));
 				break;
-			case 13:
-				// pokaz temp glowicy podczas nagrzewania m600 na stronie select
-				if (nex_m600_heatingup == 1)
+			case 13:	// FILAMENT CHANGE PAGE?
+				
+				if (nex_m600_heatingup == 1) // pokaz temp glowicy podczas nagrzewania m600 na stronie select
 				{
 					char *temp_he; 	// temperatura hotendu
 					char *temp_te;	// temperatura hotendu docelowa
@@ -1645,34 +1658,20 @@ void NextionLCD::init(){
 	// dodana obsluga babystep
 	#if ENABLED(BABYSTEPPING)
 		void NextionLCD::nextion_babystep_z(bool dir) {
-				const int16_t babystep_increment = 8;
+			const int16_t babystep_increment = 8;
 
-				if (dir == true)
-				{
-					babystep.add_steps(Z_AXIS, babystep_increment);
-					_babystep_z_shift += babystep_increment;
-				}
-				else if (dir == false)
-				{
-					 babystep.add_steps(Z_AXIS, -babystep_increment);
-					_babystep_z_shift -= babystep_increment;
-				}
+			if (dir == true)
+			{
+				babystep.add_steps(Z_AXIS, babystep_increment);
+				_babystep_z_shift += babystep_increment;
+			}
+			else if (dir == false)
+			{
+					babystep.add_steps(Z_AXIS, -babystep_increment);
+				_babystep_z_shift -= babystep_increment;
+			}
 		}
 	#endif
-
-
-
-	void NextionLCD::check_periodical_actions()
-	{
-		static millis_t cycle_1s = 0;
-		const millis_t now = millis();
-		
-		if (ELAPSED(now, cycle_1s)) {
-			cycle_1s = now + 400UL; // zmianka z 1000UL
-			nextion_draw_update();				
-		}
-	}
-
 
   #if ENABLED(NEXTION_GFX)
     void NextionLCD::gfx_origin(const float x, const float y, const float z) {
@@ -1797,7 +1796,7 @@ void NextionLCD::init(){
 			}
 		};
 
-		void onMediaError() {  };		
+		void onMediaError(){};		
 
 		// STATUS BAR
 		void onStatusChanged(const char * const msg) { 
@@ -1812,16 +1811,10 @@ void NextionLCD::init(){
 		void onMeshProbingDone(){
 			settings.save();
 			buzzer.tone(1000,1000);
-
 			nexlcd.return_after_leveling(true);
 		}
 
-		void onHomingAllDoneG28(){
-			// cos tam robi po zakonczeniu g28....
-		}
-
 		// Szkieletowe z example - do wypelnienia
-
 		void onMeshUpdate(const int8_t xpos, const int8_t ypos, const float zval) {
     // Called when any mesh points are updated
   	}

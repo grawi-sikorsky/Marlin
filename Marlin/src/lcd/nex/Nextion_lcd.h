@@ -50,6 +50,7 @@ class NextionLCD
     void nextion_draw_update();       //Odswieza aktualny ekran -> switch
     void init();                      //Inicjalizacja LCD
     void connect();                   //Funkcja laczaca sie z ekranem
+    void sendRandomSplashMessage();   //Wysyla randomowy msg na splash screen
     void setup_components();          //Ustawia liste komponentow
     void setup_callbacks();           //Ustawia i przypisuje funkcje obslugi zdarzen
     void update();                    //Nextion Update 5ms (odswieza i sprawdza komponenty Nex Pop Push)
@@ -166,7 +167,6 @@ class NextionLCD
 
   private:
 
-      NexObject PageMenu       		= NexObject(1,  0,  "menu");
   protected:
 };
 

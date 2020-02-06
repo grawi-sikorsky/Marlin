@@ -1158,7 +1158,6 @@ void loop() {
 
     idle();
     
-
     #if ENABLED(NEXTION)
       nexlcd.check_periodical_actions(); //dodane dla nextion PRINTO H3
     #endif
