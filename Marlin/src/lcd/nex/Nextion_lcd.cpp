@@ -33,11 +33,7 @@
 
 	NextionLCD nexlcd;
 
-  bool        NextionON                 = false,
-              show_Wave                 = true,
-              lcdDrawUpdate             = false,
-              lcd_clicked               = false,
-							nex_m600_heatingup 				= false;
+
 
   uint8_t     PageID                    = 0,
               lcd_status_message_level  = 0;
@@ -183,18 +179,6 @@
 		#endif
 
 		VSpeed.setValue(100, "printer");
-		/*
-    #if ENABLED(SDSUPPORT)
-      if (!card.isMounted) card.mount();
-      delay(100);
-      if (card.isMounted) {
-        SDstatus = SD_INSERT;
-        card.cdroot();  // Initial boot
-      }
-      else SDstatus = SD_NO_INSERT;
-
-      SD.setValue(SDstatus, "printer");
-    #endif*/
 
     #define LANGUAGE_STRING(M) STRINGIFY(M)
     #define NEXTION_LANGUAGE LANGUAGE_STRING(LCD_LANGUAGE)
@@ -458,7 +442,7 @@
 	 */
 
 
-  void start_menu(const bool encoder=false, const bool push=false) 
+  void NextionLCD::start_menu(const bool encoder=false, const bool push=false) 
 	{
     PageSelect.show();
     LcdUp.SetVisibility(encoder);
@@ -869,12 +853,13 @@
 
         planner.synchronize(); //przesuniecie metody synchronize ze stepper do planner
       }
-      else if (ptr == &ProbeSend) {
+      
+			else if (ptr == &ProbeSend) {
 				SERIAL_ECHOLNPGM("probesend:");
         #if HAS_LEVELING && ENABLED(NEXTION_BED_LEVEL)
 				//if (g29_in_progress == true) {
-					queue.inject_P("G29 S2"); 
-			//	}
+					queue.inject_P("G29 S2");
+				//}
         #endif
 					wait_for_user = false;
       }
@@ -1098,10 +1083,11 @@
   void NextionLCD::setmovePopCallback(void *ptr) {
     UNUSED(ptr);
     ZERO(bufferson);
-    movecmd.getText(bufferson, sizeof(bufferson));
-		queue.inject_P("G91");
-		queue.inject_P(bufferson);
-		queue.inject_P("G90");
+    movecmd.getText(bufferson, sizeof(bufferson), "move");
+		SERIAL_ECHOLN(bufferson);
+		queue.enqueue_now_P("G91");
+		queue.enqueue_now_P(bufferson);
+		queue.enqueue_now_P("G90");
   }
 
   void NextionLCD::motoroffPopCallback(void *ptr) {
@@ -1112,7 +1098,7 @@
 	// NEXTION: Obsluga klikniecia przycisku SEND na SELECT PAGE
   void NextionLCD::sendPopCallback(void *ptr) {
     UNUSED(ptr);
-    lcd_clicked = true;
+    nexlcd.lcd_clicked = true;
 		wait_for_user = false;
 
 		// dodane aby wyjsc kliknieciem z ostatniego ekranu vlcs / oraz z ekranu too cold for extrude m600
@@ -1346,7 +1332,7 @@ void NextionLCD::init(){
 // == END OF	LCD INIT	==
 // =======================
 
-  bool lcd_detected() { return NextionON; }
+  
 
 	// Wysyla aktualne temperatury do NEX
   static void degtoLCD(const uint8_t h, float temp) {
@@ -1465,7 +1451,6 @@ void NextionLCD::init(){
 // ===========================
 // ODSWIEZANE 0.4s ()
   void NextionLCD::nextion_draw_update() {
-		SERIAL_ECHOLN(nexSerial.available());
     static uint8_t  	PreviousPage = 0,					// strona nex
                     	Previousfeedrate = 0,			// dotychczasowa predkosc druku
                     	PreviousfanSpeed = 0,			// dotychczasowa predkosc wentylatora
