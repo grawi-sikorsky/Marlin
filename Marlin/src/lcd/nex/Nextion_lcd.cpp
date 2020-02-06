@@ -865,6 +865,14 @@
       }
     }
 
+	void NextionLCD::return_after_leveling(bool finish)
+	{
+		if (finish == true)
+		{
+			PagePrinter.show();
+		}
+	}
+
 	#endif
 		/**
 	 * 	BED LEVELING SUPPORT END
@@ -1085,7 +1093,7 @@
     ZERO(bufferson);
     movecmd.getText(bufferson, sizeof(bufferson), "move");
 		SERIAL_ECHOLN(bufferson);
-		queue.enqueue_now_P("G91");
+		queue.enqueue_now_P("G91");			//enqueue now zamiast injectP... A pytaj mnie czego.. 
 		queue.enqueue_now_P(bufferson);
 		queue.enqueue_now_P("G90");
   }
@@ -1116,7 +1124,10 @@
         #if ENABLED(SDSUPPORT)
           case 1: // Stop Print
 						PagePrinter.show();
-						nexlcd.nex_stop_printing();
+						card.flag.abort_sd_printing = true;
+						//abortSDPrinting();
+						//ui.abort_print();
+						//nexlcd.nex_stop_printing();
             break;
           case 2: // Upload Firmware
 						#if ENABLED(NEX_UPLOAD)
@@ -1753,14 +1764,6 @@ void NextionLCD::init(){
 	// Resetuje status na domyslny WELCOME_MSG
 	void MarlinUI::reset_status(){ set_status_P(GET_TEXT(WELCOME_MSG),1); }
 
-	void MarlinUI::nex_return_after_leveling(bool finish)
-	{
-		if (finish == true)
-		{
-			PagePrinter.show();
-		}
-	}
-
 	void MarlinUI::nex_bedlevel_finish()
 	{
 		//ui.nex_return_after_leveling(true); //dodane, powrot do status
@@ -1786,6 +1789,7 @@ void NextionLCD::init(){
 		void onPrinterKilled(PGM_P const error, PGM_P const component) { nexlcd.kill_screen_msg(error, component); }
 		void onPlayTone(const unsigned int frequency, const unsigned long duration) {}
 
+		// SD CARD OBSLUGA
 		void onMediaInserted() {
 			SDstatus = SD_INSERT; // przekaz flage do strony status
 			SD.setValue(SDstatus, "printer");
@@ -1811,6 +1815,7 @@ void NextionLCD::init(){
 
 		void onMediaError() {  };		
 
+		// STATUS BAR
 		void onStatusChanged(const char * const msg) { 
 			strncpy_P(nexlcd.lcd_status_message, msg, 24);
 			nexlcd.print_status_msg();
@@ -1820,7 +1825,22 @@ void NextionLCD::init(){
 			}
 		}
 
+		void onMeshProbingDone(){
+			settings.save();
+			buzzer.tone(1000,1000);
+
+			nexlcd.return_after_leveling(true);
+		}
+
+		void onHomingAllDoneG28(){
+			// cos tam robi po zakonczeniu g28....
+		}
+
 		// Szkieletowe z example - do wypelnienia
+
+		void onMeshUpdate(const int8_t xpos, const int8_t ypos, const float zval) {
+    // Called when any mesh points are updated
+  	}
 
 		void onPrintTimerStarted() {}
 		void onPrintTimerPaused() {}
@@ -1857,10 +1877,6 @@ void NextionLCD::init(){
 		void onConfigurationStoreRead(bool success) {
 			// Called after the entire EEPROM has been read,
 			// whether successful or not.
-		}
-
-		void onMeshUpdate(const int8_t xpos, const int8_t ypos, const float zval) {
-			// Called when any mesh points are updated
 		}
 
 		#if ENABLED(POWER_LOSS_RECOVERY)

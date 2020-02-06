@@ -141,8 +141,8 @@ void GcodeSuite::G29() {
         BUZZ(100, 659);
         BUZZ(100, 698);
 
-        #if ENABLED(NEXTION_DISPLAY)
-          //ui.nex_bedlevel_finish();
+        #if ENABLED(EXTENSIBLE_UI)
+          ExtUI::onMeshProbingDone();
         #endif
 
         home_all_axes();
