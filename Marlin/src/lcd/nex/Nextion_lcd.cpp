@@ -106,7 +106,7 @@
 	 */
   void NextionLCD::nex_stop_printing() {
 		card.flag.abort_sd_printing = true; 		// Ta flaga zatrzymuje wydruk w kolejnej wolnej instrukcji idle();
-
+		
 		// 2.0 did_pause_print = false;					// flaga pause_print na false, na wypadek gdyby drukarka byla w stanie pauzy @_@
 		//stepper.quick_stop_panic();						// pomocne z panic'a, trzeba to zaserwowac aby mozna bylo ponownie wykonac jakakolwiek komende
 		#if ENABLED(PLOSS_SUPPORT)
@@ -1110,7 +1110,7 @@
         #if ENABLED(SDSUPPORT)
           case 1: // Stop Print
 						PagePrinter.show();
-						card.flag.abort_sd_printing = true; // Ta flaga zatrzymuje wydruk w kolejnej wolnej instrukcji idle();
+						//card.flag.abort_sd_printing = true; // Ta flaga zatrzymuje wydruk w kolejnej wolnej instrukcji idle();
 						nexlcd.nex_stop_printing();
             break;
           case 2: // Upload Firmware
