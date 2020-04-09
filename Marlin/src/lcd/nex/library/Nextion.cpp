@@ -676,31 +676,16 @@
   //
 
   bool nexInit(char *buffer) {
-	  SERIAL_ECHOLN(" Wejscie w nex_init ");
+	  SERIAL_ECHOLN("nex_init");
 
     ZERO(buffer);
-	  SERIAL_ECHOLN(" przed getConnect ");
+
+    nexSerial.begin(115200);
     bool connect = getConnect(buffer);
-	  SERIAL_ECHOLN(" za get connect ");
     
-    // If baudrate is 9600 set to 115200 and reconnect
     if (connect) {
-			SERIAL_ECHOLNPGM(" Weszlo w 9600, proba zmiany na 115200 ");
-      sendCommand("baud=115200");
-      //nexSerial.end(); //HardwareSerial.end() nie istnieje w 2.0?
-      delay(800);
-      nexSerial.begin(115200);
-      connect = getConnect(buffer);
-			if (connect) return true;
-      //return true;
-    }
-    else { // Else try to 115200 baudrate
-			SERIAL_ECHOLNPGM(" Nie weszlo w 9600 proba wejscia na 115200 ");
-      //nexSerial.end(); //HardwareSerial.end() nie istnieje w 2.0?
-	    delay(800);
-      nexSerial.begin(115200);
-      connect = getConnect(buffer);
-      if (connect) return true;
+			SERIAL_ECHOLNPGM("Weszlo w 115200");
+      return true;
     }
     return false;
   }

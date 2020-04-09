@@ -48,6 +48,7 @@
    * NEX komponenty strona: SplashScreen
    *******************************************************************/
   NexObject splashRandomNr    = NexObject(0, 6, "randomnr");
+  NexObject splashText        = NexObject(0, 5, "t0");
   NexObject splashTimer	      = NexObject(0,  3,  "tm1");
 
   /*******************************************************************

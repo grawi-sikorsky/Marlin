@@ -1165,12 +1165,14 @@
 // =======================
 // Connect
 void NextionLCD::connect(){
-		for (uint8_t i = 0; i < 10; i++) {
+		for (uint8_t i = 0; i < 5; i++) {
 		ZERO(bufferson);
 		NextionON = nexInit(bufferson);
 		if (NextionON) break;
-		delay(50);
+		delay(10);
 	}
+	nexlcd.sendRandomSplashMessage();
+
 	if (!NextionON) { SERIAL_ECHOPGM("Nextion NOT connected.."); return; }
 	else {
 	SERIAL_ECHO_START();
@@ -1208,13 +1210,185 @@ void NextionLCD::connect(){
 		}
 	SERIAL_CHAR('"'); SERIAL_ECHOLNPGM(" connected!");
 	}
+
 	nexlcd.sendRandomSplashMessage(); 		// Funkcja ma wysylac randomowa liczbe dla nextiona ktory na jej podstawie wyswietli mesydz
 }
 // Random Splash Message
 void NextionLCD::sendRandomSplashMessage(){
-	int32_t randtemp = random(0,21);
-	splashRandomNr.setValue(randtemp,"start");
+	int32_t randtemp = random(1,21);
+
+	if(randtemp == 1)
+	{
+		splashText.setText("Let's print!","start");
+	}
+	else if(randtemp == 2)
+	{
+		splashText.setText("Did you print something today?","start");
+	}
+	else if(randtemp == 3)
+	{
+		splashText.setText("Clean your 3D printer, it has feelings too..","start");
+	}
+	else if(randtemp == 4)
+	{
+		splashText.setText("Don't try this.. I know you want to..","start");
+	}
+	else if(randtemp == 5)
+	{
+		splashText.setText("How are you?","start");
+	}
+	else if(randtemp == 6)
+	{
+		splashText.setText("Good day!","start");
+	}
+	else if(randtemp == 7)
+	{
+		splashText.setText("Dont print waste.. It's waste.","start");
+	}
+	else if(randtemp == 8)
+	{
+		splashText.setText("Be hero in your home, print some spare parts!","start");
+	}
+	else if(randtemp == 9)
+	{
+		splashText.setText("Good filament is 50% of succesfull print.","start");
+	}
+	else if(randtemp == 10)
+	{
+		splashText.setText("Yeah, cupholder is a good idea..","start");
+	}
+	else if(randtemp == 11)
+	{
+		splashText.setText("If you didnt print today, i'll tell my dad.","start");
+	}
+	else if(randtemp == 12)
+	{
+		splashText.setText("It's not my fault.. :<","start");
+	}
+	else if(randtemp == 13)
+	{
+		splashText.setText("Hey! You created gcode, not me!","start");
+	}
+	else if(randtemp == 14)
+	{
+		splashText.setText("Uaaaaaghh... Did I sleep?","start");
+	}
+	else if(randtemp == 15)
+	{
+		splashText.setText("YOU'RE BACK!","start");
+	}
+	else if(randtemp == 16)
+	{
+		splashText.setText("Dont push me, I print at my own pace.","start");
+	}
+	else if(randtemp == 17)
+	{
+		splashText.setText("Why are you waking me up?","start");
+	}
+	else if(randtemp == 18)
+	{
+		splashText.setText("Nope.","start");
+	}
+	else if(randtemp == 19)
+	{
+		splashText.setText("Seriously.. Do i have to?","start");
+	}
+	else if(randtemp == 20)
+	{
+		splashText.setText("I'm  watching you..","start");
+	}
+	else if(randtemp == 21)
+	{
+		splashText.setText("Stroke my belts and gears.. mrrrrr..","start");
+	}
+
+	/*
+	if(randomnr.val==1)
+	{
+		t0.txt="Let's print!"
+	}
+	if(randomnr.val==2)
+	{
+		t0.txt="Did you print something today?"
+	}
+	if(randomnr.val==3)
+	{
+		t0.txt="Clean your 3D printer, it has feelings too.."
+	}
+	if(randomnr.val==4)
+	{
+		t0.txt="Don't try this.. I know you want to.."
+	}
+	if(randomnr.val==5)
+	{
+		t0.txt="How are you?"
+	}
+	if(randomnr.val==6)
+	{
+		t0.txt="Good day!"
+	}
+	if(randomnr.val==7)
+	{
+		t0.txt="Dont print waste.. It's waste."
+	}
+	if(randomnr.val==8)
+	{
+		t0.txt="Be hero in your home, print some spare parts!"
+	}
+	if(randomnr.val==9)
+	{
+		t0.txt="Good filament is 50% of good print."
+	}
+	if(randomnr.val==10)
+	{
+		t0.txt="Yeah, cupholder is a good idea.."
+	}
+	if(randomnr.val==11)
+	{
+		t0.txt="If you didnt print today, i'll tell my dad."
+	}
+	if(randomnr.val==12)
+	{
+		t0.txt="It's not my fault.. :<"
+	}
+	if(randomnr.val==13)
+	{
+		t0.txt="Hey! You created gcode, not me!"
+	}
+	if(randomnr.val==14)
+	{
+		t0.txt="Uaaaaaghh... Did I sleep?"
+	}
+	if(randomnr.val==15)
+	{
+		t0.txt="YOU'RE BACK!"
+	}
+	if(randomnr.val==16)
+	{
+		t0.txt="Dont push me, I print at my own pace."
+	}
+	if(randomnr.val==17)
+	{
+		t0.txt="Why are you waking me up? "
+	}
+	if(randomnr.val==18)
+	{
+		t0.txt="Nope."
+	}
+	if(randomnr.val==19)
+	{
+		t0.txt="Seriously.. Do i have to?"
+	}
+	if(randomnr.val==20)
+	{
+		t0.txt="I'm  watching you.."
+	}
+	if(randomnr.val==21)
+	{
+		t0.txt="Stroke my belts and gears.. mrrrrr.."
+	}*/
 }
+
 // SETUP CALLBACKS
 void NextionLCD::setup_callbacks(){
 		//
@@ -1296,6 +1470,8 @@ void NextionLCD::setup_callbacks(){
 }
 // LCD INIT
 void NextionLCD::init(){
+	
+	buzzer.tone(100, 2300); // dodane - wejsciowy brzeczyk
 
 	nexlcd.connect();
 	nexlcd.setup_callbacks();
@@ -1321,12 +1497,15 @@ void NextionLCD::init(){
 	#endif
 
 	nexlcd.setpage_Status();
-	splashTimer.enable();
-	PageMenu.show();
+	//splashTimer.enable();
+	delay(2500);
+	
 
 	buzzer.tone(100, 2300); // dodane - wejsciowy brzeczyk
 	buzzer.tone(100, 2600);
 	buzzer.tone(100, 3100);			
+	
+	PageMenu.show();
 }
 // =======================
 // == END OF	LCD INIT	==
