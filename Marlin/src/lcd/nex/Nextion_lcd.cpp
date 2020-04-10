@@ -6,8 +6,8 @@
 #include "../../sd/cardreader.h"
 #include "../../module/printcounter.h"
 #include "../../libs/numtostr.h"
-#include "../../HAL/shared/persistent_store_api.h"
-#include "../../lcd/extensible_ui/ui_api.h"
+//#include "../../HAL/shared/persistent_store_api.h"
+#include "../../lcd/extui/ui_api.h"
 
 #if ENABLED(NEXTION_DISPLAY)
 	#include "../../module/stepper.h"
@@ -834,7 +834,7 @@
 				//ZMIANA W OSTATNIM BUGFIXIE manual feedrate mm m -> manual_feedrate_mm_s
         const float old_feedrate = feedrate_mm_s;
         feedrate_mm_s = manual_feedrate_mm_s[Z_AXIS];
-        prepare_move_to_destination(); // will call set_current_from_destination()
+        prepare_line_to_destination(); // will call set_current_from_destination()
         feedrate_mm_s = old_feedrate;
 
         planner.synchronize(); //przesuniecie metody synchronize ze stepper do planner
@@ -1738,15 +1738,15 @@ void NextionLCD::init(){
 					PreviouspercentDone = card.percentDone();
 
 					// procenty t4
-					ZERO(bufferson);
-					strcat(bufferson, i8tostr3(card.percentDone()));
+					ZERO(bufferson); 
+					strcat(bufferson, i8tostr3rj(card.percentDone()));
 					strcat(bufferson, " %");
 					percentdone.setText(bufferson, "printer");
 				}
 				else
 				{
 					ZERO(bufferson);
-					strcat(bufferson, i8tostr3(card.percentDone()));
+					strcat(bufferson, i8tostr3rj(card.percentDone()));
 					strcat(bufferson, " %");
 					percentdone.setText(bufferson, "printer");
 					progressbar.setValue(card.percentDone(), "printer"); // dodatkowo odswiez progressbar
