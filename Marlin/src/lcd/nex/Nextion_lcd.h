@@ -51,6 +51,7 @@ class NextionLCD
     void init();                      //Inicjalizacja LCD
     void connect();                   //Funkcja laczaca sie z ekranem
     void sendRandomSplashMessage();   //Wysyla randomowy msg na splash screen
+    void setRandomSeed();             //Generuje losowa liczbe
     void setup_components();          //Ustawia liste komponentow
     void setup_callbacks();           //Ustawia i przypisuje funkcje obslugi zdarzen
     void update();                    //Nextion Update 5ms (odswieza i sprawdza komponenty Nex Pop Push)

@@ -1211,7 +1211,17 @@ void NextionLCD::connect(){
 	SERIAL_CHAR('"'); SERIAL_ECHOLNPGM(" connected!");
 	}
 
-	nexlcd.sendRandomSplashMessage(); 		// Funkcja ma wysylac randomowa liczbe dla nextiona ktory na jej podstawie wyswietli mesydz
+	//nexlcd.sendRandomSplashMessage(); 		// Funkcja ma wysylac randomowa liczbe dla nextiona ktory na jej podstawie wyswietli mesydz
+}
+
+void NextionLCD::setRandomSeed()
+{
+  int r = 0;
+  for( int i=2; i<=64; i++)
+  {
+    r += analogRead(i);
+  }
+  randomSeed(r);
 }
 // Random Splash Message
 void NextionLCD::sendRandomSplashMessage(){
@@ -1498,13 +1508,12 @@ void NextionLCD::init(){
 
 	nexlcd.setpage_Status();
 	//splashTimer.enable();
-	delay(2500);
-	
-
+	delay(3600);
 	buzzer.tone(100, 2300); // dodane - wejsciowy brzeczyk
 	buzzer.tone(100, 2600);
 	buzzer.tone(100, 3100);			
-	
+	//delay(1000);
+
 	PageMenu.show();
 }
 // =======================
@@ -1578,33 +1587,33 @@ void NextionLCD::init(){
 	// 0 - karta wlozona
 	void NextionLCD::nex_check_sdcard_present()
 	{
-	#if ENABLED(SDSUPPORT) && PIN_EXISTS(SD_DETECT)
+		#if ENABLED(SDSUPPORT) && PIN_EXISTS(SD_DETECT)
 
-		const bool sd_status = IS_SD_INSERTED();
-		if (sd_status != lcd_sd_status && lcd_detected())								// sprawdz czy nastapila zmiana? SD DET ->
-		{																																// TAK:
-			if (!sd_status)																									// je�li SD_DETECT == false:
-			{
-				SERIAL_ECHOLNPGM("sd_status:false");
-				card.mount();																								// inicjalizacja karty
-				setpageSD();																									// ustaw strone i przekaz flage do strony status
-				SDstatus = SD_INSERT;
-				SD.setValue(SDstatus, "printer");
-				ui.set_status_P(GET_TEXT(MSG_MEDIA_INSERTED));			// MSG TRZEBA PRZEKSZTALCIC NA WYSIETLANIE NA PASKU
-			}
-			else																														// je�li SD_DETECT == true:
-			{
-				SERIAL_ECHOLNPGM("sd_status:true");
-				card.release();																								// odmontuj kart� SD
-				setpageSD();																									// ustaw strone i przekaz flage do strony status
-				SDstatus = SD_NO_INSERT;
-				SD.setValue(SDstatus, "printer");
-				ui.set_status_P(GET_TEXT(MSG_MEDIA_REMOVED));				// MSG TRZEBA PRZEKSZTALCIC NA WYSIETLANIE NA PASKU 
-			}
-			lcd_sd_status = sd_status;
-		} // CALY IF SPRAWDZA STAN SD_DETECT I JEGO ZMIANE: SD jest->init / SD niet->release
+			const bool sd_status = IS_SD_INSERTED();
+			if (sd_status != lcd_sd_status && lcd_detected())								// sprawdz czy nastapila zmiana? SD DET ->
+			{																																// TAK:
+				if (!sd_status)																									// je�li SD_DETECT == false:
+				{
+					SERIAL_ECHOLNPGM("sd_status:false");
+					card.mount();																								// inicjalizacja karty
+					setpageSD();																									// ustaw strone i przekaz flage do strony status
+					SDstatus = SD_INSERT;
+					SD.setValue(SDstatus, "printer");
+					ui.set_status_P(GET_TEXT(MSG_MEDIA_INSERTED));			// MSG TRZEBA PRZEKSZTALCIC NA WYSIETLANIE NA PASKU
+				}
+				else																														// je�li SD_DETECT == true:
+				{
+					SERIAL_ECHOLNPGM("sd_status:true");
+					card.release();																								// odmontuj kart� SD
+					setpageSD();																									// ustaw strone i przekaz flage do strony status
+					SDstatus = SD_NO_INSERT;
+					SD.setValue(SDstatus, "printer");
+					ui.set_status_P(GET_TEXT(MSG_MEDIA_REMOVED));				// MSG TRZEBA PRZEKSZTALCIC NA WYSIETLANIE NA PASKU 
+				}
+				lcd_sd_status = sd_status;
+			} // CALY IF SPRAWDZA STAN SD_DETECT I JEGO ZMIANE: SD jest->init / SD niet->release
 
-	#endif
+		#endif
 	}
 
 // =======================

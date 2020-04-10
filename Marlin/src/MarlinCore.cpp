@@ -839,6 +839,10 @@ void setup() {
 
   HAL_init();
 
+  #if ENABLED(NEXTION)
+    nexlcd.setRandomSeed();
+  #endif
+
   #if HAS_L64XX
     L64xxManager.init();  // Set up SPI, init drivers
   #endif
