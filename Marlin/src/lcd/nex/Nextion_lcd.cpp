@@ -6,7 +6,7 @@
 #include "../../sd/cardreader.h"
 #include "../../module/printcounter.h"
 #include "../../libs/numtostr.h"
-//#include "../../HAL/shared/persistent_store_api.h"
+#include "../../HAL/shared/eeprom_api.h"
 #include "../../lcd/extui/ui_api.h"
 
 #if ENABLED(NEXTION_DISPLAY)

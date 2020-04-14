@@ -850,7 +850,7 @@ void CardReader::cdroot() {
  * Get the name of a file in the current directory by index
  */
 /*
-void CardReader::getfilename(uint16_t nr, const char * const match) { //=/*=NULL
+void CardReader::getfilename(uint16_t nr, const char * const match) { //=/=NULL
   #if ENABLED(SDSORT_CACHE_NAMES)
     if (match != NULL) {
       while (nr < sort_count) {

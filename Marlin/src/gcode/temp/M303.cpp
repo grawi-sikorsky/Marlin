@@ -29,6 +29,7 @@
 
 #if ENABLED(EXTENSIBLE_UI)
   #include "../../lcd/extui/ui_api.h"
+  #include "../../lcd/nex/Nextion_lcd.h"
 #endif
 
 /**
