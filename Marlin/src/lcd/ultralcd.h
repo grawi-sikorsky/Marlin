@@ -690,8 +690,6 @@ public:
 
 private:
 
-  static void _synchronize();
-
   #if HAS_DISPLAY
     static void finish_status(const bool persist);
   #endif
