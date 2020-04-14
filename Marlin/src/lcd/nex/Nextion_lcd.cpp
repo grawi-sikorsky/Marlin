@@ -1953,7 +1953,7 @@ void NextionLCD::init(){
  * **************************/
 	// EXTUI INIT
 #ifdef EXTENSIBLE_UI
-	namespace ExtUI{
+	namespace ExtUI {
 
 		void onStartup()		{ nexlcd.init(); }
 		void onIdle()				{ nexlcd.update(); nexlcd.check_periodical_actions();}
@@ -2053,16 +2053,37 @@ void NextionLCD::init(){
 		#if HAS_PID_HEATING
 			void OnPidTuning(const result_t rst) {
 				// Called for temperature PID tuning result
+
+				SERIAL_ECHOLNPAIR("onPidTuning:",rst);
+				switch(rst) {
+					case PID_BAD_EXTRUDER_NUM:
+						LcdStatus.setText(STR_PID_BAD_EXTRUDER_NUM, "printer");
+						break;
+					case PID_TEMP_TOO_HIGH:
+						//ScreenHandler.setstatusmessagePGM(PSTR(STR_PID_TEMP_TOO_HIGH));
+						LcdStatus.setText(STR_PID_TEMP_TOO_HIGH, "printer");
+						break;
+					case PID_TUNING_TIMEOUT:
+						//ScreenHandler.setstatusmessagePGM(PSTR(STR_PID_TIMEOUT));
+						LcdStatus.setText(STR_PID_TIMEOUT, "printer");
+						break;
+					case PID_DONE:
+						//ScreenHandler.setstatusmessagePGM(PSTR(STR_PID_AUTOTUNE_FINISHED));
+						LcdStatus.setText(STR_PID_AUTOTUNE_FINISHED, "printer");
+						break;
+					//case PID_START:
+						//LcdStatus.setText("Rozpoczeto kalibracje PID", "printer");
+						//break;
+				}
+
+      	//ScreenHandler.GotoScreen(DGUSLCD_SCREEN_MAIN);
 			}
 		#endif
-
-
 
 		void printFile(const char *filename);
 		void stopPrint();
 		void pausePrint();
 		void resumePrint();
-
 	};
 
 	#endif

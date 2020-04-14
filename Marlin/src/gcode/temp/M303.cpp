@@ -19,7 +19,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 #include "../../inc/MarlinConfig.h"
 
 #if HAS_PID_HEATING
@@ -29,7 +28,6 @@
 
 #if ENABLED(EXTENSIBLE_UI)
   #include "../../lcd/extui/ui_api.h"
-  #include "../../lcd/nex/Nextion_lcd.h"
 #endif
 
 /**
@@ -87,6 +85,7 @@ void GcodeSuite::M303() {
     KEEPALIVE_STATE(NOT_BUSY);
   #endif
 
+  //ExtUI::onPidTuning(ExtUI::result_t::PID_START); // dodane nextion printo h3 - info o rozpoczeciu pid
   thermalManager.PID_autotune(temp, e, c, u);
 }
 
