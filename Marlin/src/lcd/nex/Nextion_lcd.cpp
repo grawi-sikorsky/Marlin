@@ -1954,6 +1954,7 @@ void NextionLCD::init(){
 	// EXTUI INIT
 #ifdef EXTENSIBLE_UI
 	namespace ExtUI {
+		void OnPidTuning(const result_t rst);
 
 		void onStartup()		{ nexlcd.init(); }
 		void onIdle()				{ nexlcd.update(); nexlcd.check_periodical_actions();}
@@ -2050,7 +2051,7 @@ void NextionLCD::init(){
 			}
 		#endif
 
-		#if HAS_PID_HEATING
+		//#if HAS_PID_HEATING
 			void OnPidTuning(const result_t rst) {
 				// Called for temperature PID tuning result
 
@@ -2071,14 +2072,14 @@ void NextionLCD::init(){
 						//ScreenHandler.setstatusmessagePGM(PSTR(STR_PID_AUTOTUNE_FINISHED));
 						LcdStatus.setText(STR_PID_AUTOTUNE_FINISHED, "printer");
 						break;
-					//case PID_START:
-						//LcdStatus.setText("Rozpoczeto kalibracje PID", "printer");
-						//break;
+					case PID_START:
+						LcdStatus.setText("Rozpoczeto kalibracje PID", "printer");
+						break;
 				}
 
       	//ScreenHandler.GotoScreen(DGUSLCD_SCREEN_MAIN);
 			}
-		#endif
+		//#endif
 
 		void printFile(const char *filename);
 		void stopPrint();

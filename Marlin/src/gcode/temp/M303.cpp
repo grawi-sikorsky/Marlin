@@ -85,7 +85,7 @@ void GcodeSuite::M303() {
     KEEPALIVE_STATE(NOT_BUSY);
   #endif
 
-  //ExtUI::onPidTuning(ExtUI::result_t::PID_START); // dodane nextion printo h3 - info o rozpoczeciu pid
+  ExtUI::onPidTuning(ExtUI::result_t::PID_START); // dodane nextion printo h3 - info o rozpoczeciu pid
   thermalManager.PID_autotune(temp, e, c, u);
 }
 
