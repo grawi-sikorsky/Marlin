@@ -30,7 +30,7 @@
   #include "../../lcd/extui/ui_api.h"
   #include "../../lcd/nex/Nextion_lcd.h"
 #endif
-    void ExtUI::onPidTuning(const result_t rst){}
+    //void ExtUI::onPidTuning(const result_t rst){}
 /**
  * M303: PID relay autotune
  *

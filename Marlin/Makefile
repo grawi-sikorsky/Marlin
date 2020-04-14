@@ -526,7 +526,7 @@ TARGET = $(notdir $(CURDIR))
 # VPATH tells make to look into these directory for source files,
 # there is no need to specify explicit pathnames as long as the
 # directory is added here
-
+LIB_CXXSRC += Nextion_lcd.cpp
 # The Makefile for previous versions of Marlin used VPATH for all
 # source files, but for Marlin 2.0, we use VPATH only for arduino
 # library files.
