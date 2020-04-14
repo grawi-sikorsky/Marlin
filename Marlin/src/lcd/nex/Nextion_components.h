@@ -5,6 +5,7 @@
 //#include "../../libs/numtostr.h"
 //#include "../../HAL/shared/eeprom_api.h"
 //#include "../../lcd/extui/ui_api.h"
+#pragma once
 
 #if ENABLED(NEXTION)
   #include "Nextion_lcd.h"

@@ -1954,7 +1954,7 @@ void NextionLCD::init(){
 	// EXTUI INIT
 #ifdef EXTENSIBLE_UI
 	namespace ExtUI {
-		void OnPidTuning(const result_t rst);
+		//void OnPidTuning(const result_t rst);
 
 		void onStartup()		{ nexlcd.init(); }
 		void onIdle()				{ nexlcd.update(); nexlcd.check_periodical_actions();}
