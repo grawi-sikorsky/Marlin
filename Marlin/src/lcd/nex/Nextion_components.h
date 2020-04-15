@@ -18,7 +18,7 @@
    * NEX lista stron
    *******************************************************************
    */
-  //NexObject Pstart        	= NexObject(0,  0,  "start");
+  NexObject Pstart        	  = NexObject(0,  0,  "start");
   NexObject PageMenu       		= NexObject(1,  0,  "menu");
   NexObject PagePrinter    		= NexObject(2,  0,  "printer");
   //NexObject Psdcard       	= NexObject(3,  0,  "sdcard");

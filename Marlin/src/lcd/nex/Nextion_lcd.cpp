@@ -1171,9 +1171,11 @@ void NextionLCD::connect(){
 		if (NextionON) break;
 		delay(10);
 	}
+	Pstart.show(); // show boot screen
+
 	nexlcd.sendRandomSplashMessage();
 
-	if (!NextionON) { SERIAL_ECHOPGM("Nextion NOT connected.."); return; }
+	if (!NextionON) { SERIAL_ECHOLNPGM("Nextion NOT connected.."); buzzer.tone(220, 700); return; }
 	else {
 	SERIAL_ECHO_START();
 	SERIAL_ECHOPGM("Nextion");
@@ -1211,7 +1213,7 @@ void NextionLCD::connect(){
 	SERIAL_CHAR('"'); SERIAL_ECHOLNPGM(" connected!");
 	}
 
-	//nexlcd.sendRandomSplashMessage(); 		// Funkcja ma wysylac randomowa liczbe dla nextiona ktory na jej podstawie wyswietli mesydz
+	nexlcd.sendRandomSplashMessage(); 		// Funkcja ma wysylac randomowa liczbe dla nextiona ktory na jej podstawie wyswietli mesydz
 }
 
 void NextionLCD::setRandomSeed()
@@ -1480,12 +1482,13 @@ void NextionLCD::setup_callbacks(){
 }
 // LCD INIT
 void NextionLCD::init(){
-	
-	buzzer.tone(100, 2300); // dodane - wejsciowy brzeczyk
 
 	nexlcd.connect();
-	nexlcd.setup_callbacks();
+	if(!NextionON)
+	{
+	}
 
+	nexlcd.setup_callbacks();
 
 	#if ENABLED(FSENSOR_STATE)
 		nex_filament_runout_sensor_flag = eeprom_read_byte((uint8_t*)EEPROM_NEX_FILAMENT_SENSOR);
@@ -1508,12 +1511,13 @@ void NextionLCD::init(){
 
 	nexlcd.setpage_Status();
 	//splashTimer.enable();
-	delay(3600);
+
 	buzzer.tone(100, 2300); // dodane - wejsciowy brzeczyk
 	buzzer.tone(100, 2600);
 	buzzer.tone(100, 3100);			
 	//delay(1000);
 
+	delay(3500);
 	PageMenu.show();
 }
 // =======================
