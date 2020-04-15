@@ -23,7 +23,6 @@
 
 #include <math.h>
 #include <stddef.h>
-#include <stdarg.h>
 
 #include "../inc/MarlinConfigPre.h"
 

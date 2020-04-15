@@ -1,10 +1,10 @@
-//#include "../../MarlinCore.h"
-//#include "../../module/temperature.h"
-//#include "../../sd/cardreader.h"
-//#include "../../module/printcounter.h"
-//#include "../../libs/numtostr.h"
-//#include "../../HAL/shared/eeprom_api.h"
-//#include "../../lcd/extui/ui_api.h"
+#include "../../MarlinCore.h"
+#include "../../module/temperature.h"
+#include "../../sd/cardreader.h"
+#include "../../module/printcounter.h"
+#include "../../libs/numtostr.h"
+#include "../../HAL/shared/eeprom_api.h"
+#include "../../lcd/extui/ui_api.h"
 #pragma once
 
 #if ENABLED(NEXTION)
