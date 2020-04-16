@@ -1829,7 +1829,12 @@ void NextionLCD::init(){
     PreviousPage = PageID;
   }
 	
-	void NextionLCD::print_status_msg(){
+	void NextionLCD::print_status_msg(const char * const lcdmsg){
+		strncpy_P(nexlcd.lcd_status_message, lcdmsg, 48);
+		if(PageID == 2) // Jeżeli strona statusu
+		{
+			LcdStatus.setText(nexlcd.lcd_status_message, "printer");
+		}
 	}
 
 
@@ -1992,13 +1997,8 @@ void NextionLCD::init(){
 		void onMediaError(){};		
 
 		// STATUS BAR
-		void onStatusChanged(const char * const msg) { 
-			strncpy_P(nexlcd.lcd_status_message, msg, 24);
-			nexlcd.print_status_msg();
-			if(PageID == 2) // Jeżeli strona statusu
-			{
-				LcdStatus.setText(nexlcd.lcd_status_message, "printer");
-			}
+		void onStatusChanged(const char * const msg) {
+			nexlcd.print_status_msg(msg);
 		}
 
 		void onMeshProbingDone(){
@@ -2062,22 +2062,19 @@ void NextionLCD::init(){
 				SERIAL_ECHOLNPAIR("onPidTuning:",rst);
 				switch(rst) {
 					case PID_BAD_EXTRUDER_NUM:
-						LcdStatus.setText(STR_PID_BAD_EXTRUDER_NUM, "printer");
+						nexlcd.print_status_msg(STR_PID_BAD_EXTRUDER_NUM);
 						break;
 					case PID_TEMP_TOO_HIGH:
-						//ScreenHandler.setstatusmessagePGM(PSTR(STR_PID_TEMP_TOO_HIGH));
-						LcdStatus.setText(STR_PID_TEMP_TOO_HIGH, "printer");
+						nexlcd.print_status_msg(STR_PID_TEMP_TOO_HIGH);
 						break;
 					case PID_TUNING_TIMEOUT:
-						//ScreenHandler.setstatusmessagePGM(PSTR(STR_PID_TIMEOUT));
-						LcdStatus.setText(STR_PID_TIMEOUT, "printer");
+						nexlcd.print_status_msg(STR_PID_TIMEOUT);
 						break;
 					case PID_DONE:
-						//ScreenHandler.setstatusmessagePGM(PSTR(STR_PID_AUTOTUNE_FINISHED));
-						LcdStatus.setText(STR_PID_AUTOTUNE_FINISHED, "printer");
+						nexlcd.print_status_msg(STR_PID_AUTOTUNE_FINISHED);
 						break;
 					case PID_START:
-						LcdStatus.setText("Rozpoczeto kalibracje PID", "printer");
+						nexlcd.print_status_msg("Rozpoczeto kalibracje PID");
 						break;
 				}
 

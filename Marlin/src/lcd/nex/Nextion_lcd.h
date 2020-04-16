@@ -38,7 +38,7 @@ class NextionLCD
 {
   public:
     //Zmienne
-    char lcd_status_message[24] = "T";
+    char lcd_status_message[48] = "T";
     bool      NextionON                 = false,
               show_Wave                 = true,
               lcdDrawUpdate             = false,
@@ -56,7 +56,7 @@ class NextionLCD
     void setup_callbacks();           //Ustawia i przypisuje funkcje obslugi zdarzen
     void update();                    //Nextion Update 5ms (odswieza i sprawdza komponenty Nex Pop Push)
     void kill_screen_msg(const char* lcd_msg, PGM_P const component); // Wyswietla ekran kill wraz z komunikatem
-    void print_status_msg();          // testowa - wyswiela dany mesydz na ekranie statusu
+    void print_status_msg(const char * const msg);          // testowa - wyswiela dany mesydz na ekranie statusu
     bool lcd_detected() { return NextionON; }  // Zwraca true jesli nextion podlaczony
 
     void nex_stop_printing();
