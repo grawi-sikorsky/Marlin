@@ -764,9 +764,9 @@ void idle(TERN_(ADVANCED_PAUSE_FEATURE, bool no_stepper_sleep/*=false*/)) {
   #endif
 
   #if ENABLED(NEXTION)
-    //nexlcd.check_periodical_actions(); //dodane dla nextion
+    nexlcd.check_periodical_actions(); //dodane dla nextion
   #endif
-  ui.update();
+  //ui.update();
 }
 
 /**
@@ -1228,7 +1228,7 @@ void loop() {
     idle();
     
     #if ENABLED(NEXTION)
-      //nexlcd.check_periodical_actions(); //dodane dla nextion PRINTO H3
+      nexlcd.check_periodical_actions(); //dodane dla nextion PRINTO H3
     #endif
 
     #if ENABLED(SDSUPPORT)
