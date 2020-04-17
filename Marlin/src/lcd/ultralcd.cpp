@@ -1455,7 +1455,7 @@ void MarlinUI::update() {
       synchronize(GET_TEXT(MSG_PAUSING));
       defer_status_screen();
     #endif
-
+    
     #if ENABLED(HOST_PROMPT_SUPPORT)
       host_prompt_open(PROMPT_PAUSE_RESUME, PSTR("UI Pause"), PSTR("Resume"));
     #endif

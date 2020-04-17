@@ -77,7 +77,7 @@
   NexObject LcdTime					= NexObject(2, 21,  "t2");
   NexObject progressbar			= NexObject(2, 22,  "j0");
   NexObject Wavetemp				= NexObject(2, 23,  "s0");
-	NexObject percentdone			= NexObject(2, 49,	"t4");
+	NexObject percentdone			= NexObject(2, 43,	"t4");
 
 	/*******************************************************************
    * NEX komponenty strona: SDCard
@@ -89,23 +89,23 @@
   NexObject sdrow3      = NexObject(3,   5, "t3");
   NexObject sdrow4      = NexObject(3,   6, "t4");
   NexObject sdrow5      = NexObject(3,   7, "t5");
-  NexObject Folder0     = NexObject(3,  19, "p0");
-  NexObject Folder1     = NexObject(3,  20, "p1");
-  NexObject Folder2     = NexObject(3,  21, "p2");
-  NexObject Folder3     = NexObject(3,  22, "p3");
-  NexObject Folder4     = NexObject(3,  23, "p4");
-  NexObject Folder5     = NexObject(3,  24, "p5");
-  NexObject Folderup    = NexObject(3,  25, "p6");
-  NexObject sdfolder    = NexObject(3,	 9, "t6");
-  NexObject ScrollUp    = NexObject(3,  10, "p7");
-  NexObject ScrollDown  = NexObject(3,  11, "p8");
+  NexObject Folder0     = NexObject(3,  18, "p0");
+  NexObject Folder1     = NexObject(3,  19, "p1");
+  NexObject Folder2     = NexObject(3,  20, "p2");
+  NexObject Folder3     = NexObject(3,  21, "p3");
+  NexObject Folder4     = NexObject(3,  22, "p4");
+  NexObject Folder5     = NexObject(3,  23, "p5");
+  NexObject Folderup    = NexObject(3,  24, "p6");
+  NexObject sdfolder    = NexObject(3,	 8, "t6");
+  NexObject ScrollUp    = NexObject(3,  9, "p7");
+  NexObject ScrollDown  = NexObject(3,  10, "p8");
 #if ENABLED(NEXTION_SD_LONG_NAMES)
-	NexObject file0				= NexObject(3, 12, "n1");
-	NexObject file1				= NexObject(3, 13, "n2");
-	NexObject file2				= NexObject(3, 14, "n3");
-	NexObject file3				= NexObject(3, 15, "n4");
-	NexObject file4				= NexObject(3, 16, "n5");
-	NexObject file5				= NexObject(3, 17, "n6");
+	NexObject file0				= NexObject(3, 11, "n1");
+	NexObject file1				= NexObject(3, 12, "n2");
+	NexObject file2				= NexObject(3, 13, "n3");
+	NexObject file3				= NexObject(3, 14, "n4");
+	NexObject file4				= NexObject(3, 15, "n5");
+	NexObject file5				= NexObject(3, 16, "n6");
 #endif
 
    /*******************************************************************
@@ -180,12 +180,12 @@
 	/*******************************************************************
 	* NEX komponenty strona: HEATUP 15
 	*******************************************************************/
-	NexObject heatupenter		= NexObject(15, 7, "m3");
-	NexObject temphe				= NexObject(15, 8, "temphe");
-	NexObject tempbe				= NexObject(15, 9, "tempbe");
-	NexObject heatbedenter	= NexObject(15, 12, "m4");
-	NexObject hotendenter		= NexObject(15, 13, "m5");
-	NexObject chillenter		= NexObject(15, 14, "m6");
+	NexObject heatupenter		= NexObject(15, 6, "m3");
+	NexObject temphe				= NexObject(15, 7, "temphe");
+	NexObject tempbe				= NexObject(15, 8, "tempbe");
+	NexObject heatbedenter	= NexObject(15, 11, "m4");
+	NexObject hotendenter		= NexObject(15, 12, "m5");
+	NexObject chillenter		= NexObject(15, 13, "m6");
 
 	/*******************************************************************
 	* NEX komponenty strona:: FAN SPEED 18

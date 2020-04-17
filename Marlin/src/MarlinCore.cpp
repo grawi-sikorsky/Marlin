@@ -763,7 +763,7 @@ void idle(TERN_(ADVANCED_PAUSE_FEATURE, bool no_stepper_sleep/*=false*/)) {
   #endif
 
   #if ENABLED(NEXTION)
-    nexlcd.check_periodical_actions(); //dodane dla nextion
+    //nexlcd.check_periodical_actions(); //dodane dla nextion
   #endif
   ui.update();
 }
@@ -935,13 +935,13 @@ void setup() {
   #endif
 
   #if NUM_SERIAL > 0
-    //MYSERIAL0.begin(BAUDRATE);
-    //uint32_t serial_connect_timeout = millis() + 1000UL;
-    //while (!MYSERIAL0 && PENDING(millis(), serial_connect_timeout)) { /*nada*/ }
+    MYSERIAL0.begin(BAUDRATE);
+    uint32_t serial_connect_timeout = millis() + 1000UL;
+    while (!MYSERIAL0 && PENDING(millis(), serial_connect_timeout)) { /*nada*/ }
     #if NUM_SERIAL > 1
-      //MYSERIAL1.begin(BAUDRATE);
-      //serial_connect_timeout = millis() + 1000UL;
-      //while (!MYSERIAL1 && PENDING(millis(), serial_connect_timeout)) { /*nada*/ }
+      MYSERIAL1.begin(BAUDRATE);
+      serial_connect_timeout = millis() + 1000UL;
+      while (!MYSERIAL1 && PENDING(millis(), serial_connect_timeout)) { /*nada*/ }
     #endif
   #endif
 
@@ -1224,7 +1224,7 @@ void loop() {
     idle();
     
     #if ENABLED(NEXTION)
-      nexlcd.check_periodical_actions(); //dodane dla nextion PRINTO H3
+      //nexlcd.check_periodical_actions(); //dodane dla nextion PRINTO H3
     #endif
 
     #if ENABLED(SDSUPPORT)

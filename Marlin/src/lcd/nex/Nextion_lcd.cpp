@@ -1729,14 +1729,14 @@ void NextionLCD::init(){
 					uint8_t digit;
 					duration_t Time = print_job_timer.duration();
 					digit = Time.toDigital(buffer1, true);
-					strcat(bufferson, "S");
+					strcat(bufferson, "Trwa ");
 					strcat(bufferson, buffer1);
 					Time = (print_job_timer.duration() * (100 - card.percentDone())) / (card.percentDone() + 0.1);
 					digit += Time.toDigital(buffer1, true);
 					if (digit > 14)
-						strcat(bufferson, "E");
+						strcat(bufferson, " Pozostalo ");
 					else
-						strcat(bufferson, " E");
+						strcat(bufferson, " Pozostalo ");
 					strcat(bufferson, buffer1);
 					LcdTime.setText(bufferson, "printer");
 					PreviouspercentDone = card.percentDone();
@@ -1786,7 +1786,7 @@ void NextionLCD::init(){
         break;
 		#if ENABLED(SDSUPPORT)
       case 3: // SD CARD LIST
-					nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
+					//nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
 					if (PreviousPage != 3) {
 						setpageSD();
 					}
