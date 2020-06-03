@@ -35,8 +35,9 @@
   /**
    * Marlin release version identifier
    */
-  #define SHORT_BUILD_VERSION "1.1.9"
-
+  #define SHORT_BUILD_VERSION "1.4.0"
+  #define NAZWA_DRUKARKI "PrintO H3"
+  #define COREXY_SPLASH "CoreXY Mechanics"
   /**
    * Verbose version identifier which should contain a reference to the location
    * from where the binary was downloaded or the source code was compiled.
@@ -48,7 +49,7 @@
    * here we define this default string as the date where the latest release
    * version was tagged.
    */
-  #define STRING_DISTRIBUTION_DATE "2018-08-01"
+  #define STRING_DISTRIBUTION_DATE "2020-06-04"
 
   /**
    * Required minimum Configuration.h and Configuration_adv.h file versions.
@@ -70,7 +71,7 @@
   /**
    * Defines a generic printer name to be output to the LCD after booting Marlin.
    */
-  #define MACHINE_NAME "3D Printer"
+  //#define MACHINE_NAME "3D Printer"
 
   /**
    * The SOURCE_CODE_URL is the location where users will find the Marlin Source
@@ -89,6 +90,6 @@
    * The WEBSITE_URL is the location where users can get more information such as
    * documentation about a specific Marlin release.
    */
-  #define WEBSITE_URL "http://marlinfw.org"
+  #define WEBSITE_URL "www.printo3d.pl"
 
 #endif // USE_AUTOMATIC_VERSIONING

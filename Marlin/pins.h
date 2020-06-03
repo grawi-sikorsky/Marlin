@@ -142,7 +142,8 @@
   #include "pins_RAMPS_ENDER_4.h"     // ATmega2560                                 env:megaatmega2560
 #elif MB(MKS_GEN_L_V2)
   #include "pins_MKS_GEN_L_V2.h"      // ATmega2560                                 env:megaatmega2560
-
+#elif MB(PRINTOH3_MKS)
+  #include "pins_MKS_14_PRINTOH3_TFT.h"
 //
 // Other ATmega1280, ATmega2560
 //
