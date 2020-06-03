@@ -4667,8 +4667,9 @@ void home_all_axes() { gcode_G28(true); }
 
     current_position[X_AXIS] = rx;
     current_position[Y_AXIS] = ry;
-
-    #if ENABLED(LCD_BED_LEVELING)
+    
+    //dodane ENABLED(PROBE_MANUALLY)
+    #if ENABLED(LCD_BED_LEVELING) && ENABLED(PROBE_MANUALLY)
       lcd_wait_for_move = false;
     #endif
   }
@@ -4788,8 +4789,9 @@ void home_all_axes() { gcode_G28(true); }
             buffer_line_to_destination(homing_feedrate(Z_AXIS));
             planner.synchronize();
           #endif
-
-          #if ENABLED(LCD_BED_LEVELING)
+          
+          // dodane ENABLED(PROBE_MANUALLY)
+          #if ENABLED(LCD_BED_LEVELING) && ENABLED(PROBE_MANUALLY)
             lcd_wait_for_move = false;
           #endif
         }
