@@ -540,7 +540,7 @@
    *
    */
   void lcd_sdcard_stop() {
-		move_away_flag = false;									// flaga pause_print na false, na wypadek gdyby drukarka byla w stanie pauzy @_@
+		did_pause_print = false;									// flaga pause_print na false, na wypadek gdyby drukarka byla w stanie pauzy @_@
 	  card.stopSDPrint();											// wstrzymaj wydruk z kartysd
 		//clear_command_queue();									// czysc kolejke komend
 		//stepper.quick_stop_panic();							// pomocne z panic'a, trzeba to zaserwowac aby mozna bylo ponownie wykonac jakakolwiek komende
@@ -1129,7 +1129,7 @@
           case ADVANCED_PAUSE_MESSAGE_LOAD:
             lcd_advanced_pause_load_message();
             break;
-          case ADVANCED_PAUSE_MESSAGE_EXTRUDE:
+          case ADVANCED_PAUSE_MESSAGE_PURGE:
             lcd_advanced_pause_purge_message();
             break;
           case ADVANCED_PAUSE_MESSAGE_RESUME:
@@ -1312,7 +1312,7 @@
         prepare_move_to_destination(); // will call set_current_from_destination()
         feedrate_mm_s = old_feedrate;
 
-        stepper.synchronize();
+        planner.synchronize();
       }
       else if (ptr == &ProbeSend) {
 				SERIAL_ECHOLNPGM("probesend:");

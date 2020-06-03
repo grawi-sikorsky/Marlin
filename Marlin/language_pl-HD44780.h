@@ -244,11 +244,11 @@
   #define MSG_FILAMENT_CHANGE_RESUME_2        _UxGT("wznowienie druku")
 #else // LCD_HEIGHT < 4
   // Up to 2 lines allowed
-  #define MSG_FILAMENT_CHANGE_INIT_1          _UxGT("Prosze czekac...")
-  #define MSG_FILAMENT_CHANGE_UNLOAD_1        _UxGT("Wysuwanie...")
-  #define MSG_FILAMENT_CHANGE_INSERT_1        _UxGT("Wloz i nacisnij prz.")
-  #define MSG_FILAMENT_CHANGE_LOAD_1          _UxGT("Ladowanie...")
-  #define MSG_FILAMENT_CHANGE_RESUME_1        _UxGT("Wznowienie...")
+  //#define MSG_FILAMENT_CHANGE_INIT_1          _UxGT("Prosze czekac...")
+  //#define MSG_FILAMENT_CHANGE_UNLOAD_1        _UxGT("Wysuwanie...")
+  //#define MSG_FILAMENT_CHANGE_INSERT_1        _UxGT("Wloz i nacisnij prz.")
+  //#define MSG_FILAMENT_CHANGE_LOAD_1          _UxGT("Ladowanie...")
+  //#define MSG_FILAMENT_CHANGE_RESUME_1        _UxGT("Wznowienie...")
 #endif // LCD_HEIGHT < 4
 
 #if LCD_HEIGHT >= 4
@@ -264,13 +264,59 @@
   #define MSG_FILAMENT_CHANGE_LOAD_2          _UxGT("wlozenie filamentu")
   #define MSG_FILAMENT_CHANGE_RESUME_1        _UxGT("Czekam na")
   #define MSG_FILAMENT_CHANGE_RESUME_2        _UxGT("wznowienie druku")
-#else // LCD_HEIGHT < 4
+//#else // LCD_HEIGHT < 4
   // Up to 2 lines allowed
-  #define MSG_FILAMENT_CHANGE_INIT_1          _UxGT("Prosze czekac...")
-  #define MSG_FILAMENT_CHANGE_UNLOAD_1        _UxGT("Wysuwanie...")
-  #define MSG_FILAMENT_CHANGE_INSERT_1        _UxGT("Wloz i nacisnij prz.")
-  #define MSG_FILAMENT_CHANGE_LOAD_1          _UxGT("Ladowanie...")
-  #define MSG_FILAMENT_CHANGE_RESUME_1        _UxGT("Wznowienie...")
-#endif // LCD_HEIGHT < 4
+  //#define MSG_FILAMENT_CHANGE_INIT_1          _UxGT("Prosze czekac...")
+  //#define MSG_FILAMENT_CHANGE_UNLOAD_1        _UxGT("Wysuwanie...")
+  //#define MSG_FILAMENT_CHANGE_INSERT_1        _UxGT("Wloz i nacisnij prz.")
+  //#define MSG_FILAMENT_CHANGE_LOAD_1          _UxGT("Ladowanie...")
+  //#define MSG_FILAMENT_CHANGE_RESUME_1        _UxGT("Wznowienie...")
+
+  // dodane nex
+#elif ENABLED(NEXTION_DISPLAY)
+	#define MSG_NEX_FILAMENT_CHANGE_HEADER				"Wymiana filamentu"
+	#define MSG_NEX_FILAMENT_CHANGE_OPTION_HEADER	"Wybierz opcje"
+	#define MSG_FILAMENT_CHANGE_INIT_1          "Trwa rozpoczynanie"
+	#define MSG_FILAMENT_CHANGE_INIT_2          "zmiany filamentu"
+	#define MSG_FILAMENT_CHANGE_UNLOAD_1        "Trwa wysuwanie"
+	#define MSG_FILAMENT_CHANGE_UNLOAD_2        "filamentu z glowicy"
+	#define MSG_FILAMENT_CHANGE_INSERT_1        "Wloz filament"
+	#define MSG_FILAMENT_CHANGE_INSERT_2        "i nacisnij przycisk"
+	#define MSG_FILAMENT_CHANGE_INSERT_3        "aby kontynuowac..."
+	#define MSG_FILAMENT_CHANGE_LOAD_1          _UxGT("Trwa wprowadzanie")
+	#define MSG_FILAMENT_CHANGE_LOAD_2          _UxGT("filamentu do glowicy")
+	#define MSG_FILAMENT_CHANGE_EXTRUDE_1       _UxGT("Trwa ekstruzja")
+	#define MSG_FILAMENT_CHANGE_EXTRUDE_2       _UxGT("nowego materialu")
+	#define MSG_FILAMENT_CHANGE_RESUME_1        _UxGT("Trwa wznawianie")
+	#define MSG_FILAMENT_CHANGE_RESUME_2        _UxGT("wydruku")
+	#define MSG_TOO_COLD_FOR_M600_1							_UxGT("Glowica jest zimna,")
+	#define MSG_TOO_COLD_FOR_M600_2							_UxGT("rozgrzej aby")
+	#define MSG_TOO_COLD_FOR_M600_3							_UxGT("kontynuowac")	
+	#define MSG_TOO_COLD_FOR_M600_4							_UxGT("Temp. min: 170")
+
+  #define MSG_FILAMENT_CHANGE_HEADER						_UxGT("ZMIEN FILAMENT")
+  #define MSG_FILAMENT_CHANGE_OPTION_HEADER			_UxGT("ZMIEN OPCJE:")
+  #define MSG_FILAMENT_CHANGE_OPTION_EXTRUDE		_UxGT("Ekstruduj wiecej")
+  #define MSG_FILAMENT_CHANGE_OPTION_RESUME			_UxGT("Wznow drukowanie")
+  #define MSG_PRINT_PAUSED										_UxGT("Wydruk wstrzymany")
+
+  //dodane Printo H3
+  #define MSG_PID_AUTOTUNE_START				_UxGT("PID rozpoczeto")
+  #define MSG_PID_AUTOTUNE_DONE				  _UxGT("PID ukonczono")
+  #define MSG_PID_AUTOTUNE_FAIL				  _UxGT("PID blad kalibracji")
+  #define MSG_PID_AUTOTUNE_OVERSHOT			_UxGT("PID blad: overshot")
+
+  #define MSG_PRINT_RECOVERING				  _UxGT("Przywracanie wydruku")
+  #define MSG_INFO_VLCS_FAILED_PRINTS		_UxGT("Utraty zasilania")
+  #define MSG_INFO_PRINTO3D					    _UxGT("Wsparcie")
+
+  #define MSG_FILAMENT_CHANGE_NOZZLE			_UxGT(" Dysza:")
+  #define	MSG_FILAMENT_CHANGE_MINTEMP			_UxGT("Min. Temp. to: ")
+  #define	MSG_BACK							          _UxGT("Wstecz")
+  #define	MSG_FILAMENT_CHANGE_HEATING_1		_UxGT("Rozgrzewanie dyszy")
+  #define	MSG_FILAMENT_CHANGE_HEATING_2		_UxGT("Prosze czekac")
+  #define	MSG_FILAMENT_CHANGE_HEAT_1			_UxGT("Wcisnij przycisk")
+  #define	MSG_FILAMENT_CHANGE_HEAT_2			_UxGT("aby rozgrzac dysze")
+#endif
 
 #endif  // LANGUAGE_PL_HD44780_H

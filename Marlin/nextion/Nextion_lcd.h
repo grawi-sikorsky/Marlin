@@ -26,6 +26,7 @@
 #include "../ultralcd.h"
 #include "library/Nextion.h"
 #include "HardwareSerial.h"
+#include "printcounter.h"
 
 #if ENABLED(NEXTION)
 
