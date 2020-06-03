@@ -2090,6 +2090,11 @@
     }
     PreviousPage = PageID;
   }
+
+	void lcd_reset_status()
+	{
+		LcdStatus.setText("");
+	}
 	
   void lcd_setstatus(const char* message, bool persist) {
     UNUSED(persist);

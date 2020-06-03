@@ -219,7 +219,7 @@
 
 	void lcd_sdcard_stop();
 
-  void lcd_reset_status(){}
+  void lcd_reset_status();
 
 	//VLCS
 	#if ENABLED(PLOSS_SUPPORT)
