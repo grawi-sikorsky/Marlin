@@ -552,12 +552,12 @@
 // Specify here all the endstop connectors that are connected to any endstop or probe.
 // Almost all printers will be using one per axis. Probes will use one or more of the
 // extra connectors. Leave undefined any used for non-endstop and non-probe purposes.
-#define USE_XMIN_PLUG
+//#define USE_XMIN_PLUG
 #define USE_YMIN_PLUG
-#define USE_ZMIN_PLUG
-//#define USE_XMAX_PLUG
+//#define USE_ZMIN_PLUG
+#define USE_XMAX_PLUG
 //#define USE_YMAX_PLUG
-//#define USE_ZMAX_PLUG
+#define USE_ZMAX_PLUG
 
 // Enable pullup for all endstops to prevent a floating state
 #define ENDSTOPPULLUPS
@@ -609,7 +609,7 @@
 
 // Enable this feature if all enabled endstop pins are interrupt-capable.
 // This will remove the need to poll the interrupt pins, saving many CPU cycles.
-//#define ENDSTOP_INTERRUPTS_FEATURE
+//#define ENDSTOP_INTERRUPTS_FEATURE // do sprawdzenia
 
 /**
  * Endstop Noise Filter
@@ -653,14 +653,17 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4]]]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 4000, 500 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 160.0 }     // LV8729  (1/16, 1/16, 1/32, 1/16)
+//#define DEFAULT_AXIS_STEPS_PER_UNIT   { 160, 160, 800, 180 }// LV8729  (1/32, 1/32, 1/32, 1/32)
+//#define DEFAULT_AXIS_STEPS_PER_UNIT   { 320, 320, 800, 90 } // LV8729 (1/64, 1/64, 1/32, 1/16)
+//#define DEFAULT_AXIS_STEPS_PER_UNIT   { 640, 640, 800, 90 } // LV8729 (1/128, 1/128, 1/32, 1/16)}
 
 /**
  * Default Max Feed Rate (mm/s)
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4]]]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 25 }
+#define DEFAULT_MAX_FEEDRATE          { 260, 260, 30, 80 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -668,7 +671,7 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4]]]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 10000 }
+#define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 9000 }
 
 /**
  * Default Acceleration (change/s) change = mm/s
@@ -678,9 +681,9 @@
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
-#define DEFAULT_ACCELERATION          3000    // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_ACCELERATION          1400    // X, Y, Z and E acceleration for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
+#define DEFAULT_TRAVEL_ACCELERATION   2400    // X, Y, Z acceleration for travel (non printing) moves
 
 /**
  * Default Jerk (mm/s)
@@ -690,9 +693,9 @@
  * When changing speed and direction, if the difference is less than the
  * value set here, it may happen instantaneously.
  */
-#define DEFAULT_XJERK                 10.0
-#define DEFAULT_YJERK                 10.0
-#define DEFAULT_ZJERK                  0.3
+#define DEFAULT_XJERK                 12.0
+#define DEFAULT_YJERK                 12.0
+#define DEFAULT_ZJERK                  0.6
 #define DEFAULT_EJERK                  5.0
 
 /**
@@ -890,14 +893,14 @@
 // @section machine
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#define INVERT_X_DIR false
+#define INVERT_X_DIR true
 #define INVERT_Y_DIR true
-#define INVERT_Z_DIR false
+#define INVERT_Z_DIR true
 
 // @section extruder
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
-#define INVERT_E0_DIR false
+#define INVERT_E0_DIR true
 #define INVERT_E1_DIR false
 #define INVERT_E2_DIR false
 #define INVERT_E3_DIR false
@@ -914,15 +917,40 @@
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
-#define X_HOME_DIR -1
+#define X_HOME_DIR 1
 #define Y_HOME_DIR -1
-#define Z_HOME_DIR -1
+#define Z_HOME_DIR 1
 
 // @section machine
 
 // The size of the print bed
-#define X_BED_SIZE 200
-#define Y_BED_SIZE 200
+//#define X_BED_SIZE 200
+//#define Y_BED_SIZE 200
+//#define Z_BED_SIZE 200
+
+#if defined(PRINTO_H3) || defined(PRINTO_H3_PLUS)
+#define X_BED_SIZE 205
+#define Y_BED_SIZE 210
+#define Z_BED_SIZE 206
+#endif
+
+#if defined(PRINTO_H3_TOWER) || defined(PRINTO_H3_TOWERPLUS)
+#define X_BED_SIZE 205
+#define Y_BED_SIZE 210
+#define Z_BED_SIZE 406
+#endif
+
+#if defined(PRINTO_H3_BIGGIE)
+#define X_BED_SIZE 305
+#define Y_BED_SIZE 310
+#define Z_BED_SIZE 556
+#endif
+
+#if defined(PRINTO_H3_MIDI)
+#define X_BED_SIZE 305
+#define Y_BED_SIZE 310
+#define Z_BED_SIZE 206
+#endif
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #define X_MIN_POS 0
@@ -930,7 +958,7 @@
 #define Z_MIN_POS 0
 #define X_MAX_POS X_BED_SIZE
 #define Y_MAX_POS Y_BED_SIZE
-#define Z_MAX_POS 200
+#define Z_MAX_POS Z_BED_SIZE
 
 /**
  * Software Endstops
@@ -969,7 +997,7 @@
  * For other boards you may need to define FIL_RUNOUT_PIN, FIL_RUNOUT2_PIN, etc.
  * By default the firmware assumes HIGH=FILAMENT PRESENT.
  */
-//#define FILAMENT_RUNOUT_SENSOR
+#define FILAMENT_RUNOUT_SENSOR
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
   #define NUM_RUNOUT_SENSORS   1     // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
   #define FIL_RUNOUT_INVERTING false // set to true to invert the logic of the sensor.
@@ -1019,7 +1047,7 @@
 //#define AUTO_BED_LEVELING_LINEAR
 //#define AUTO_BED_LEVELING_BILINEAR
 //#define AUTO_BED_LEVELING_UBL
-//#define MESH_BED_LEVELING
+#define MESH_BED_LEVELING
 
 /**
  * Normally G28 leaves leveling disabled on completion. Enable
@@ -1028,7 +1056,7 @@
 //#define RESTORE_LEVELING_AFTER_G28
 
 /**
- * Enable detailed logging of G28, G29, M48, etc.
+ * Enable detailed logging of G28, G29, M48, etc.f
  * Turn on with the command 'M111 S32'.
  * NOTE: Requires a lot of PROGMEM!
  */
@@ -1116,8 +1144,8 @@
   //=================================== Mesh ==================================
   //===========================================================================
 
-  #define MESH_INSET 10          // Set Mesh bounds as an inset region of the bed
-  #define GRID_MAX_POINTS_X 3    // Don't use more than 7 points per axis, implementation limited.
+  #define MESH_INSET 40          // Set Mesh bounds as an inset region of the bed
+  #define GRID_MAX_POINTS_X 2    // Don't use more than 7 points per axis, implementation limited.
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   //#define MESH_G28_REST_ORIGIN // After homing all axes ('G28' or 'G28 XYZ') rest Z at Z_MIN_POS
@@ -1141,11 +1169,11 @@
  * Add a bed leveling sub-menu for ABL or MBL.
  * Include a guided procedure if manual probing is enabled.
  */
-//#define LCD_BED_LEVELING
+#define LCD_BED_LEVELING
 
 #if ENABLED(LCD_BED_LEVELING)
-  #define MBL_Z_STEP 0.025    // Step size while manually probing Z axis.
-  #define LCD_PROBE_Z_RANGE 4 // Z Range centered on Z_MIN_POS for LCD Z adjustment
+  #define MBL_Z_STEP 0.04    // Step size while manually probing Z axis.
+  #define LCD_PROBE_Z_RANGE 16 // Z Range centered on Z_MIN_POS for LCD Z adjustment
 #endif
 
 // Add a menu item to move between bed corners for manual bed adjustment
@@ -1192,8 +1220,8 @@
 #endif
 
 // Homing speeds (mm/m)
-#define HOMING_FEEDRATE_XY (50*60)
-#define HOMING_FEEDRATE_Z  (4*60)
+#define HOMING_FEEDRATE_XY (75*60)
+#define HOMING_FEEDRATE_Z  (25*60)
 
 // @section calibrate
 
@@ -1266,7 +1294,7 @@
 // M501 - reads parameters from EEPROM (if you need reset them after you changed them temporarily).
 // M502 - reverts to the default "factory settings".  You still need to store them in EEPROM afterwards if you want to.
 //
-//#define EEPROM_SETTINGS // Enable for M500 and M501 commands
+#define EEPROM_SETTINGS // Enable for M500 and M501 commands
 //#define DISABLE_M503    // Saves ~2700 bytes of PROGMEM. Disable for release!
 #define EEPROM_CHITCHAT   // Give feedback on EEPROM commands. Disable to save PROGMEM.
 
@@ -1298,13 +1326,17 @@
 // @section temperature
 
 // Preheat Constants
-#define PREHEAT_1_TEMP_HOTEND 180
-#define PREHEAT_1_TEMP_BED     70
+#define PREHEAT_1_TEMP_HOTEND 210
+#define PREHEAT_1_TEMP_BED     54
 #define PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
 
-#define PREHEAT_2_TEMP_HOTEND 240
-#define PREHEAT_2_TEMP_BED    110
+#define PREHEAT_2_TEMP_HOTEND 265
+#define PREHEAT_2_TEMP_BED    90
 #define PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
+
+#define PREHEAT_3_TEMP_HOTEND 240
+#define PREHEAT_3_TEMP_BED 60
+#define PREHEAT_3_FAN_SPEED 0 // Value from 0 to 255
 
 /**
  * Nozzle Park
@@ -1317,7 +1349,7 @@
  *    P1  Raise the nozzle always to Z-park height.
  *    P2  Raise the nozzle by Z-park amount, limited to Z_MAX_POS.
  */
-//#define NOZZLE_PARK_FEATURE
+#define NOZZLE_PARK_FEATURE
 
 #if ENABLED(NOZZLE_PARK_FEATURE)
   // Specify a park position as { X, Y, Z }
@@ -1417,7 +1449,7 @@
  *
  * View the current statistics with M78.
  */
-//#define PRINTCOUNTER
+#define PRINTCOUNTER
 
 //=============================================================================
 //============================= LCD and SD support ============================
@@ -1436,7 +1468,7 @@
  *
  * :{ 'en':'English', 'an':'Aragonese', 'bg':'Bulgarian', 'ca':'Catalan', 'cn':'Chinese', 'cz':'Czech', 'cz_utf8':'Czech (UTF8)', 'de':'German', 'el':'Greek', 'el-gr':'Greek (Greece)', 'es':'Spanish', 'es_utf8':'Spanish (UTF8)', 'eu':'Basque-Euskera', 'fi':'Finnish', 'fr':'French', 'fr_utf8':'French (UTF8)', 'gl':'Galician', 'hr':'Croatian', 'it':'Italian', 'kana':'Japanese', 'kana_utf8':'Japanese (UTF8)', 'ko_KR':'Korean', 'nl':'Dutch', 'pl':'Polish', 'pt':'Portuguese', 'pt-br':'Portuguese (Brazilian)', 'pt-br_utf8':'Portuguese (Brazilian UTF8)', 'pt_utf8':'Portuguese (UTF8)', 'ru':'Russian', 'sk_utf8':'Slovak (UTF8)', 'tr':'Turkish', 'uk':'Ukrainian', 'zh_CN':'Chinese (Simplified)', 'zh_TW':'Chinese (Taiwan)', 'test':'TEST' }
  */
-#define LCD_LANGUAGE en
+#define LCD_LANGUAGE pl
 
 /**
  * LCD Character Set
@@ -1469,7 +1501,7 @@
  * you must uncomment the following option or it won't work.
  *
  */
-//#define SDSUPPORT
+#define SDSUPPORT
 
 /**
  * SD CARD: SPI SPEED
@@ -1549,7 +1581,7 @@
 // If you have a speaker that can produce tones, enable it here.
 // By default Marlin assumes you have a buzzer with a fixed frequency.
 //
-//#define SPEAKER
+#define SPEAKER
 
 //
 // The duration and frequency for the UI feedback sound.
@@ -1572,7 +1604,7 @@
 //
 // Note: Usually sold with a white PCB.
 //
-//#define REPRAP_DISCOUNT_SMART_CONTROLLER
+#define REPRAP_DISCOUNT_SMART_CONTROLLER
 
 //
 // ULTIMAKER Controller.
@@ -1966,5 +1998,82 @@
 
 // Only power servos during movement, otherwise leave off to prevent jitter
 //#define DEACTIVATE_SERVOS_AFTER_MOVE
+
+// ============================================
+// PRINTO H3 NEXTION
+// ============================================
+
+//#define PRINTOH3_SPEAKER_SOUNDS //sd in out beeper sounds and more..
+
+#if defined(PRINTO_H3_PLUS) || defined(PRINTO_H3_TOWERPLUS) || defined(PRINTO_H3_BIGGIE)
+	#define PLOSS_SUPPORT
+	#define PLOSS_MANUAL_RECOVERY
+#endif
+#if defined(PRINTO_H3) || defined(PRINTO_H3_TOWER)
+	//#define PLOSS_SUPPORT
+	//#define PLOSS_MANUAL_RECOVERY
+#endif
+
+//#define DEBUG_VLCS
+
+  #define EEPROM_PANIC_POWER_FAIL		4088								// 1 - POWER LOSS INDICATOR
+  #define EEPROM_PANIC_POWER_FAIL_COUNT	(EEPROM_PANIC_POWER_FAIL-2)			// 2 - POWER LOSS COUNTER
+  #define EEPROM_PANIC_SD_FILE_POSITION	(EEPROM_PANIC_POWER_FAIL_COUNT-4)	// 4 - SD FILE POSITION, 32 bit for uint32_t
+  #define EEPROM_PANIC_CURRENT_XPOS		(EEPROM_PANIC_SD_FILE_POSITION-4)	// 4 - X
+  #define EEPROM_PANIC_CURRENT_YPOS		(EEPROM_PANIC_CURRENT_XPOS-4)		// 4 - Y
+  #define EEPROM_PANIC_CURRENT_ZPOS		(EEPROM_PANIC_CURRENT_YPOS-4)		// 4 - Z
+  #define EEPROM_PANIC_CURRENT_EPOS		(EEPROM_PANIC_CURRENT_ZPOS-4)		// 4 - E
+  #define EEPROM_PANIC_AXIS_REL_MODES	(EEPROM_PANIC_CURRENT_EPOS-1)		// 1 - realtive axis modes
+  #define EEPROM_PANIC_FEEDRATE			(EEPROM_PANIC_AXIS_REL_MODES-2)		// 2 - FEEDRATE
+  #define EEPROM_PANIC_TARGET_HOTEND	(EEPROM_PANIC_FEEDRATE-2)			// 2 - HOTEND TEMP uint16
+  #define EEPROM_PANIC_TARGET_BED		(EEPROM_PANIC_TARGET_HOTEND-2)		// 2 - BED TEMP uint16
+  #define EEPROM_PANIC_FAN_SPEED		(EEPROM_PANIC_TARGET_BED-2)			// 2 - FAN SPEED  // uint16 czyli 2
+  #define EEPROM_SD_FILENAME			(EEPROM_PANIC_FAN_SPEED-8)			// 8 - Nazwa pliku - 8 znakow
+  #define EEPROM_SD_FILE_DIR_DEPTH		(EEPROM_SD_FILENAME-1)				// 1 - zagniezdzenie pliku
+  #define EEPROM_SD_DIRS				(EEPROM_SD_FILE_DIR_DEPTH-80)		// 8x10 @_@
+  #define EEPROM_PANIC_BABYSTEP_Z		(EEPROM_SD_DIRS-4)					// 4 - long 4 bajty
+	
+	#define EEPROM_NEX_FILAMENT_SENSOR (EEPROM_PANIC_BABYSTEP_Z-1) // 1bajt bool
+
+
+//3 Obama SD Care - reakcja po wyjęciu karty SD
+
+  //
+  // Nextion
+  //
+//#define NEX_UPLOAD
+  //#define NEXTION
+  //#define NEXTION_DISPLAY
+  #define NEXTION_SERIAL 2
+	//#define NEXTION_DEBUG
+
+  // For GFX preview visualization enable NEXTION GFX
+  //#define NEXTION_GFX
+	//#define NEX_UPLOAD // dodane na chwile
+  // Define name firmware file for Nextion on SD
+  #define NEXTION_FIRMWARE_FILE "printoh3nex35.tft"
+
+	#define NEX_SCREEN_TIMEOUT
+	#define NEX_SCREEN_TIME	8000
+	#define NEXTION_SD_LONG_NAMES
+	#define NEX_STAT_PAGE
+	#define NEX_ACC_PAGE
+	#define NEXTION_STEP_SETTINGS
+	#define NEXTION_JERK_SETTINGS
+
+// BED LEVELING NEXTION
+	#define NEXTION_BED_LEVEL
+	#define LCD_Z_STEP 0.04
+	#define PROBE_MANUALLY
+
+// FSENSOR ONOFF
+	#define FSENSOR_STATE
+	#define FSENSOR_USER_STATE
+//G28 after print stop
+	#define STOP_PRINT_G28
+
+// ============================================
+// PRINTO H3 NEXTION
+// ============================================
 
 #endif // CONFIGURATION_H

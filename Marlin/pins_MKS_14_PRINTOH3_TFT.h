@@ -208,8 +208,8 @@
 #define LCD_PINS_D6 44
 #define LCD_PINS_D7 64
 #else
-//#define LCD_PINS_RS 16
-//#define LCD_PINS_ENABLE 17
+#define LCD_PINS_RS 23 // double
+#define LCD_PINS_ENABLE 25 // double
 #define LCD_PINS_D4 23
 #define LCD_PINS_D5 25
 #define LCD_PINS_D6 27
@@ -380,7 +380,6 @@
 #if ENABLED(NEXTION_DISPLAY)
   //#define USBCON 1284  // Disable MarlinSerial etc.
   #define BEEPER_PIN 37
-	//#define BEEPER_PIN 29
   #define SDSS 53
 	#define BTN_EN1 16
 	#define BTN_EN2 17
