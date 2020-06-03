@@ -1499,7 +1499,7 @@
 		vflowbuff = (int)vFlowNex.getValue("flowpage");
 		flowfrom = FlowPageFrom.getValue("flowpage");
 
-		flow_percentage[0] = vflowbuff;
+		planner.flow_percentage[0] = vflowbuff;
 
 		if (flowfrom == 0) // wejscie z status
 		{
@@ -1806,29 +1806,21 @@
     }
     else if (PageID == MovePage) // move page
 		{
-      if (axis_homed[X_AXIS]) {
+      if (all_axes_homed()){
         valuetemp = ftostr4sign(LOGICAL_X_POSITION(current_position[X_AXIS]));
         strcat(bufferson, "X");
         strcat(bufferson, valuetemp);
-      }
-      else
-        strcat(bufferson, "?");
 
-      if (axis_homed[Y_AXIS]) {
-        valuetemp = ftostr4sign(LOGICAL_Y_POSITION(current_position[Y_AXIS]));
+				valuetemp = ftostr4sign(LOGICAL_Y_POSITION(current_position[Y_AXIS]));
         strcat(bufferson, " Y");
         strcat(bufferson, valuetemp);
-      }
-      else
-        strcat(bufferson, " ?");
 
-      if (axis_homed[Z_AXIS]) {
-        valuetemp = ftostr52sp(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS])));
+				valuetemp = ftostr52sp(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS])));
         strcat(bufferson, " Z");
         strcat(bufferson, valuetemp);
       }
       else
-        strcat(bufferson, " ?");
+        strcat(bufferson, "?");
 
       LedCoord5.setText(bufferson,"move");
     }
@@ -1958,9 +1950,9 @@
           Previousfeedrate = feedrate_percentage;
         }
 				//flow
-				if (Previousflow != flow_percentage[0]) {
-					vFlowNex.setValue(flow_percentage[0], "flowpage");
-					Previousflow = flow_percentage[0];
+				if (Previousflow != planner.flow_percentage[0]) {
+					vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
+					Previousflow = planner.flow_percentage[0];
 				}
         #if HAS_TEMP_0
           if (PreviousdegHeater[0] != thermalManager.current_temperature[0]) 

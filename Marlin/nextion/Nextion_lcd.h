@@ -27,6 +27,7 @@
 #include "library/Nextion.h"
 #include "HardwareSerial.h"
 #include "printcounter.h"
+#include "duration_t.h"
 
 #if ENABLED(NEXTION)
 

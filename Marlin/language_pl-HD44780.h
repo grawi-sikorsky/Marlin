@@ -317,6 +317,10 @@
   #define	MSG_FILAMENT_CHANGE_HEATING_2		_UxGT("Prosze czekac")
   #define	MSG_FILAMENT_CHANGE_HEAT_1			_UxGT("Wcisnij przycisk")
   #define	MSG_FILAMENT_CHANGE_HEAT_2			_UxGT("aby rozgrzac dysze")
+
+  #define	MSG_INFO_YES											_UxGT("TAK")
+  #define	MSG_INFO_NO												_UxGT("NIE")
+  
 #endif
 
 #endif  // LANGUAGE_PL_HD44780_H
