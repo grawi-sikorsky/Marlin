@@ -4644,6 +4644,10 @@ void home_all_axes() { gcode_G28(true); }
 
 #if ENABLED(MESH_BED_LEVELING) || ENABLED(PROBE_MANUALLY)
 
+  #if ENABLED(PROBE_MANUALLY) && ENABLED(LCD_BED_LEVELING)
+    extern bool lcd_wait_for_move; // dodane nex
+  #endif
+
   inline void _manual_goto_xy(const float &rx, const float &ry) {
 
     #ifdef MANUAL_PROBE_START_Z

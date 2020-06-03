@@ -32,7 +32,7 @@
 #endif
 
 #ifndef BOARD_NAME
-#define BOARD_NAME "Printo H3 MKS OLED"
+#define BOARD_NAME "Printo H3 MKS TFT"
 #endif
 
 #define LARGE_FLASH true
@@ -174,7 +174,7 @@
 #endif
 
 #ifndef FAN_PIN
-#define FAN_PIN 4      // IO pin. Buffer needed
+#define FAN_PIN 9      // IO pin. Buffer needed
 #endif
 
 //
@@ -386,5 +386,5 @@
 	#define BTN_ENC 35
 	#define SD_DETECT_PIN 49
 	#define KILL_PIN 25
-	#define FAN_PIN 9
+	//#define FAN_PIN 9
 #endif

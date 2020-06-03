@@ -1604,7 +1604,7 @@
 //
 // Note: Usually sold with a white PCB.
 //
-#define REPRAP_DISCOUNT_SMART_CONTROLLER
+//#define REPRAP_DISCOUNT_SMART_CONTROLLER
 
 //
 // ULTIMAKER Controller.
@@ -2042,8 +2042,8 @@
   // Nextion
   //
 //#define NEX_UPLOAD
-  //#define NEXTION
-  //#define NEXTION_DISPLAY
+  #define NEXTION
+  #define NEXTION_DISPLAY
   #define NEXTION_SERIAL 2
 	//#define NEXTION_DEBUG
 

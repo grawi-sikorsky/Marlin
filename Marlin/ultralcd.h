@@ -196,6 +196,37 @@
     void wait_for_release();
   #endif
 
+
+#elif ENABLED(NEXTION_DISPLAY)
+
+	constexpr bool lcd_wait_for_move = false;
+
+	void lcd_init();
+	void lcd_update();
+	void lcd_reset_alert_level();
+	void lcd_setstatusPGM(const char* message, const int8_t level = 0);
+	void lcd_setalertstatusPGM(const char* message);
+	void lcd_setstatus(const char* message, const bool persist = false);
+	void lcd_status_printf_P(const uint8_t level, const char * const fmt, ...);
+	bool lcd_detected();
+
+  #define LCD_MESSAGEPGM(x)      lcd_setstatusPGM(PSTR(x))
+	#define LCD_ALERTMESSAGEPGM(x) lcd_setalertstatusPGM(PSTR(x))
+
+	inline void lcd_refresh() {}
+	inline bool lcd_hasstatus() { return false; }
+	inline void lcd_eeprom_allert() {}
+
+	void lcd_sdcard_stop();
+
+  void lcd_reset_status();
+
+	//VLCS
+	#if ENABLED(PLOSS_SUPPORT)
+	void lcd_ploss_recovery_menu(const PlossMenuMessage message);
+	#endif //PLOSS
+
+
 #else // MALYAN_LCD or no LCD
 
   constexpr bool lcd_wait_for_move = false;
