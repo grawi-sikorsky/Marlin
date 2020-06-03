@@ -378,6 +378,14 @@ bool Running = true;
 
 uint8_t marlin_debug_flags = DEBUG_NONE;
 
+
+#if ENABLED (NEXTION_DISPLAY)
+  #include "nextion/Nextion_lcd.h"
+  uint8_t progress_printing; // dodane nex
+	bool nex_filament_runout_sensor_flag;
+#endif
+
+
 /**
  * Cartesian Current Position
  *   Used to track the native machine position as moves are queued.
@@ -4377,7 +4385,7 @@ inline void gcode_G4() {
 
 #endif // Z_SAFE_HOMING
 
-#if ENABLED(PROBE_MANUALLY)
+#if ENABLED(PROBE_MANUALLY) || ENABLED(MESH_BED_LEVELING)
   bool g29_in_progress = false;
 #else
   constexpr bool g29_in_progress = false;

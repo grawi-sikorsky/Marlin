@@ -706,7 +706,7 @@
 
 	#if ENABLED(NEX_UPLOAD)
 	void UploadNewFirmware() {
-		if (IS_SD_INSERTED || card.cardOK) {
+		if (IS_SD_INSERTED() || card.cardOK) {
 			Firmware.startUpload();
 			nexSerial.end();
 			lcd_init();
@@ -965,7 +965,7 @@
     void PlayPausePopCallback(void *ptr) {
       UNUSED(ptr);
       if (card.cardOK && card.isFileOpen()) {
-        if (IS_SD_PRINTING) {														//pause
+        if (IS_SD_PRINTING()) {														//pause
           card.pauseSDPrint();
           print_job_timer.pause();
           #if ENABLED(PARK_HEAD_ON_PAUSE)
@@ -1783,7 +1783,7 @@
     heater_list0[h]->setValue(temp,"stat");
 
     #if ENABLED(NEXTION_GFX)
-      if (!(print_job_counter.isRunning() || IS_SD_PRINTING) && !Wavetemp.getObjVis() && show_Wave) {
+      if (!(print_job_counter.isRunning() || IS_SD_PRINTING()) && !Wavetemp.getObjVis() && show_Wave) {
         Wavetemp.SetVisibility(true);
       }
     #endif
@@ -1840,7 +1840,7 @@
 		// IS_SD_INSERTED ma odwrocona logike:
 		// 1 - brak karty
 		// 0 - karta wlozona
-		const bool sd_status = IS_SD_INSERTED;
+		const bool sd_status = IS_SD_INSERTED();
 		if (sd_status != lcd_sd_status && lcd_detected())								// sprawdz czy nastapila zmiana? SD DET ->
 		{																																// TAK:
 			SERIAL_ECHOLNPGM("zmiana sd det:");
@@ -1871,11 +1871,11 @@
 	{
 		#if ENABLED(SDSUPPORT)
 			if (card.isFileOpen()) {
-				if (IS_SD_PRINTING && SDstatus != SD_PRINTING) {
+				if (IS_SD_PRINTING() && SDstatus != SD_PRINTING) {
 					SDstatus = SD_PRINTING;
 					SD.setValue(SDstatus,"stat");
 				}
-				else if (!IS_SD_PRINTING && SDstatus != SD_PAUSE) {
+				else if (!IS_SD_PRINTING() && SDstatus != SD_PAUSE) {
 					SDstatus = SD_PAUSE;
 					SD.setValue(SDstatus,"stat");
 				}
@@ -2085,7 +2085,7 @@
         coordtoLCD();
         break;
 			case FlowPage: // flow page
-				vFlowNex.setValue(flow_percentage[0], "flowpage");
+				vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
 				break;
     }
     PreviousPage = PageID;
@@ -2170,7 +2170,7 @@
     }
 
     void gfx_clear(const float x, const float y, const float z, bool force_clear) {
-      if (PageID == StatusPage && (print_job_counter.isRunning() || IS_SD_PRINTING || force_clear)) {
+      if (PageID == StatusPage && (print_job_counter.isRunning() || IS_SD_PRINTING() || force_clear)) {
         Wavetemp.SetVisibility(false);
         show_Wave = !force_clear;
         gfx.clear(x, y, z);
@@ -2178,12 +2178,12 @@
     }
 
     void gfx_cursor_to(const float x, const float y, const float z, bool force_cursor) {
-      if (PageID == StatusPage && (print_job_counter.isRunning() || IS_SD_PRINTING || force_cursor))
+      if (PageID == StatusPage && (print_job_counter.isRunning() || IS_SD_PRINTING() || force_cursor))
         gfx.cursor_to(x, y, z);
     }
 
     void gfx_line_to(const float x, const float y, const float z) {
-      if (PageID == StatusPage && (print_job_counter.isRunning() || IS_SD_PRINTING)) {
+      if (PageID == StatusPage && (print_job_counter.isRunning() || IS_SD_PRINTING())) {
         #if ENABLED(ARDUINO_ARCH_SAM)
           gfx.line_to(NX_TOOL, x, y, z, true);
         #else
