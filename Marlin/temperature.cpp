@@ -34,6 +34,10 @@
 #include "delay.h"
 #include "endstops.h"
 
+#if ENABLED(NEXTION_DISPLAY)
+	#include "nextion\Nextion_lcd.h"
+#endif
+
 #if ENABLED(HEATER_0_USES_MAX6675)
   #include "MarlinSPI.h"
 #endif
@@ -314,6 +318,7 @@ uint8_t Temperature::soft_pwm_amount[HOTENDS];
     }
 
     SERIAL_ECHOLNPGM(MSG_PID_AUTOTUNE_START);
+    LCD_MESSAGEPGM(MSG_PID_AUTOTUNE_START); // nex dodany komunikat na lcd
 
     disable_all_heaters(); // switch off all heaters.
 
@@ -324,6 +329,8 @@ uint8_t Temperature::soft_pwm_amount[HOTENDS];
     // PID Tuning loop
     while (wait_for_heatup) {
 
+      check_periodical_actions(); // NEX dodane aby odswiezac nexlcd w trakcie m303
+      
       const millis_t ms = millis();
 
       if (temp_meas_ready) { // temp sample ready
@@ -405,10 +412,13 @@ uint8_t Temperature::soft_pwm_amount[HOTENDS];
 
       // Did the temperature overshoot very far?
       #ifndef MAX_OVERSHOOT_PID_AUTOTUNE
-        #define MAX_OVERSHOOT_PID_AUTOTUNE 20
+        //#define MAX_OVERSHOOT_PID_AUTOTUNE 20
+        #define MAX_OVERSHOOT_PID_AUTOTUNE 26 // dodane Printo H3 - zamiana z 20 na 26 - problemy z autotune na niektorych grzalkach -> za duzy overshot
       #endif
       if (current > target + MAX_OVERSHOOT_PID_AUTOTUNE) {
         SERIAL_PROTOCOLLNPGM(MSG_PID_TEMP_TOO_HIGH);
+        //LCD_MESSAGEPGM(MSG_PID_AUTOTUNE_FAIL); // dodane
+				LCD_MESSAGEPGM(MSG_PID_AUTOTUNE_OVERSHOT); // dodane
         break;
       }
 
@@ -457,6 +467,7 @@ uint8_t Temperature::soft_pwm_amount[HOTENDS];
 
       if (cycles > ncycles) {
         SERIAL_PROTOCOLLNPGM(MSG_PID_AUTOTUNE_FINISHED);
+        LCD_MESSAGEPGM(MSG_PID_AUTOTUNE_DONE); // dodane nex
 
         #if HAS_PID_FOR_BOTH
           const char* estring = GHV("bed", "");
