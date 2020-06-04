@@ -526,7 +526,7 @@
  */
 
 #define THERMAL_PROTECTION_HOTENDS // Enable thermal protection for all extruders
-#define THERMAL_PROTECTION_BED     // Enable thermal protection for the heated bed
+//#define THERMAL_PROTECTION_BED     // Enable thermal protection for the heated bed
 
 //===========================================================================
 //============================= Mechanical Settings =========================
@@ -683,7 +683,7 @@
  */
 #define DEFAULT_ACCELERATION          1400    // X, Y, Z and E acceleration for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   2400    // X, Y, Z acceleration for travel (non printing) moves
+#define DEFAULT_TRAVEL_ACCELERATION   2000    // X, Y, Z acceleration for travel (non printing) moves
 
 /**
  * Default Jerk (mm/s)
@@ -693,8 +693,8 @@
  * When changing speed and direction, if the difference is less than the
  * value set here, it may happen instantaneously.
  */
-#define DEFAULT_XJERK                 12.0
-#define DEFAULT_YJERK                 12.0
+#define DEFAULT_XJERK                 14.0
+#define DEFAULT_YJERK                 14.0
 #define DEFAULT_ZJERK                  0.6
 #define DEFAULT_EJERK                  5.0
 
@@ -1220,7 +1220,7 @@
 #endif
 
 // Homing speeds (mm/m)
-#define HOMING_FEEDRATE_XY (240*60)
+#define HOMING_FEEDRATE_XY (160*60)
 #define HOMING_FEEDRATE_Z  (30*60)
 
 // @section calibrate

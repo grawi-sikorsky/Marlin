@@ -7235,7 +7235,7 @@ inline void gcode_M17() {
     #if DISABLED(ULTIPANEL)
       UNUSED(show_lcd);
     #endif
-
+SERIAL_ECHOLN("LOAD FILAMENT KURWAAAAAAAAAAA.");
     if (!ensure_safe_temperature(mode)) {
       #if ENABLED(ULTIPANEL) || ENABLED(NEXTION_DISPLAY)
         if (show_lcd) // Show status screen

@@ -283,7 +283,7 @@
 #elif defined(EN_C)
   #define LCD_CLICKED (buttons & EN_C)
 #else
-  #define LCD_CLICKED false
+  //#define LCD_CLICKED false
 #endif
 
 #define LCD_MESSAGEPGM(x)      lcd_setstatusPGM(PSTR(x))
