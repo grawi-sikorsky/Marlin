@@ -95,7 +95,7 @@ extern float feedrate_mm_s;
 
   #if ENABLED(ADVANCED_PAUSE_FEATURE)
     void lcd_advanced_pause_show_message(const AdvancedPauseMessage message,
-                                         const AdvancedPauseMenuResponse mode= ADVANCED_PAUSE_RESPONSE_WAIT_FOR);
+                                         const AdvancedPauseMode mode= ADVANCED_PAUSE_MODE_PAUSE_PRINT);
   #endif
 
   #if ENABLED(RFID_MODULE)

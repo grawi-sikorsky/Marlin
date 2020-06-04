@@ -996,7 +996,7 @@
 // ========================
   #if ENABLED(ADVANCED_PAUSE_FEATURE)
 
-    static AdvancedPauseMenuResponse advanced_pause_mode = ADVANCED_PAUSE_RESPONSE_WAIT_FOR;
+    static AdvancedPauseMode advanced_pause_mode = ADVANCED_PAUSE_MODE_PAUSE_PRINT;
 
 		void lcd_advanced_pause_toocold_menu() {
 			nex_m600_heatingup = 1; // wlacz wyswietlanie temperatury
@@ -1108,7 +1108,7 @@
       END_SCREEN();
     }
 
-    void lcd_advanced_pause_show_message(const AdvancedPauseMessage message,const AdvancedPauseMenuResponse mode/*=ADVANCED_PAUSE_MODE_PAUSE_PRINT*/) 
+    void lcd_advanced_pause_show_message(const AdvancedPauseMessage message, const AdvancedPauseMode mode/*=ADVANCED_PAUSE_MODE_PAUSE_PRINT*/) 
 		{
       //UNUSED(extruder);
       static AdvancedPauseMessage old_message;
@@ -1768,6 +1768,7 @@
 			buzzer.tone(100, 3100);
 
 			Pprinter.show();
+			sendCommand("ref 0");
     }
   }
 // =======================
@@ -1848,19 +1849,20 @@
 			{
 				SERIAL_ECHOLNPGM("sd_status:false");
 				card.initsd();																								// inicjalizacja karty
-				setpageSD();																									// ustaw strone i przekaz flage do strony status
 				SDstatus = SD_INSERT;
 				SD.setValue(SDstatus, "stat");
 				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_SD_INSERTED);			// MSG
+				if (PageID == SDPage){ setpageSD(); }													// ustaw strone i przekaz flage do strony status
+
 			}
 			else																														// je�li SD_DETECT == true:
 			{
 				SERIAL_ECHOLNPGM("sd_status:true");
 				card.release();																								// odmontuj kart� SD
-				setpageSD();																									// ustaw strone i przekaz flage do strony status
 				SDstatus = SD_NO_INSERT;
 				SD.setValue(SDstatus, "stat");
 				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_SD_REMOVED);				// MSG
+				if (PageID == SDPage){ setpageSD(); }													// ustaw strone i przekaz flage do strony status
 			}
 			lcd_sd_status = sd_status;
 		} // CALY IF SPRAWDZA STAN SD_DETECT I JEGO ZMIANE: SD jest->init / SD niet->release
@@ -1924,6 +1926,8 @@
     if (!NextionON) return;
 	
     PageID = Nextion_PageID();
+
+		nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
 
     switch(PageID)
 		{
@@ -2018,7 +2022,7 @@
 						NexFilename.setText(filename_printing);
 					}
 				}
-				nex_check_sdcard_present();
+				//nex_check_sdcard_present();
 				nex_update_sd_status();
 
 				#if HAS_SD_RESTART

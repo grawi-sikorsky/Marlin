@@ -7202,7 +7202,7 @@ inline void gcode_M17() {
       }
     #endif
 
-    #if ENABLED(ULTIPANEL)
+    #if ENABLED(ULTIPANEL) || ENABLED(NEXTION_DISPLAY)
       lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_WAIT_FOR_NOZZLES_TO_HEAT, mode);
     #else
       UNUSED(mode);
@@ -7237,7 +7237,7 @@ inline void gcode_M17() {
     #endif
 
     if (!ensure_safe_temperature(mode)) {
-      #if ENABLED(ULTIPANEL)
+      #if ENABLED(ULTIPANEL) || ENABLED(NEXTION_DISPLAY)
         if (show_lcd) // Show status screen
           lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_STATUS);
       #endif
@@ -7246,7 +7246,7 @@ inline void gcode_M17() {
     }
 
     if (pause_for_user) {
-      #if ENABLED(ULTIPANEL)
+      #if ENABLED(ULTIPANEL) || ENABLED(NEXTION_DISPLAY)
         if (show_lcd) // Show "insert filament"
           lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_INSERT, mode);
       #endif
@@ -7270,7 +7270,7 @@ inline void gcode_M17() {
       KEEPALIVE_STATE(IN_HANDLER);
     }
 
-    #if ENABLED(ULTIPANEL)
+    #if ENABLED(ULTIPANEL) || ENABLED(NEXTION_DISPLAY)
       if (show_lcd) // Show "wait for load" message
         lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_LOAD, mode);
     #endif
@@ -7294,7 +7294,7 @@ inline void gcode_M17() {
 
     #if ENABLED(ADVANCED_PAUSE_CONTINUOUS_PURGE)
 
-      #if ENABLED(ULTIPANEL)
+      #if ENABLED(ULTIPANEL)|| ENABLED(NEXTION_DISPLAY)
         if (show_lcd)
           lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_CONTINUOUS_PURGE);
       #endif
@@ -7309,7 +7309,7 @@ inline void gcode_M17() {
       do {
         if (purge_length > 0) {
           // "Wait for filament purge"
-          #if ENABLED(ULTIPANEL)
+          #if ENABLED(ULTIPANEL)|| ENABLED(NEXTION_DISPLAY)
             if (show_lcd)
               lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_PURGE, mode);
           #endif
@@ -7319,7 +7319,7 @@ inline void gcode_M17() {
         }
 
         // Show "Purge More" / "Resume" menu and wait for reply
-        #if ENABLED(ULTIPANEL)
+        #if ENABLED(ULTIPANEL)|| ENABLED(NEXTION_DISPLAY)
           if (show_lcd) {
             KEEPALIVE_STATE(PAUSED_FOR_USER);
             wait_for_user = false;
@@ -7331,7 +7331,7 @@ inline void gcode_M17() {
 
         // Keep looping if "Purge More" was selected
       } while (
-        #if ENABLED(ULTIPANEL)
+        #if ENABLED(ULTIPANEL)|| ENABLED(NEXTION_DISPLAY)
           show_lcd && advanced_pause_menu_response == ADVANCED_PAUSE_RESPONSE_EXTRUDE_MORE
         #else
           0
@@ -7357,7 +7357,7 @@ inline void gcode_M17() {
                               const AdvancedPauseMode mode=ADVANCED_PAUSE_MODE_PAUSE_PRINT
   ) {
     if (!ensure_safe_temperature(mode)) {
-      #if ENABLED(ULTIPANEL)
+      #if ENABLED(ULTIPANEL) || ENABLED(NEXTION_DISPLAY)
         if (show_lcd) // Show status screen
           lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_STATUS);
       #endif
@@ -7365,7 +7365,7 @@ inline void gcode_M17() {
       return false;
     }
 
-    #if DISABLED(ULTIPANEL)
+    #if DISABLED(ULTIPANEL) && DISABLED(NEXTION_DISPLAY)
       UNUSED(show_lcd);
     #else
       if (show_lcd)
@@ -7419,7 +7419,7 @@ inline void gcode_M17() {
 	// show_lcd jest rowniez flaga dla wejscia w pauze bez zmiany filamentu
 	// jezeli show_lcd = true - M600
 	// jezeli Show_lcd = false - M125 - bez nozzle timeout, bez wyswietlania ekranu WAIT_FOR_NOZZLES_TO_HEAT
-  static bool pause_print(const float &retract, const point_t &park_point, const float &unload_length=0, const bool show_lcd=false) {
+  static bool pause_print(const float &retract, const point_t &park_point, const float &pluj, const float &unload_length=0, const bool show_lcd=false) {
     if (did_pause_print) return false; // already paused
 
     #ifdef ACTION_ON_PAUSE
@@ -7430,7 +7430,7 @@ inline void gcode_M17() {
       SERIAL_ERROR_START();
       SERIAL_ERRORLNPGM(MSG_HOTEND_TOO_COLD);
 
-      #if ENABLED(ULTIPANEL)
+      #if ENABLED(ULTIPANEL) //|| ENABLED(NEXTION_DISPLAY)
         if (show_lcd) // Show status screen
           lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_STATUS);
         LCD_MESSAGEPGM(MSG_M600_TOO_COLD);
@@ -7491,7 +7491,7 @@ inline void gcode_M17() {
   static void wait_for_filament_reload(const int8_t max_beep_count=0) {
     bool nozzle_timed_out = false;
 
-    #if ENABLED(ULTIPANEL)
+    #if ENABLED(ULTIPANEL) || ENABLED(NEXTION_DISPLAY)
       lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_INSERT);
     #endif
     SERIAL_ECHO_START();
@@ -7522,7 +7522,7 @@ inline void gcode_M17() {
           nozzle_timed_out |= thermalManager.is_heater_idle(e);
 
       if (nozzle_timed_out) {
-        #if ENABLED(ULTIPANEL)
+        #if ENABLED(ULTIPANEL) || ENABLED(NEXTION_DISPLAY)
           lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_CLICK_TO_HEAT_NOZZLE);
         #endif
         SERIAL_ECHO_START();
@@ -7543,7 +7543,7 @@ inline void gcode_M17() {
         // Wait for the heaters to reach the target temperatures
         ensure_safe_temperature();
 
-        #if ENABLED(ULTIPANEL)
+        #if ENABLED(ULTIPANEL) || ENABLED(NEXTION_DISPLAY)
           lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_INSERT);
         #endif
         SERIAL_ECHO_START();
@@ -7607,7 +7607,7 @@ inline void gcode_M17() {
       load_filament(slow_load_length, fast_load_length, purge_length, max_beep_count, true, nozzle_timed_out);
     }
 
-    #if ENABLED(ULTIPANEL)
+    #if ENABLED(ULTIPANEL) || ENABLED(NEXTION_DISPLAY)
       // "Wait for print to resume"
       lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_RESUME);
     #endif
@@ -7636,7 +7636,7 @@ inline void gcode_M17() {
       runout.reset();
     #endif
 
-    #if ENABLED(ULTIPANEL)
+    #if ENABLED(ULTIPANEL) || ENABLED(NEXTION_DISPLAY)
       // Show status screen
       lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_STATUS);
     #endif
@@ -9625,7 +9625,7 @@ inline void gcode_M121() { endstops.enable_globally(false); }
       const bool job_running = print_job_timer.isRunning();
     #endif
 
-    if (pause_print(retract, park_point)) {
+    if (pause_print(retract, park_point, 0)) {// wartosc 0 = pluj, czyli zdefiniowana wczesniej wartosc ekstruzji przy zmianie filamentu m600
       #if DISABLED(SDSUPPORT)
         // Wait for lcd click or M108
         wait_for_filament_reload();
@@ -11059,11 +11059,39 @@ void quickstop_stepper() {
 
 #endif // HAS_M206_COMMAND
 
+/********************************************
+* Printo 
+* M811 Dodane ploss
+* Printo
+*********************************************/
+#ifdef PLOSS_SUPPORT
+inline void gcode_M811(){ //Printo M811
+	ploss();
+}
+
+inline void gcode_M812() {
+	SERIAL_ECHOPGM("M812");
+	// 3. Confirm menu
+	// Dodajemy ekran menu pauzy pozwalający na dodatkową ekstruzję
+	KEEPALIVE_STATE(PAUSED_FOR_USER);
+	wait_for_user = false;
+	lcd_ploss_recovery_menu(PLOSS_LCD_MENU_LAST_CONFIRM); // Uruchom confirm-extrude menu..
+	while (lcd_ploss_menu_response == PLOSS_LCD_RESPONSE_WAIT_FOR_LAST_CONFIRMATION) idle(true); //Czekaj na decyzje
+	KEEPALIVE_STATE(IN_HANDLER);
+
+	if (lcd_ploss_menu_response == PLOSS_LCD_RESPONSE_YES) { // jezeli tak
+		lcd_ploss_recovery_menu(PLOSS_LAST_INFO);
+	}
+}
+#endif
+
 /**
  * M500: Store settings in EEPROM
  */
 inline void gcode_M500() {
   (void)settings.save();
+	BUZZ(70, 2300); // dodane beeper git
+	BUZZ(70, 2900); // dodane beeper git
 }
 
 /**
@@ -11071,6 +11099,8 @@ inline void gcode_M500() {
  */
 inline void gcode_M501() {
   (void)settings.load();
+	BUZZ(70, 2300); // dodane beeper git
+	BUZZ(70, 2900); // dodane beeper git
 }
 
 /**
@@ -11078,6 +11108,8 @@ inline void gcode_M501() {
  */
 inline void gcode_M502() {
   (void)settings.reset();
+	BUZZ(70, 2900); // dodane beeper git	
+	BUZZ(70, 2300); // dodane beeper git
 }
 
 #if DISABLED(DISABLE_M503)
@@ -11247,8 +11279,10 @@ inline void gcode_M502() {
     if (get_target_extruder_from_command(600)) return;
 
     // Show initial message
-    #if ENABLED(ULTIPANEL)
+    #if ENABLED(ULTIPANEL) 
       lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_INIT, ADVANCED_PAUSE_MODE_PAUSE_PRINT, target_extruder);
+    #elif ENABLED(NEXTION_DISPLAY)
+      lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_INIT, ADVANCED_PAUSE_MODE_PAUSE_PRINT);
     #endif
 
     #if ENABLED(HOME_BEFORE_FILAMENT_CHANGE)
@@ -11282,6 +11316,15 @@ inline void gcode_M502() {
       park_point.y += (active_extruder ? hotend_offset[Y_AXIS][active_extruder] : 0);
     #endif
 
+
+    // Initial pluy, DODANE aby wypluc troche materialu przed cofaniem
+    const float pluj = parser.seen('E') ? parser.value_axis_units(E_AXIS) : 0
+    #if defined(PAUSE_PARK_PLUY_LENGTH) && PAUSE_PARK_PLUY_LENGTH > 0
+      + (PAUSE_PARK_PLUY_LENGTH) // gyyyt wartosc 
+    #endif
+		;
+
+
     // Unload filament
     const float unload_length = -ABS(parser.seen('U') ? parser.value_axis_units(E_AXIS) :
                                                          filament_change_unload_length[active_extruder]);
@@ -11303,7 +11346,7 @@ inline void gcode_M502() {
 
     const bool job_running = print_job_timer.isRunning();
 
-    if (pause_print(retract, park_point, unload_length, true)) {
+    if (pause_print(retract, park_point, pluj, unload_length, true)) {
       wait_for_filament_reload(beep_count);
       resume_print(slow_load_length, fast_load_length, ADVANCED_PAUSE_PURGE_LENGTH, beep_count);
     }
@@ -13290,6 +13333,15 @@ void process_parsed_command() {
       #if ENABLED(EEPROM_SETTINGS)
         case 504: gcode_M504(); break;                            // M504: Validate EEPROM
       #endif
+
+      #ifdef PLOSS_SUPPORT
+        case 811: // M811 DODANE
+          gcode_M811();
+          break;
+        case 812: // M812 menu @_@
+          gcode_M812();
+          break;
+      #endif // PLOSS_SUPPORT
 
       #if ENABLED(SDSUPPORT)
         case 524: gcode_M524(); break;                            // M524: Abort SD print job
@@ -15316,6 +15368,420 @@ void stop() {
   }
 }
 
+
+#ifdef PLOSS_SUPPORT
+
+
+union Data
+{
+	byte b[2];
+	int value;
+};
+void EEPROM_save_FR(int pos, int* value)
+{
+	union Data data;
+	data.value = *value;
+
+	eeprom_update_byte((unsigned char*)pos, data.b[0]);
+	eeprom_update_byte((unsigned char*)pos + 1, data.b[1]);
+}
+
+void EEPROM_read_FR(int pos, int* value)
+{
+	union Data data;
+	data.b[0] = eeprom_read_byte((unsigned char*)pos);
+	data.b[1] = eeprom_read_byte((unsigned char*)pos + 1);
+	*value = data.value;
+}
+
+void planner_abort_hard()
+{
+	// Wylacz przerwania stepperow
+	DISABLE_STEPPER_DRIVER_INTERRUPT();
+
+	// Synchro ze stepperami
+	planner.sync_from_steppers();
+
+	// Czysc planner oraz resetuje steppery i ich przerwania
+	stepper.quick_stop_panic();
+
+	memcpy(destination, current_position, sizeof(destination));
+}
+
+// dodane Printo H3 obsługa przerwania ploss
+void ploss() {
+	float backup_temp_hotend = 0; //przeniesione do wnetrza funkcji
+	float backup_temp_bed = 0;		//przeniesione do wnetrza ploss() dodatkowe 8 bajtów ram
+	thermalManager.disable_all_heaters(); // wylacz grzalki
+
+	// Zrob kopie temperatur przed wylaczeniem grzalek
+	backup_temp_hotend = thermalManager.current_temperature[0];
+	backup_temp_bed = thermalManager.current_temperature_bed;
+
+	disable_X();
+	disable_Y();
+	disable_e_steppers();					// motory OFF poza osia Z
+	
+	long sd_position = sdpos_atomic; //przekazuje pozycje sdpos
+	sd_position -= 800; // odejmujemy kapkę z bufora - ok 16 komend? 768
+	//{
+		//uint16_t sdlen_planner = planner. planner_calc_sd_length(); //length of sd commands in planner
+		//sd_position -= sdlen_planner;
+		//uint16_t sdlen_cmdqueue = cmdqueue_calc_sd_length(); //length of sd commands in cmdqueue
+		//sd_position -= sdlen_cmdqueue;
+		//if (sd_position < 0) sd_position = 0;
+	//}
+	eeprom_update_dword((uint32_t*)(EEPROM_PANIC_SD_FILE_POSITION), sd_position);
+
+	// zapisz babystepping jesli byl uzyty
+	eeprom_update_dword((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);
+
+	// Zapisz kopie feedrate w mm/s
+	int feedrate_backup = saved_feedrate_mm_s;
+
+	planner_abort_hard();
+	sync_plan_position();
+
+	disable_X();
+	disable_Y();
+	disable_e_steppers();					// motory OFF poza osia Z
+
+	// E
+	eeprom_update_float((float*)(EEPROM_PANIC_CURRENT_EPOS), stepper.get_axis_position_mm(E_AXIS));
+	eeprom_update_byte((uint8_t*)EEPROM_PANIC_AXIS_REL_MODES, axis_relative_modes[3] ? 0 : 1);
+
+	// Czysc bufor komend
+	clear_command_queue();
+	
+	#if ENABLED(SDSUPPORT)
+		card.sdprinting = false;
+	#endif
+
+	// Zapisz pozycje i parametry druku
+	eeprom_update_float((float*)(EEPROM_PANIC_CURRENT_XPOS), current_position[X_AXIS]);		// zapisz X
+	eeprom_update_float((float*)(EEPROM_PANIC_CURRENT_YPOS), current_position[Y_AXIS]);		// zapisz Y
+	eeprom_update_float((float*)(EEPROM_PANIC_CURRENT_ZPOS), current_position[Z_AXIS]);		// zapisz Z
+
+	EEPROM_save_FR(EEPROM_PANIC_FEEDRATE, &feedrate_backup);								// zapisz feedrate
+	eeprom_update_word((uint16_t*)EEPROM_PANIC_TARGET_HOTEND, backup_temp_hotend);			// zapisz temp glowicy
+	eeprom_update_word((uint16_t*)EEPROM_PANIC_TARGET_BED, backup_temp_bed);				// zapisz temp bed
+	eeprom_update_word((uint16_t*)EEPROM_PANIC_FAN_SPEED, fanSpeeds[0]);					// zapisz wentylator
+	
+	// Oznacz flage zaniku na true
+	//if (card.sdprinting) eeprom_update_byte((uint8_t*)EEPROM_PANIC_POWER_FAIL, 1); // debug
+	eeprom_update_byte((uint8_t*)EEPROM_PANIC_POWER_FAIL, 1); //debug
+
+	// Zwieksz licznik faili
+	eeprom_update_byte((uint8_t*)EEPROM_PANIC_POWER_FAIL_COUNT,eeprom_read_byte((uint8_t*)EEPROM_PANIC_POWER_FAIL_COUNT)+1);
+
+	planner.max_acceleration_mm_per_s2[Z_AXIS] = 2000;
+	planner.acceleration = 2000;
+	planner.travel_acceleration = 2000;
+	planner.reset_acceleration_rates();
+
+	// Włącz przerwanie dla stepperow
+	sei();
+	planner.buffer_line(
+		current_position[X_AXIS],
+		current_position[Y_AXIS],
+		current_position[Z_AXIS],
+		current_position[E_AXIS] - 3, //Retrakcja
+		200, active_extruder);
+	
+	//stepper.synchronize();
+	disable_e_steppers();
+	
+	planner.buffer_line(
+		current_position[X_AXIS],
+		current_position[Y_AXIS],
+		current_position[Z_AXIS] + 16,
+		current_position[E_AXIS],
+		85, active_extruder);
+	
+	stepper.synchronize();
+	disable_all_steppers();
+	disable_e_steppers();
+	disable_Z();
+
+	cli();
+
+	volatile unsigned int ppcount = 0;
+	SET_OUTPUT(BEEPER_PIN);
+	WRITE(BEEPER_PIN, HIGH);
+	for (ppcount = 0; ppcount < 2000; ppcount++) {
+		asm("nop");//50ns on 20Mhz, 62.5ns on 16Mhz
+	}
+	WRITE(BEEPER_PIN, LOW);
+	while (1) {
+#if 1
+		WRITE(BEEPER_PIN, LOW);
+		for (ppcount = 0; ppcount < 8000; ppcount++) {
+			asm("nop");//50ns on 20Mhz, 62.5ns on 16Mhz
+		}
+#endif
+	};
+}
+
+
+// Przywracanie wydruku glowna funkcja
+void ploss_recover(uint8_t automatic) {
+	char cmd[30];
+	uint16_t _hotend, _bed;
+	_hotend = eeprom_read_word((uint16_t*)EEPROM_PANIC_TARGET_HOTEND);
+	_bed = eeprom_read_word((uint16_t*)EEPROM_PANIC_TARGET_BED);
+	
+	lcd_update();
+
+	#if ENABLED(PRINTO3D_OLED_I2C_242)
+	lcd_setstatusPGM(MSG_PRINT_RECOVERING);
+	#else
+	lcd_setstatusPGM(MSG_PRINT_RECOVERING);
+	// jakas inna czynnosc wyswietlajaca mesydz wazny na tft
+	#endif
+
+	recover_machine_state_after_power_panic(); // przywraca stan urzadzenia po zaniku // zero cmd
+	
+	// Ustaw temperatury dla glowicy bez oczekiwania
+	//sprintf_P(cmd, PSTR("M104 S%d"), thermalManager.target_temperature[0]);
+	//enqueue_and_echo_command(cmd); //2 zamiast enqueue command są dwie opcje ponizej: do sprawdzenia:
+	//thermalManager.setTargetHotend(thermalManager.target_temperature[0], 0);
+	//thermalManager.setTargetHotend(eeprom_read_word((uint16_t*)EEPROM_PANIC_TARGET_HOTEND), 0);
+
+	// Aplikujemy Babystepping
+	//_babystep_z_shift = eeprom_read_dword((uint32_t*)EEPROM_PANIC_BABYSTEP_Z);
+	//thermalManager.babystep_axis(Z_AXIS, _babystep_z_shift); //dodane
+
+	SERIAL_ECHOPGM("before:");
+	SERIAL_ECHOLN(_babystep_z_shift);
+	SERIAL_ECHOLN(current_position[Z_AXIS]);
+	// Bazujemy cala drukarke
+	home_all_axes(); // zamiast: enqueue_and_echo_commands_P(PSTR("G28")); 
+
+	SERIAL_ECHOPGM("afterhome:");
+	SERIAL_ECHOLN(_babystep_z_shift);
+	SERIAL_ECHOLN(current_position[Z_AXIS]);
+
+	// Aplikujemy Babystepping
+	_babystep_z_shift = eeprom_read_dword((uint32_t*)EEPROM_PANIC_BABYSTEP_Z);
+	thermalManager.babystep_axis(Z_AXIS, _babystep_z_shift); //dodane
+
+	SERIAL_ECHOPGM("babyshift:");
+	SERIAL_ECHOLN(_babystep_z_shift);
+	SERIAL_ECHOLN(current_position[Z_AXIS]);
+
+	// Ustaw temperatury i czekaj na osiagniecie temp. mozliwe ze da sie usunac enqueue command
+	sprintf_P(cmd, PSTR("M109 S%d"), thermalManager.target_temperature[0]);
+	enqueue_and_echo_command(cmd); //1
+	sprintf_P(cmd, PSTR("M190 S%d"), thermalManager.target_temperature_bed);
+	enqueue_and_echo_command(cmd); //2
+
+	// Oznacz flage Power Safe na nieaktywna
+	eeprom_update_byte((uint8_t*)EEPROM_PANIC_POWER_FAIL, 0); //panic debug
+
+	// Rozpocznik wydruk z eeprom po zaniku
+	restore_print_from_eeprom();
+}
+/**	Odczyt pozycji i przypisnie jej do plannera
+*	Wlaczenie stepperow, przypisanie flagi znanej pozycji
+*	Odczyt i rozgrzanie
+*/
+void recover_machine_state_after_power_panic()
+{
+	char cmd[30]; // moze da sie zmniejszyc? 30 znakow dla ustawienia G92 E to chyba za duzo..
+	// Przywroc pozycje sprzed zaniku na dane zapisane w eepromie
+	current_position[X_AXIS] = eeprom_read_float((float*)EEPROM_PANIC_CURRENT_XPOS);
+	current_position[Y_AXIS] = eeprom_read_float((float*)EEPROM_PANIC_CURRENT_YPOS);
+	current_position[Z_AXIS] = eeprom_read_float((float*)EEPROM_PANIC_CURRENT_ZPOS);
+
+	if (eeprom_read_byte((uint8_t*)EEPROM_PANIC_AXIS_REL_MODES)) {
+		current_position[E_AXIS] = eeprom_read_float((float*)EEPROM_PANIC_CURRENT_EPOS);
+		//sprintf_P(cmd, PSTR("G92 E"));
+		//dtostrf(current_position[E_AXIS], 6, 3, cmd + strlen(cmd));
+		//enqueue_and_echo_command(cmd); //1
+	}
+
+	memcpy(destination, current_position, sizeof(destination)); //kopiuj pozycje
+	//set_bed_leveling_enabled(true); // ustaw macierz krzywizn stolu na wlaczona 
+
+	// Ustaw planner na wartosci pobrane z eeprom
+	planner.set_position_mm(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS]);
+
+	// Przywroc temperatury sprzed zaniku
+	thermalManager.setTargetHotend(eeprom_read_word((uint16_t*)EEPROM_PANIC_TARGET_HOTEND),0); // inne funkcje/ problem z uint8->uint16...
+	thermalManager.setTargetBed(eeprom_read_word((uint16_t*)EEPROM_PANIC_TARGET_BED)); // inne funkcje do poprawki?
+	thermalManager.manage_heater(); // dodane
+}
+
+void restore_print_from_eeprom() {
+	uint32_t _sdpos;
+	//float _e;
+	//float _x;
+	//float _y;
+	//float _z;
+	uint16_t _fan;
+	int feedrate_restore;
+	
+	_sdpos = eeprom_read_dword((uint32_t*)EEPROM_PANIC_SD_FILE_POSITION); //+
+	//_e = eeprom_read_float((float*)EEPROM_PANIC_CURRENT_EPOS);
+	//_x = eeprom_read_float((float*)EEPROM_PANIC_CURRENT_XPOS);
+	//_y = eeprom_read_float((float*)EEPROM_PANIC_CURRENT_YPOS);
+	//_z = eeprom_read_float((float*)EEPROM_PANIC_CURRENT_ZPOS);
+	_fan = eeprom_read_word((uint16_t*)EEPROM_PANIC_FAN_SPEED); // +
+	EEPROM_read_FR(EEPROM_PANIC_FEEDRATE, &feedrate_restore); // +
+
+	char cmd_buff[30];
+	char* c;
+	char filename[13];
+	uint8_t depth = 0;
+	char dir_name[9];
+	
+	/*****************************************************/
+	/*** 1. Skladanie nazwy pliku i folderu do kupy  *****/
+	/*****************************************************/
+	depth = eeprom_read_byte((uint8_t*)EEPROM_SD_FILE_DIR_DEPTH);
+	for (int i = 0; i < depth; i++) {
+		for (int j = 0; j < 8; j++) {
+			dir_name[j] = eeprom_read_byte((uint8_t*)EEPROM_SD_DIRS + j + 8 * i);
+		}
+		dir_name[8] = '\0';
+		#if ENABLED(SDSUPPORT)
+		card.chdir(dir_name);
+		#endif	
+	}
+
+	for (int i = 0; i < 8; i++) {
+		filename[i] = eeprom_read_byte((uint8_t*)EEPROM_SD_FILENAME + i);
+	}
+	filename[8] = '\0';
+	
+	strcat_P(filename, PSTR(".gco")); //usunieta kropka sprzed gco //kropka powrocila, bo nagle jej sie zachcialo byc..
+	sprintf_P(cmd_buff, PSTR("M23 %s"), filename);
+	for (c = &cmd_buff[4]; *c; c++)
+		*c = tolower(*c);
+
+	//enqueue_and_echo_command(cmd_buff); //5
+	card.openFile(filename, true); // zamiast enqueue M23
+
+	/******************************************************/
+	/*** 2. Ekstruder tryb relative									  *****/
+	/******************************************************/
+	//enqueue_and_echo_commands_P(PSTR("M83")); //6 (5+1PGM)
+	axis_relative_modes[E_AXIS] = true;
+
+
+	/******************************************************/
+	/*** 3. Pozycja gotowosci												  *****/
+	/******************************************************/
+	// 1. XY na poz zmiany filamentu, Z na pol drogi do wydruku
+	//float _z_half = (Z_MAX_POS - _z) / 2 + _z; //problem bo pojawiaja sie liczby niewymierne i powoduja pręgi na zetce
+
+	strcpy_P(cmd_buff, PSTR("G1 X")); strcat(cmd_buff, ftostr32(PAUSE_PARK_X_POS));
+	strcat_P(cmd_buff, PSTR(" Y"));   strcat(cmd_buff, ftostr32(PAUSE_PARK_Y_POS));
+	//strcat_P(cmd_buff, PSTR(" Z"));   strcat(cmd_buff, ftostr32(_z_half));
+	strcat_P(cmd_buff, PSTR(" E15"));
+	strcat_P(cmd_buff, PSTR(" F3000"));
+	enqueue_and_echo_command(cmd_buff); //3
+
+	// 2. Extruzja
+	//enqueue_and_echo_commands_P(PSTR("G1 E10 F1500")); //8 (6+2PGM)
+
+	// 3. Confirm Menu 
+	// Do poprawienia. Niestety umieszone w Mcode bo musi się wykonac w tym konkretym miejscu
+	// w przeciwnym razie wykona sie szybciej niz zakolejkowane komendy w buforze..
+	enqueue_and_echo_commands_P(PSTR("M812")); //4 (3+1PGM)
+
+	// 4. Ext+, Zetka na pozycje wlasciwa
+	// Podnies zetkę na miejsce druku
+	strcpy_P(cmd_buff, PSTR("G1 Z")); strcat(cmd_buff, ftostr32(eeprom_read_float((float*)EEPROM_PANIC_CURRENT_ZPOS))); // do uzycia zmienna z poczatku funkcji
+	strcat_P(cmd_buff, PSTR(" F3000"));
+	enqueue_and_echo_command(cmd_buff); //5 (4+1PGM)
+
+
+	// 5. XY na pozycje wlasciwa z ekstruzja w trakcie
+	// Przesun osie na miejsce w ktorym zatrzymal sie wydruk
+	strcpy_P(cmd_buff, PSTR("G1 X")); strcat(cmd_buff, ftostr32(eeprom_read_float((float*)EEPROM_PANIC_CURRENT_XPOS)));// do uzycia zmienna z poczatku funkcji
+	strcat_P(cmd_buff, PSTR(" Y"));   strcat(cmd_buff, ftostr32(eeprom_read_float((float*)EEPROM_PANIC_CURRENT_YPOS)));// do uzycia zmienna z poczatku funkcji
+	strcat_P(cmd_buff, PSTR(" E18"));
+	strcat_P(cmd_buff, PSTR(" F3000"));
+	enqueue_and_echo_command(cmd_buff); //6 (5+1PGM)
+
+	/******************************************************/
+	/*** 4. Ekstruder tryb absolute //12 (8+4PGM)		  *****/
+	/******************************************************/
+	enqueue_and_echo_commands_P(PSTR("M82")); // zmiana z powrotem na gcode?
+	//axis_relative_modes[E_AXIS] = false;
+
+	/******************************************************/
+	/*** 5. Ustaw poz ekstrudera na ta sprzed zaniku  *****/
+	/******************************************************/
+
+
+	sprintf_P(cmd_buff, PSTR("G92 E"));
+	//dtostrf(current_position[E_AXIS], 6, 3, cmd_buff + strlen(cmd_buff));
+	dtostrf(eeprom_read_float((float*)EEPROM_PANIC_CURRENT_EPOS), 6, 3, cmd_buff + strlen(cmd_buff));
+	enqueue_and_echo_command(cmd_buff); //13 (9+4PGM)  // tu jest chyba babol, current_position E moze byc juz inny niz z eeprom
+
+	current_position[E_AXIS] = eeprom_read_float((float*)EEPROM_PANIC_CURRENT_EPOS); // do uzycia zmienna z poczatku funkcji
+	stepper.synchronize();
+
+	// Ustaw obroty wentylatora na te sprzed zaniku
+	fanSpeeds[0] = _fan;
+
+	/******************************************************/
+	/*** 6. Ustaw poz pliku na karcie SD						  *****/
+	/******************************************************/
+	// Ustaw pozycje wybranego pliku na karcie sd
+	//sprintf_P(cmd_buff, PSTR("M26 S%lu"), _sdpos);
+	//enqueue_and_echo_command(cmd_buff); //14 (10+4PGM)
+
+	if (card.cardOK) card.setIndex(_sdpos);
+
+	// Rozpocznik wydruk
+	//enqueue_and_echo_commands_P(PSTR("M24")); //15 (10+5PGM)
+
+	/*
+	#if ENABLED(PARK_HEAD_ON_PAUSE)
+		enqueue_and_echo_commands_P(PSTR("M24"));
+	#else
+		card.startFileprint();
+		print_job_timer.start();
+	#endif
+	*/
+	
+	#if ENABLED(PARK_HEAD_ON_PAUSE)
+		resume_print();
+	#endif
+		card.startFileprint();
+		print_job_timer.start();
+
+
+	enqueue_and_echo_commands_P(PSTR("M117 Drukowanie.."));//7 (6+1PGM)
+}
+
+
+// dodane Printo H3 ustawienie przerwania pauer panik
+void setup_ploss_interrupt() {
+	DDRE &= ~(1 << 5); //input pin
+	PORTE &= ~(1 << 5); //wylacz wewn. pull-up
+
+	EICRB &= ~(1 << ISC50);    //INT5 //sensing falling edge
+	EICRB |= (1 << ISC51);
+
+	//wlacz przerwanie INT5 
+	EIMSK |= (1 << 5);
+}
+
+ISR(INT5_vect) {
+	EIMSK &= ~(1 << 4); //wylacz przerwanie aby funkcja wlaczyla sie tylko raz
+	SERIAL_ECHOLNPGM("PowerLoss..");
+	//ploss(); //debug
+	if (IS_SD_PRINTING) ploss(); //debug
+}
+#endif // PLOSS_SUPPORT
+
+
+
+
 /**
  * Marlin entry-point: Set up before the program loop
  *  - Set up the kill pin, filament runout, power hold
@@ -15580,6 +16046,33 @@ void setup() {
   #if ENABLED(SDSUPPORT) && !(ENABLED(ULTRA_LCD) && PIN_EXISTS(SD_DETECT))
     card.beginautostart();
   #endif
+
+	// PLOSS_SUPPORT
+	#ifdef PLOSS_SUPPORT
+	if (eeprom_read_byte((uint8_t*)EEPROM_PANIC_POWER_FAIL) == 1) { //Sprawdz czy poprzedni wydruk zakonczyl sie porazka
+
+	#if ENABLED(PLOSS_MANUAL_RECOVERY) && ENABLED(ULTRA_LCD) || ENABLED(NEXTION_DISPLAY)//do zmiany jak ma dzialac vlcs pod tft
+		// MANUAL
+		KEEPALIVE_STATE(PAUSED_FOR_USER);
+		wait_for_user = false;
+		lcd_ploss_recovery_menu(PLOSS_LCD_MANUAL_RECOVERY); // Uruchom recovery menu..
+		while (lcd_ploss_menu_response == PLOSS_LCD_RESPONSE_WAIT_FOR_USER) idle(true); //Czekaj na decyzje
+		KEEPALIVE_STATE(IN_HANDLER);
+		
+		if (lcd_ploss_menu_response == PLOSS_LCD_RESPONSE_YES) { // jezeli tak
+			lcd_ploss_recovery_menu(PLOSS_LCD_RECOVERY_RESUMING); //pokaz menu wznawiania
+			ploss_recover(1);
+		}
+		if (lcd_ploss_menu_response == PLOSS_LCD_RESPONSE_NO) { //jezeli nie, wypad do menu glownego
+			eeprom_update_byte((uint8_t*)EEPROM_PANIC_POWER_FAIL, 0); //panic debug
+			lcd_ploss_recovery_menu(PLOSS_LCD_MENU_NO_RESUME);
+		}
+	#else
+		// AUTO
+
+	#endif
+	}
+	#endif // PLOSS_SUPPORT
 }
 
 /**
