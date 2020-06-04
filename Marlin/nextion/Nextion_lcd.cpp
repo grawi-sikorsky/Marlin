@@ -1954,7 +1954,7 @@
 					vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
 					Previousflow = planner.flow_percentage[0];
 				}
-        #if HAS_TEMP_0
+        #if HAS_HEATER_0
           if (PreviousdegHeater[0] != thermalManager.current_temperature[0]) 
 					{
 						PreviousdegHeater[0] = thermalManager.current_temperature[0];

@@ -385,6 +385,17 @@ uint8_t marlin_debug_flags = DEBUG_NONE;
 	bool nex_filament_runout_sensor_flag;
 #endif
 
+uint32_t sdpos_atomic = 0; // dodane
+char dir_names[3][9]; // dodane
+
+#if ENABLED(PLOSS_SUPPORT)
+	void ploss();
+	PlossMenuResponse lcd_ploss_menu_response;
+	#if ENABLED(BABYSTEPPING)
+	extern int _babystep_z_shift;
+	#endif
+#endif // PLOSS
+
 
 /**
  * Cartesian Current Position
@@ -1057,7 +1068,13 @@ inline void get_serial_commands() {
       serial_comment_mode = false;                      // end of line == end of comment
 
       // Skip empty lines and comments
-      if (!serial_count) { thermalManager.manage_heater(); continue; }
+      if (!serial_count) { 
+        thermalManager.manage_heater(); continue;
+
+        #if ENABLED(NEXTION_DISPLAY)
+				  nextion_draw_update();//dodane dla nextiona
+		    #endif
+        }
 
       serial_line_buffer[serial_count] = 0;             // Terminate string
       serial_count = 0;                                 // Reset buffer
@@ -1228,6 +1245,9 @@ inline void get_serial_commands() {
 
         // Skip empty lines and comments
         if (!sd_count) { thermalManager.manage_heater(); continue; }
+
+        //sd_count_value = (card.get_sdpos() + 1) - sdpos_atomic; // dodane
+		    sdpos_atomic = card.get_sdpos() + 1; // dodane
 
         command_queue[cmd_queue_index_w][sd_count] = '\0'; // terminate string
         sd_count = 0; // clear sd line buffer
@@ -4646,6 +4666,13 @@ inline void gcode_G28(const bool always_home_all) {
   #if ENABLED(DEBUG_LEVELING_FEATURE)
     if (DEBUGGING(LEVELING)) SERIAL_ECHOLNPGM("<<< G28");
   #endif
+
+  #if ENABLED(NEXTION_DISPLAY)
+    set_bed_leveling_enabled(true); // dodane aby ustawic macierz
+    BUZZ(100, 2300);
+    BUZZ(80, 2900);
+  #endif
+
 } // G28
 
 void home_all_axes() { gcode_G28(true); }
@@ -4689,6 +4716,23 @@ void home_all_axes() { gcode_G28(true); }
   // Save 130 bytes with non-duplication of PSTR
   void echo_not_entered() { SERIAL_PROTOCOLLNPGM(" not entered."); }
 
+  #if ENABLED(NEXTION_DISPLAY)
+  void nex_mesh_probing_done()
+  {
+    //mbl.set_has_mesh(true);
+    nex_return_after_leveling(true); //dodane, powrot do status
+    //home_all_axes();
+    //set_bed_leveling_enabled(true);
+    enqueue_and_echo_commands_P(PSTR("M500"));  // dodane aby zapisywało poziomowanie podczas trwania funkcji
+    #if ENABLED(MESH_G28_REST_ORIGIN)
+      current_position[Z_AXIS] = LOGICAL_Z_POSITION(Z_MIN_POS);
+      set_destination_to_current();
+      line_to_destination(homing_feedrate(Z_AXIS));
+      stepper.synchronize();
+    #endif
+      g29_in_progress = false; // dodane po zakonczeniu g29
+  }
+  #endif
   /**
    * G29: Mesh-based Z probe, probes a grid and produces a
    *      mesh to compensate for variable bed height
@@ -4738,6 +4782,11 @@ void home_all_axes() { gcode_G28(true); }
       case MeshStart:
         mbl.reset();
         mbl_probe_index = 0;
+
+        #if ENABLED(NEXTION_DISPLAY)
+          g29_in_progress = true; // dodane dla manual probe
+        #endif
+
         if (!lcd_wait_for_move) {
           enqueue_and_echo_commands_P(PSTR("G28\nG29 S2"));
           return;
@@ -4787,6 +4836,10 @@ void home_all_axes() { gcode_G28(true); }
           SERIAL_PROTOCOLLNPGM("Mesh probing done.");
           BUZZ(100, 659);
           BUZZ(100, 698);
+          
+          #if ENABLED(NEXTION_DISPLAY)
+          nex_mesh_probing_done();
+          #endif
 
           home_all_axes();
           set_bed_leveling_enabled(true);
@@ -7362,6 +7415,10 @@ inline void gcode_M17() {
    *
    * Returns 'true' if pause was completed, 'false' for abort
    */
+  // DODANE pluj filamentem przed cofaniem
+	// show_lcd jest rowniez flaga dla wejscia w pauze bez zmiany filamentu
+	// jezeli show_lcd = true - M600
+	// jezeli Show_lcd = false - M125 - bez nozzle timeout, bez wyswietlania ekranu WAIT_FOR_NOZZLES_TO_HEAT
   static bool pause_print(const float &retract, const point_t &park_point, const float &unload_length=0, const bool show_lcd=false) {
     if (did_pause_print) return false; // already paused
 
@@ -7407,6 +7464,15 @@ inline void gcode_M17() {
     // Park the nozzle by moving up by z_lift and then moving to (x_pos, y_pos)
     if (!axis_unhomed_error())
       Nozzle::park(2, park_point);
+
+    #if ENABLED(NEXTION_DISPLAY)
+    	  // DODANE pluj filamentem przed cofaniem
+      //if (retract) {
+        // Initial retract before move to filament change position
+        //destination[E_AXIS] += pluj;
+        //RUNPLAN(PAUSE_PARK_RETRACT_FEEDRATE);
+      //}
+    #endif
 
     // Unload the filament
     if (unload_length)
@@ -10420,6 +10486,12 @@ inline void gcode_M226() {
  *       U<bool> with a non-zero value will apply the result to current settings
  */
 inline void gcode_M303() {
+
+  #if ENABLED(NEXTION_DISPLAY)
+		BUZZ(70, 2300);//dodane
+		BUZZ(70, 3100);//dodane
+	#endif
+
   #if HAS_PID_HEATING
     const int e = parser.intval('E'), c = parser.intval('C', 5);
     const bool u = parser.boolval('U');
@@ -10442,6 +10514,12 @@ inline void gcode_M303() {
     SERIAL_ERROR_START();
     SERIAL_ERRORLNPGM(MSG_ERR_M303_DISABLED);
   #endif
+
+	#if ENABLED(NEXTION_DISPLAY)
+			settings.save(); // zapisujemy eeprom po zakonczeniu
+			BUZZ(70, 2300);//dodane
+			BUZZ(70, 3100);//dodane
+	#endif
 }
 
 #if ENABLED(MORGAN_SCARA)
@@ -15099,6 +15177,26 @@ void manage_inactivity(const bool ignore_stepper_queue/*=false*/) {
   planner.check_axes_activity();
 }
 
+void check_periodical_actions()
+{
+	static millis_t cycle_1s = 0;
+	const millis_t now = millis();
+	
+	if (ELAPSED(now, cycle_1s)) {
+		cycle_1s = now + 1000UL; // zmianka z 1000UL
+
+		#if ENABLED(NEXTION)
+			nextion_draw_update();
+
+		#if ENABLED(NEXTION_DEBUG)
+				SERIAL_ECHOPGM("busystate:");
+				SERIAL_ECHOLN(busy_state);
+		#endif
+		
+		#endif
+	}
+}
+
 /**
  * Standard idle routine keeps the machine alive
  */
@@ -15112,6 +15210,10 @@ void idle(
   #endif
 
   lcd_update();
+
+	#if ENABLED(NEXTION_DISPLAY)
+    check_periodical_actions(); //dodane dla nextion
+  #endif
 
   host_keepalive();
 
@@ -15164,6 +15266,9 @@ void kill(const char* lcd_msg) {
 
   #if ENABLED(ULTRA_LCD)
     kill_screen(lcd_msg);
+  #elif ENABLED(NEXTION_DISPLAY)
+		// jakas czynnosc dla nextiona
+		lcd_nextion_kill_msg(lcd_msg);
   #else
     UNUSED(lcd_msg);
   #endif

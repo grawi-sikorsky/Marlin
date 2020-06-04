@@ -50,6 +50,8 @@ public:
 
   static void reset();
 
+  static void mesh_probing_done();
+
   FORCE_INLINE static bool has_mesh() {
     for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++)
       for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++)

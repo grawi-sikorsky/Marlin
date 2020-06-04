@@ -104,7 +104,8 @@ public:
   FORCE_INLINE uint32_t getIndex() { return sdpos; }
   FORCE_INLINE uint8_t percentDone() { return (isFileOpen() && filesize) ? sdpos / ((filesize + 99) / 100) : 0; }
   FORCE_INLINE char* getWorkDirName() { workDir.getFilename(filename); return filename; }
-
+  FORCE_INLINE uint32_t get_sdpos() { if (!isFileOpen()) return 0; else return(sdpos); }; // dodane printo h3 przekazuje sdpos dalej
+  
   #if ENABLED(AUTO_REPORT_SD_STATUS)
     void auto_report_sd_status(void);
     FORCE_INLINE void set_auto_report_interval(uint8_t v) {
