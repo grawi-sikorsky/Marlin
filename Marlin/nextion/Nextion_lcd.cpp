@@ -23,7 +23,7 @@
 
 #if ENABLED(NEXTION_DISPLAY)
 	#include "../stepper.h"
-	#include "../mesh_bed_leveling.h"
+	//#include "../mesh_bed_leveling.h"
 	#include "../configuration_store.h"
 #endif
 
@@ -1293,8 +1293,9 @@
 // BED LEVELING SUPPORT ==
 // =======================
 #if ENABLED(NEXTION_BED_LEVEL)
-    void ProbelPopCallBack(void *ptr) {
 
+    void ProbelPopCallBack(void *ptr) {
+			#ifdef PROBE_MANUALLY
       if (ptr == &ProbeUp || ptr == &ProbeDown) {
 
 				set_destination_to_current();
@@ -1323,6 +1324,7 @@
         #endif
 					wait_for_user = false;
       }
+			#endif
     }
 
 		void nex_return_after_leveling(bool finish)
@@ -1332,6 +1334,8 @@
 				Pprinter.show();
 			}
 		}
+
+
 #endif
 // ==============================
 // END OF BED LEVELING SUPPORT ==
