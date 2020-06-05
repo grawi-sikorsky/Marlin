@@ -15804,6 +15804,11 @@ ISR(INT5_vect) {
  */
 void setup() {
 
+  // dodane nex ploss
+	#ifdef PLOSS_SUPPORT 
+		setup_ploss_interrupt(); // ustawia przerwanie dla ploss
+	#endif // PLOSS_SUPPORT
+
   #if ENABLED(MAX7219_DEBUG)
     max7219.init();
   #endif
