@@ -4695,7 +4695,8 @@ void home_all_axes() { gcode_G28(true); }
     #elif MANUAL_PROBE_HEIGHT > 0
       const float prev_z = current_position[Z_AXIS];
       do_blocking_move_to(rx, ry, MANUAL_PROBE_HEIGHT);
-      do_blocking_move_to_z(prev_z);
+      //do_blocking_move_to_z(prev_z);LOGICAL_Z_POSITION(Z_MIN_POS);
+      do_blocking_move_to_z(LOGICAL_Z_POSITION(Z_MIN_POS)); // dodane nex
     #else
       do_blocking_move_to_xy(rx, ry);
     #endif
@@ -4733,7 +4734,7 @@ void home_all_axes() { gcode_G28(true); }
       g29_in_progress = false; // dodane po zakonczeniu g29
   }
   #endif
-  
+
   /**
    * G29: Mesh-based Z probe, probes a grid and produces a
    *      mesh to compensate for variable bed height
@@ -7236,7 +7237,7 @@ inline void gcode_M17() {
     #if DISABLED(ULTIPANEL)
       UNUSED(show_lcd);
     #endif
-SERIAL_ECHOLN("LOAD FILAMENT KURWAAAAAAAAAAA.");
+
     if (!ensure_safe_temperature(mode)) {
       #if ENABLED(ULTIPANEL) || ENABLED(NEXTION_DISPLAY)
         if (show_lcd) // Show status screen

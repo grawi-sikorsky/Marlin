@@ -1295,7 +1295,6 @@
 #if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
 
     void ProbelPopCallBack(void *ptr) {
-			#ifdef PROBE_MANUALLY
       if (ptr == &ProbeUp || ptr == &ProbeDown) {
 
 				set_destination_to_current();
@@ -1324,7 +1323,6 @@
         #endif
 					wait_for_user = false;
       }
-			#endif
     }
 
 		void nex_return_after_leveling(bool finish)

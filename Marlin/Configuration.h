@@ -1248,7 +1248,7 @@
 
 // Homing speeds (mm/m)
 #define HOMING_FEEDRATE_XY (120*60)
-#define HOMING_FEEDRATE_Z  (35*60)
+#define HOMING_FEEDRATE_Z  (45*60)
 
 // @section calibrate
 
@@ -1380,9 +1380,9 @@
 
 #if ENABLED(NOZZLE_PARK_FEATURE)
   // Specify a park position as { X, Y, Z }
-  #define NOZZLE_PARK_POINT { (X_MIN_POS + 10), (Y_MAX_POS - 10), 20 }
+  #define NOZZLE_PARK_POINT { (X_MAX_POS - 20), (Y_MAX_POS - 10), 20 }
   #define NOZZLE_PARK_XY_FEEDRATE 100   // X and Y axes feedrate in mm/s (also used for delta printers Z axis)
-  #define NOZZLE_PARK_Z_FEEDRATE 5      // Z axis feedrate in mm/s (not used for delta printers)
+  #define NOZZLE_PARK_Z_FEEDRATE 15      // Z axis feedrate in mm/s (not used for delta printers)
 #endif
 
 /**
