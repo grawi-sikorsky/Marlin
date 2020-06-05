@@ -11299,6 +11299,13 @@ inline void gcode_M502() {
         tool_change(target_extruder, 0, true);
     #endif
 
+    // Initial pluy, DODANE aby wypluc troche materialu przed cofaniem
+    const float pluj = parser.seen('E') ? parser.value_axis_units(E_AXIS) : 0
+    #if defined(PAUSE_PARK_PLUY_LENGTH) && PAUSE_PARK_PLUY_LENGTH > 0
+      + (PAUSE_PARK_PLUY_LENGTH) // gyyyt wartosc 
+    #endif
+		;
+
     // Initial retract before move to filament change position
     const float retract = -ABS(parser.seen('E') ? parser.value_axis_units(E_AXIS) : 0
       #ifdef PAUSE_PARK_RETRACT_LENGTH
@@ -11317,15 +11324,6 @@ inline void gcode_M502() {
       park_point.x += (active_extruder ? hotend_offset[X_AXIS][active_extruder] : 0);
       park_point.y += (active_extruder ? hotend_offset[Y_AXIS][active_extruder] : 0);
     #endif
-
-
-    // Initial pluy, DODANE aby wypluc troche materialu przed cofaniem
-    const float pluj = parser.seen('E') ? parser.value_axis_units(E_AXIS) : 0
-    #if defined(PAUSE_PARK_PLUY_LENGTH) && PAUSE_PARK_PLUY_LENGTH > 0
-      + (PAUSE_PARK_PLUY_LENGTH) // gyyyt wartosc 
-    #endif
-		;
-
 
     // Unload filament
     const float unload_length = -ABS(parser.seen('U') ? parser.value_axis_units(E_AXIS) :
