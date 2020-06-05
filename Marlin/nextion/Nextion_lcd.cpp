@@ -1529,6 +1529,19 @@
 		{
 			enqueue_and_echo_command(bufferson);
 		}
+		else if(strcmp(bufferson, "G29 S1") == 0) // musimy wylapac komende z nextiona zanim trafi do parsera
+		{																					// inaczej trzeba bedzie miec osobne wsady do NEXa z auto i semi levelingiem
+			#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
+				enqueue_and_echo_command(bufferson);
+			#endif
+			
+			#if ENABLED(NEXTION_AUTO_BED_LEVEL)
+				enqueue_and_echo_command("G28");	// bazowanie przed poziomowaniem
+				enqueue_and_echo_command("G29");	// poziomowanie auto
+				// to do: jakis ekran dot automatycznego poziomowania
+				// to do: g28 after auto leveling
+			#endif
+		}
 		else
 		{ 
 			enqueue_and_echo_command(bufferson);
