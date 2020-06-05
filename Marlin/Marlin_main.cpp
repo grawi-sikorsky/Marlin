@@ -15447,7 +15447,7 @@ void ploss() {
 	disable_e_steppers();					// motory OFF poza osia Z
 
 	// E
-	eeprom_update_float((float*)(EEPROM_PANIC_CURRENT_EPOS), stepper.get_axis_position_mm(E_AXIS));
+	eeprom_update_float((float*)(EEPROM_PANIC_CURRENT_EPOS), planner.get_axis_position_mm(E_AXIS));
 	eeprom_update_byte((uint8_t*)EEPROM_PANIC_AXIS_REL_MODES, axis_relative_modes[3] ? 0 : 1);
 
 	// Czysc bufor komend
@@ -15498,7 +15498,7 @@ void ploss() {
 		current_position[E_AXIS],
 		85, active_extruder);
 	
-	stepper.synchronize();
+	planner.synchronize();
 	disable_all_steppers();
 	disable_e_steppers();
 	disable_Z();
@@ -15675,8 +15675,10 @@ void restore_print_from_eeprom() {
 	// 1. XY na poz zmiany filamentu, Z na pol drogi do wydruku
 	//float _z_half = (Z_MAX_POS - _z) / 2 + _z; //problem bo pojawiaja sie liczby niewymierne i powoduja pręgi na zetce
 
-	strcpy_P(cmd_buff, PSTR("G1 X")); strcat(cmd_buff, ftostr32(PAUSE_PARK_X_POS));
-	strcat_P(cmd_buff, PSTR(" Y"));   strcat(cmd_buff, ftostr32(PAUSE_PARK_Y_POS));
+  point_t park_point = NOZZLE_PARK_POINT;
+
+	strcpy_P(cmd_buff, PSTR("G1 X")); strcat(cmd_buff, ftostr32(park_point.x));
+	strcat_P(cmd_buff, PSTR(" Y"));   strcat(cmd_buff, ftostr32(park_point.y));
 	//strcat_P(cmd_buff, PSTR(" Z"));   strcat(cmd_buff, ftostr32(_z_half));
 	strcat_P(cmd_buff, PSTR(" E15"));
 	strcat_P(cmd_buff, PSTR(" F3000"));
@@ -15722,7 +15724,7 @@ void restore_print_from_eeprom() {
 	enqueue_and_echo_command(cmd_buff); //13 (9+4PGM)  // tu jest chyba babol, current_position E moze byc juz inny niz z eeprom
 
 	current_position[E_AXIS] = eeprom_read_float((float*)EEPROM_PANIC_CURRENT_EPOS); // do uzycia zmienna z poczatku funkcji
-	stepper.synchronize();
+	planner.synchronize();
 
 	// Ustaw obroty wentylatora na te sprzed zaniku
 	fanSpeeds[0] = _fan;
@@ -15775,7 +15777,7 @@ ISR(INT5_vect) {
 	EIMSK &= ~(1 << 4); //wylacz przerwanie aby funkcja wlaczyla sie tylko raz
 	SERIAL_ECHOLNPGM("PowerLoss..");
 	//ploss(); //debug
-	if (IS_SD_PRINTING) ploss(); //debug
+	if (IS_SD_PRINTING()) ploss(); //debug
 }
 #endif // PLOSS_SUPPORT
 

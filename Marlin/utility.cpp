@@ -123,6 +123,19 @@ void safe_delay(millis_t ms) {
     return &conv[3];
   }
 
+  // dodane nex
+  // Convert signed float to fixed-length string with 023.45 / -23.45 format
+  char *ftostr32(const float &x) {
+    long xx = x * 100;
+    conv[1] = MINUSOR(xx, DIGIMOD(xx, 10000));
+    conv[2] = DIGIMOD(xx, 1000);
+    conv[3] = DIGIMOD(xx, 100);
+    conv[4] = '.';
+    conv[5] = DIGIMOD(xx, 10);
+    conv[6] = DIGIMOD(xx, 1);
+    return &conv[1];
+  }
+
   // Convert signed float to fixed-length string with 023.45 / -23.45 format
   char* ftostr52(const float &f) {
     long i = (f * 1000 + (f < 0 ? -5: 5)) / 10;

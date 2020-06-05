@@ -2175,6 +2175,30 @@ int32_t Stepper::triggered_position(const AxisEnum axis) {
   return v;
 }
 
+#if ENABLED(PLOSS_SUPPORT)
+  //dodane
+  // Call this function just before re-enabling the stepper driver interrupt and the global interrupts
+  // to avoid a stepper timer overflow.
+  void Stepper::panic_reset_timer()
+  {
+    // Clear a possible pending interrupt on OCR1A overflow.
+    TIFR1 |= 1 << OCF1A;
+    // Reset the counter.
+    TCNT1 = 0;
+    // Wake up after 1ms from now.
+    OCR1A = 2000;
+  }
+
+  void Stepper::quick_stop_panic()
+  {
+    DISABLE_STEPPER_DRIVER_INTERRUPT();
+    while (planner.has_blocks_queued()) planner.discard_current_block();
+    current_block = NULL;
+    panic_reset_timer();
+    ENABLE_STEPPER_DRIVER_INTERRUPT();
+  }
+#endif
+
 void Stepper::report_positions() {
 
   // Protect the access to the position.

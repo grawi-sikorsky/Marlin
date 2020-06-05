@@ -203,8 +203,14 @@ extern const char axis_codes[XYZE];
               G38_endstop_hit; // flag from the interrupt handler to indicate if the endstop went active
 #endif
 
-extern void recover_machine_state_after_power_panic(); // dodane pp
-extern void restore_print_from_eeprom();				// dodane pp
+
+// PLOSS nex
+#if ENABLED(PLOSS_SUPPORT)
+  extern PlossMenuResponse lcd_ploss_menu_response;
+  extern char dir_names[3][9]; // dodane
+  extern void recover_machine_state_after_power_panic(); // dodane pp
+  extern void restore_print_from_eeprom();				// dodane pp
+#endif // PLOSS
 
 void enable_all_steppers();
 void disable_e_stepper(const uint8_t e);

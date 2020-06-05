@@ -34,6 +34,9 @@ void safe_delay(millis_t ms);
 //dodane nex
 #if ENABLED(ULTRA_LCD) || (ENABLED(DEBUG_LEVELING_FEATURE) && (ENABLED(MESH_BED_LEVELING) || (HAS_ABL && !ABL_PLANAR))) || ENABLED(NEXTION_DISPLAY)
 
+  // Convert signed float to fixed-length string with 023.45 / -23.45 format // dodane
+  char *ftostr32(const float &x);
+
   // Convert uint8_t to string with 123 format
   char* i8tostr3(const uint8_t x);
 

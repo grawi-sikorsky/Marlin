@@ -2778,4 +2778,20 @@ void Planner::refresh_positioning() {
     if (parser.seen('B')) autotemp_max = parser.value_celsius();
   }
 
+/**
+ * Sync from the stepper positions. (e.g., after an interrupted move) // dodane nex 
+ */
+void Planner::sync_from_steppers() {
+  LOOP_XYZE(i) {
+    position[i] = stepper.position((AxisEnum)i);
+    #if ENABLED(LIN_ADVANCE)
+      position_float[i] = position[i] * steps_to_mm[i
+        #if ENABLED(DISTINCT_E_FACTORS)
+          + (i == E_AXIS ? active_extruder : 0)
+        #endif
+      ];
+    #endif
+  }
+}
+
 #endif

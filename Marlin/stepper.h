@@ -366,6 +366,11 @@ class Stepper {
     // Quickly stop all steppers
     FORCE_INLINE static void quick_stop() { abort_current_block = true; }
 
+    #if ENABLED(PLOSS_SUPPORT)
+      static void panic_reset_timer(); //dodane panic
+      static void quick_stop_panic(); // dodane panic
+    #endif
+
     // The direction of a single motor
     FORCE_INLINE static bool motor_direction(const AxisEnum axis) { return TEST(last_direction_bits, axis); }
 

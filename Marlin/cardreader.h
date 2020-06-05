@@ -121,6 +121,10 @@ public:
   bool saving, logging, sdprinting, cardOK, filenameIsDir, abort_sd_printing;
   char filename[FILENAME_LENGTH], longFilename[LONG_FILENAME_LENGTH];
   int8_t autostart_index;
+
+  uint16_t getWorkDirDepth(); // dodane nex
+	//SdFile root; // , *curDir, workDir, workDirParents[MAX_DIR_DEPTH]; // przeniesone z private do public na rzecz nexupload
+
 private:
   SdFile root, workDir, workDirParents[MAX_DIR_DEPTH];
   uint8_t workDirDepth;

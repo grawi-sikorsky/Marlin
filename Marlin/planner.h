@@ -706,6 +706,11 @@ class Planner {
     }
 
     /**
+     * Sync from the stepper positions. (e.g., after an interrupted move)
+     */
+    static void sync_from_steppers(); // dodane nex
+
+    /**
      * Does the buffer have any blocks queued?
      */
     FORCE_INLINE static bool has_blocks_queued() { return (block_buffer_head != block_buffer_tail); }

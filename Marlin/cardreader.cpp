@@ -72,6 +72,14 @@ char *createFilename(char *buffer, const dir_t &p) { //buffer > 12characters
   return buffer;
 }
 
+
+/** Zwraca zaglebienie folderu
+* Dodane nextion
+*/
+uint16_t CardReader::getWorkDirDepth() {
+	return workDirDepth;
+}
+
 /**
  * Dive into a folder and recurse depth-first to perform a pre-set operation lsAction:
  *   LS_Count       - Add +1 to nrFiles for every file within the parent
