@@ -203,6 +203,9 @@ extern const char axis_codes[XYZE];
               G38_endstop_hit; // flag from the interrupt handler to indicate if the endstop went active
 #endif
 
+extern void recover_machine_state_after_power_panic(); // dodane pp
+extern void restore_print_from_eeprom();				// dodane pp
+
 void enable_all_steppers();
 void disable_e_stepper(const uint8_t e);
 void disable_e_steppers();

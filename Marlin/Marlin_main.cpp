@@ -4716,7 +4716,7 @@ void home_all_axes() { gcode_G28(true); }
   // Save 130 bytes with non-duplication of PSTR
   void echo_not_entered() { SERIAL_PROTOCOLLNPGM(" not entered."); }
 
-  #if ENABLED(NEXTION_DISPLAY)
+  #if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
   void nex_mesh_probing_done()
   {
     //mbl.set_has_mesh(true);
@@ -4733,6 +4733,7 @@ void home_all_axes() { gcode_G28(true); }
       g29_in_progress = false; // dodane po zakonczeniu g29
   }
   #endif
+  
   /**
    * G29: Mesh-based Z probe, probes a grid and produces a
    *      mesh to compensate for variable bed height
@@ -4837,8 +4838,8 @@ void home_all_axes() { gcode_G28(true); }
           BUZZ(100, 659);
           BUZZ(100, 698);
           
-          #if ENABLED(NEXTION_DISPLAY)
-          nex_mesh_probing_done();
+          #if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
+            nex_mesh_probing_done();
           #endif
 
           home_all_axes();

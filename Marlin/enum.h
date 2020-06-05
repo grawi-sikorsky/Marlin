@@ -123,6 +123,25 @@ enum DebugFlags : unsigned char {
   };
 #endif
 
+//PLOSS
+#if ENABLED(PLOSS_SUPPORT)
+	enum PlossMenuMessage {
+		PLOSS_LCD_MANUAL_RECOVERY,
+		PLOSS_LCD_RECOVERY_RESUMING,
+		PLOSS_LCD_MENU_LAST_CONFIRM,
+		PLOSS_LAST_INFO,
+		PLOSS_LCD_AUTO_RECOVERY,
+		PLOSS_LCD_MENU_NO_RESUME
+	};
+	enum PlossMenuResponse {
+		PLOSS_LCD_RESPONSE_YES,
+		PLOSS_LCD_RESPONSE_NO,
+		PLOSS_LCD_RESPONSE_WAIT_FOR_USER,
+		PLOSS_LCD_RESPONSE_WAIT_FOR_LAST_CONFIRMATION,
+		PLOSS_LCD_RESPONSE_RESUMING
+	};
+#endif //PLOSS
+
 /**
  * States for managing Marlin and host communication
  * Marlin sends messages if blocked or busy

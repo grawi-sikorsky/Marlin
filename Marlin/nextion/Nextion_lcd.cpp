@@ -1292,7 +1292,7 @@
 // =======================
 // BED LEVELING SUPPORT ==
 // =======================
-#if ENABLED(NEXTION_BED_LEVEL)
+#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
 
     void ProbelPopCallBack(void *ptr) {
 			#ifdef PROBE_MANUALLY
@@ -1317,7 +1317,7 @@
       }
       else if (ptr == &ProbeSend) {
 				SERIAL_ECHOLNPGM("probesend:");
-        #if HAS_LEVELING && ENABLED(NEXTION_BED_LEVEL)
+        #if HAS_LEVELING && ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
 				if (g29_in_progress == true) {
 					enqueue_and_echo_commands_P(PSTR("G29 S2")); 
 				}
@@ -1706,7 +1706,7 @@
       #endif
 
 			// BED LEVEL
-      #if ENABLED(NEXTION_BED_LEVEL)
+      #if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
         ProbeUp.attachPush(ProbelPopCallBack, &ProbeUp);
         ProbeSend.attachPop(ProbelPopCallBack, &ProbeSend);
         ProbeDown.attachPush(ProbelPopCallBack, &ProbeDown);
