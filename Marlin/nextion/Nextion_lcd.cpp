@@ -556,6 +556,7 @@
 		//clear_command_queue();									// czysc kolejke komend
 		//stepper.quick_stop_panic();							// pomocne z panic'a, trzeba to zaserwowac aby mozna bylo ponownie wykonac jakakolwiek komende
 		thermalManager.disable_all_heaters();		// wylacz grzalki
+		progress_printing = 0;							// zerko 
 		percentdone.setText("0", "stat");		// zeruj procenty
 		progressbar.setValue(0, "stat");			// zeruj progress bar
 

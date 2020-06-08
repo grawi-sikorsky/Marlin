@@ -1198,6 +1198,8 @@ inline void get_serial_commands() {
 
     if (commands_in_queue == 0) stop_buffering = false;
 
+	  uint16_t sd_count_value = 0; // dodane nex
+
     uint16_t sd_count = 0;
     bool card_eof = card.eof();
     while (commands_in_queue < BUFSIZE && !card_eof && !stop_buffering) {
@@ -1246,7 +1248,7 @@ inline void get_serial_commands() {
         // Skip empty lines and comments
         if (!sd_count) { thermalManager.manage_heater(); continue; }
 
-        //sd_count_value = (card.get_sdpos() + 1) - sdpos_atomic; // dodane
+        sd_count_value = (card.get_sdpos() + 1) - sdpos_atomic; // dodane
 		    sdpos_atomic = card.get_sdpos() + 1; // dodane
 
         command_queue[cmd_queue_index_w][sd_count] = '\0'; // terminate string
@@ -1265,6 +1267,10 @@ inline void get_serial_commands() {
         if (!sd_comment_mode) command_queue[cmd_queue_index_w][sd_count++] = sd_char;
       }
     }
+    
+    #if ENABLED (NEXTION_DISPLAY)
+				progress_printing = card.percentDone();
+		#endif
   }
 
   #if ENABLED(POWER_LOSS_RECOVERY)
