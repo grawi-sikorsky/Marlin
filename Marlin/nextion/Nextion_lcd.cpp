@@ -56,6 +56,7 @@
 	extern bool nex_filament_runout_sensor_flag;
 	bool nex_ss_state;											// screensaver status
 	uint16_t nex_ss_timeout;								// screensaver timeout
+	uint8_t nex_ss_pagebefore;							// saved page before screen saver
 	bool nex_m600_heatingup = 0;
 	#if PIN_EXISTS(SD_DETECT)
 		uint8_t lcd_sd_status;
@@ -492,6 +493,9 @@
 
 		// Page 31 Flow
 		&SetFlowBtn,
+
+		// page 34 screensaver
+		&Psav,
 
     NULL
   };
@@ -1638,6 +1642,9 @@ void sendRandomSplashMessage(){
 
 		if (strcmp(bufferson,"M600") == 0)
 		{
+			#if ENABLED(NEX_SCREENSAVER)
+				if(nex_ss_state == true) nex_ss_state != nex_ss_state; // jeśli ON -> OFF screensaver
+			#endif
 			nex_enqueue_filament_change();
 		}
 		else if(strcmp(bufferson, "M78 S78") == 0)
@@ -1655,6 +1662,10 @@ void sendRandomSplashMessage(){
 				enqueue_and_echo_command("G29");	// poziomowanie auto
 				// to do: jakis ekran dot automatycznego poziomowania
 				// to do: g28 after auto leveling
+			#endif
+
+			#if ENABLED(NEX_SCREENSAVER)
+				if(nex_ss_state == true) nex_ss_state != nex_ss_state; // jeśli ON -> OFF screensaver
 			#endif
 		}
 		else if(strcmp(bufferson, "SSS") == 0)
@@ -1684,6 +1695,17 @@ void sendRandomSplashMessage(){
 		}
 		buzzer.tone(100, 2300);
   }
+
+	// SCREEN SAVER
+	void setScreensaverPagePopCallback(void *ptr)
+	{
+		char cmdss[7];
+		strcpy_P(cmdss, PSTR("page ")); 
+		strcat(cmdss, itostr3left(nex_ss_pagebefore));
+		sendCommand(cmdss);
+		SERIAL_ECHOLN(cmdss);
+		//sendCommand("page 4");
+	}
 
   void setmovePopCallback(void *ptr) {
     UNUSED(ptr);
@@ -1924,7 +1946,7 @@ void sendRandomSplashMessage(){
       LcdSend.attachPop(sendPopCallback);
 
 			// SCREENSAVER
-			//SSprog.attachPop(setfanandgoPopCallback); //obsluga przycisku fan set
+			Psav.attachPush(setScreensaverPagePopCallback); //obsluga calego ekranu SS
 
       setpagePrinter();
 
@@ -2105,7 +2127,8 @@ void sendRandomSplashMessage(){
 				{
 					if(PreviousPage != ScreenSaver)// lecisz na screen saver
 					{
-						SERIAL_ECHOLN("ss");
+						nex_ss_pagebefore = PreviousPage;
+						SERIAL_ECHOLNPGM("page before:"); SERIAL_ECHOLN(itostr3left(nex_ss_pagebefore));
 						Psav.show();
 					}
 				}
@@ -2142,7 +2165,6 @@ void sendRandomSplashMessage(){
 					{
 						NexFilename.setText(filename_printing);					// nazwa pliku
 					}
-
 				}
 
 				//FAN
