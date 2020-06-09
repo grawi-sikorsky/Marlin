@@ -54,9 +54,11 @@
 
   extern uint8_t progress_printing; // dodane nex
 	extern bool nex_filament_runout_sensor_flag;
+	bool nex_ss_state;											// screensaver status
+	uint16_t nex_ss_timeout;								// screensaver timeout
 	bool nex_m600_heatingup = 0;
 	#if PIN_EXISTS(SD_DETECT)
-	uint8_t lcd_sd_status;
+		uint8_t lcd_sd_status;
 	#endif
 
 	extern float destination[XYZE];// = { 0.0 };
@@ -149,7 +151,7 @@
 	NexObject Paccel				= NexObject(18, 0, "accelpage");
 	//NexObject Pjerk					= NexObject(25, 0, "jerkpage");
 	NexObject Pkill					= NexObject(30, 0, "kill");
-	NexObject Psav 					= NexObject(34,0,"wyga");
+	NexObject Psav 					= NexObject(34, 0, "wyga");
 	// 
 	// == 9 
 
@@ -427,7 +429,9 @@
 	* NEX komponenty strona: SCREEN SAVER 34
 	*******************************************************************
 	*/
-	NexObject SStxt				= NexObject(34, 3, "g0");
+	NexObject SStxt				= NexObject(34, 2, "g0");
+	NexObject SSprog			= NexObject(34, 3, "j0");
+	NexObject SSval				= NexObject(34, 8, "SStime");
 
 
 	// 132*13 = 1716 bajt�w
@@ -1403,6 +1407,8 @@ void sendRandomSplashMessage(){
 #if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
 
     void ProbelPopCallBack(void *ptr) {
+			if(nex_ss_state == true) nex_ss_state != nex_ss_state; // jeśli ON -> OFF screensaver
+
       if (ptr == &ProbeUp || ptr == &ProbeDown) {
 
 				set_destination_to_current();
@@ -1435,6 +1441,7 @@ void sendRandomSplashMessage(){
 
 		void nex_return_after_leveling(bool finish)
 		{
+			nex_ss_state = eeprom_read_byte((uint8_t*)EEPROM_NEX_SS_STATE); // przywroc stan SS sprzed poziomowania
 			if (finish == true)
 			{
 				Pprinter.show();
@@ -1579,17 +1586,13 @@ void sendRandomSplashMessage(){
 		SERIAL_ECHOPGM("Zaladowane");
 		buzzer.tone(100, 2300);
 	}
-
-	void setBabystepPopCallback(void *ptr)
+	void setBabystepUpPopCallback(void *ptr)
 	{
-		if(ptr == &ZbabyUp)
-		{
-			nextion_babystep_z(false);
-		}
-		else if(ptr == &ZbabyDown)
-		{
-			nextion_babystep_z(true);
-		}
+		nextion_babystep_z(false);
+	}
+	void setBabystepDownPopCallback(void *ptr)
+	{
+		nextion_babystep_z(true);
 	}
 	void setBabystepEEPROMPopCallback(void *ptr)
 	{
@@ -1637,7 +1640,7 @@ void sendRandomSplashMessage(){
 		{
 			nex_enqueue_filament_change();
 		}
-		else if (strcmp(bufferson, "M78 S78") == 0)
+		else if(strcmp(bufferson, "M78 S78") == 0)
 		{
 			enqueue_and_echo_command(bufferson);
 		}
@@ -1653,6 +1656,27 @@ void sendRandomSplashMessage(){
 				// to do: jakis ekran dot automatycznego poziomowania
 				// to do: g28 after auto leveling
 			#endif
+		}
+		else if(strcmp(bufferson, "SSS") == 0)
+		{
+			SERIAL_ECHOLNPGM("otrzymalem SSS");
+			SERIAL_ECHOLN(bufferson);
+			int tmp = SSval.getValue();
+			SERIAL_ECHOLN(tmp);
+			if(tmp == 0)
+			{
+				nex_ss_state = false;
+				eeprom_update_byte((uint8_t*)EEPROM_NEX_SS_STATE, nex_ss_state);
+				SERIAL_ECHOLNPGM("SS oFF");
+			}
+			else
+			{
+				nex_ss_state = true;
+				nex_ss_timeout = SSval.getValue();
+				eeprom_update_byte((uint8_t*)EEPROM_NEX_SS_STATE, nex_ss_state);
+				eeprom_update_word((uint16_t*)EEPROM_NEX_SS_TIME, nex_ss_timeout);
+				SERIAL_ECHOLNPGM("SS oN");
+			}
 		}
 		else
 		{ 
@@ -1762,6 +1786,17 @@ void sendRandomSplashMessage(){
 			nex_filament_runout_sensor_flag = eeprom_read_byte((uint8_t*)EEPROM_NEX_FILAMENT_SENSOR);
 		#endif
 
+		#if ENABLED(NEX_SCREENSAVER)
+			nex_ss_state = eeprom_read_byte((uint8_t*)EEPROM_NEX_SS_STATE);
+			nex_ss_timeout = eeprom_read_word((uint16_t*)EEPROM_NEX_SS_TIME);
+			setCurrentBrightness(100); // ustaw brightness na max gdyby po resecie zostało na malym
+
+			if(nex_ss_timeout == 0) // jesli jest wlaczony SS i timeout jest na 0 (np gdy eeprom jest pusty)
+			{
+				nex_ss_timeout = NEX_SCREEN_SAVER_DEFAULT;
+			}
+		#endif
+
 		#if ENABLED(SDSUPPORT) && PIN_EXISTS(SD_DETECT)
 			SET_INPUT_PULLUP(SD_DETECT_PIN);
 			lcd_sd_status = 2; // UNKNOWN
@@ -1861,8 +1896,8 @@ void sendRandomSplashMessage(){
 			SetFlowBtn.attachPop(setflowPopCallback); //obsluga przycisku set flow
 
 			// BABYSTEP
-			ZbabyUp.attachPush(setBabystepPopCallback);	// obsluga przycisku babystep up
-			ZbabyDown.attachPush(setBabystepPopCallback); // obsluga przycisku babystep down
+			ZbabyUp.attachPush(setBabystepUpPopCallback);	// obsluga przycisku babystep up
+			ZbabyDown.attachPush(setBabystepDownPopCallback); // obsluga przycisku babystep down
 			ZbabyBack_Save.attachPop(setBabystepEEPROMPopCallback); // zapis przy wyjsciu 
 			
 			// MOVE PAGE
@@ -1887,6 +1922,9 @@ void sendRandomSplashMessage(){
 
 			// SELECT PAGE
       LcdSend.attachPop(sendPopCallback);
+
+			// SCREENSAVER
+			//SSprog.attachPop(setfanandgoPopCallback); //obsluga przycisku fan set
 
       setpagePrinter();
 
@@ -2056,22 +2094,36 @@ void sendRandomSplashMessage(){
     PageID = Nextion_PageID();
 
 		// timeout screen saver
-		if(PreviousPage != PageID) // jesli strona sie zmienila
-		{
-			nex_ss = millis(); // ustaw timeout
-		}
-		else if(PreviousPage == PageID && nex_ss + NEX_SCREEN_SAVER < millis())
-		{
-			// lecisz na screen saver
-			Psav.show();
-		}
-		
+		#if ENABLED(NEX_SCREENSAVER)
+			if(nex_ss_state == true)
+			{
+				if(PreviousPage != PageID) // jesli strona sie zmienila
+				{
+					nex_ss = millis(); // ustaw SS timeout
+				}
+				else if(PreviousPage == PageID && nex_ss + (nex_ss_timeout*1000) < millis()) // *1000 bo w eepromie sa zapisywane sekundy zamias ms.
+				{
+					if(PreviousPage != ScreenSaver)// lecisz na screen saver
+					{
+						SERIAL_ECHOLN("ss");
+						Psav.show();
+					}
+				}
+					SERIAL_ECHOLN(nex_ss);
+					SERIAL_ECHOLN(millis());
+			}
+			else if(nex_ss_state == false)
+			{
+					// nyc
+			}
+		#endif
 
     switch(PageID)
 		{
       case StatusPage: // status screen
         if (PreviousPage != StatusPage) // jednorazowo przy wejsciu w strone STAT
 				{
+					nex_ss = millis();
 					lcd_setstatus(lcd_status_message);
           #if ENABLED(NEXTION_GFX)
             #if MECH(DELTA)
@@ -2234,9 +2286,12 @@ void sendRandomSplashMessage(){
 				if(PreviousPage != ScreenSaver)
 				{
 					sendRandomSplashMessage();
+					SSprog.setValue(progress_printing); // nie wiadomo jak sie zachowa gdy brak druku
+				}
+				if (PreviouspercentDone != progress_printing) {
+					SSprog.setValue(progress_printing); // nie wiadomo jak sie zachowa gdy brak druku
 				}
 				break;
-
     }
     PreviousPage = PageID;
   }
@@ -2295,11 +2350,13 @@ void sendRandomSplashMessage(){
 				{
 					thermalManager.babystep_axis(Z_AXIS, babystep_increment);
 					_babystep_z_shift += babystep_increment;
+					SERIAL_ECHOLNPGM("therm baby up");
 				}
 				else if (dir == false)
 				{
 					thermalManager.babystep_axis(Z_AXIS, -babystep_increment);
 					_babystep_z_shift -= babystep_increment;
+					SERIAL_ECHOLNPGM("therm baby down");
 				}
 		}
 	#endif

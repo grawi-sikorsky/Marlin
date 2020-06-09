@@ -15677,8 +15677,6 @@ void restore_print_from_eeprom() {
 
   point_t park_point = NOZZLE_PARK_POINT;
 
-  
-
 	strcpy_P(cmd_buff, PSTR("G1 X")); strcat(cmd_buff, ftostr32(park_point.x));
 	strcat_P(cmd_buff, PSTR(" Y"));   strcat(cmd_buff, ftostr32(park_point.y));
 	//strcat_P(cmd_buff, PSTR(" Z"));   strcat(cmd_buff, ftostr32(_z_half));
