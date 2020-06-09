@@ -1640,6 +1640,7 @@ void sendRandomSplashMessage(){
     Tgcode.getText(bufferson, sizeof(bufferson), "gcode");
     Tgcode.setText("", "gcode");
 
+		// FILAMENT CHANGE
 		if (strcmp(bufferson,"M600") == 0)
 		{
 			#if ENABLED(NEX_SCREENSAVER)
@@ -1647,10 +1648,12 @@ void sendRandomSplashMessage(){
 			#endif
 			nex_enqueue_filament_change();
 		}
+		// YYYY
 		else if(strcmp(bufferson, "M78 S78") == 0)
 		{
 			enqueue_and_echo_command(bufferson);
 		}
+		// BED LEVEL
 		else if(strcmp(bufferson, "G29 S1") == 0) // musimy wylapac komende z nextiona zanim trafi do parsera
 		{																					// inaczej trzeba bedzie miec osobne wsady do NEXa z auto i semi levelingiem
 			#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
@@ -1668,6 +1671,7 @@ void sendRandomSplashMessage(){
 				if(nex_ss_state == true) nex_ss_state != nex_ss_state; // jeśli ON -> OFF screensaver
 			#endif
 		}
+		// ScreenSaver
 		else if(strcmp(bufferson, "SSS") == 0)
 		{
 			SERIAL_ECHOLNPGM("otrzymalem SSS");
@@ -1689,6 +1693,7 @@ void sendRandomSplashMessage(){
 				SERIAL_ECHOLNPGM("SS oN");
 			}
 		}
+		// DEFAULT
 		else
 		{ 
 			enqueue_and_echo_command(bufferson);
@@ -1702,9 +1707,8 @@ void sendRandomSplashMessage(){
 		char cmdss[7];
 		strcpy_P(cmdss, PSTR("page ")); 
 		strcat(cmdss, itostr3left(nex_ss_pagebefore));
-		sendCommand(cmdss);
-		SERIAL_ECHOLN(cmdss);
-		//sendCommand("page 4");
+		sendCommand(cmdss); // wyslij "page x" aby wylaczyc screensaver
+		nex_ss = millis(); 	// resetnij timeout
 	}
 
   void setmovePopCallback(void *ptr) {
@@ -2127,9 +2131,8 @@ void sendRandomSplashMessage(){
 				{
 					if(PreviousPage != ScreenSaver)// lecisz na screen saver
 					{
-						nex_ss_pagebefore = PreviousPage;
-						SERIAL_ECHOLNPGM("page before:"); SERIAL_ECHOLN(itostr3left(nex_ss_pagebefore));
-						Psav.show();
+						nex_ss_pagebefore = PreviousPage;// zapisz poprzednia strone do wyswietlenia po wylaczeniu SS
+						Psav.show();		// show screen saver
 					}
 				}
 					SERIAL_ECHOLN(nex_ss);
