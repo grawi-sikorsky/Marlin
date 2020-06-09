@@ -47,7 +47,7 @@
   char        bufferson[70]             = { 0 };
   char        lcd_status_message[24]    = WELCOME_MSG;
   const float manual_feedrate_mm_m[]    = MANUAL_FEEDRATE;
-	millis_t		screen_timeout_millis;
+	millis_t		screen_timeout_millis, nex_ss;
 	int		nex_file_number[6];
 	int 	nex_file_row_clicked;
 	char	filename_printing[40];
@@ -82,6 +82,7 @@
 			YesNoPage = 15,
 			FlowPage = 21,
 			KillPage = 30,
+			ScreenSaver = 34,
 		};
     SDstatus_enum SDstatus    = NO_SD;
 		#if ENABLED(NEX_UPLOAD)
@@ -148,6 +149,7 @@
 	NexObject Paccel				= NexObject(18, 0, "accelpage");
 	//NexObject Pjerk					= NexObject(25, 0, "jerkpage");
 	NexObject Pkill					= NexObject(30, 0, "kill");
+	NexObject Psav 					= NexObject(34,0,"wyga");
 	// 
 	// == 9 
 
@@ -420,6 +422,12 @@
 	*/
 	NexObject Kmsg				= NexObject(30, 2, "tkmsg");
 	// == 129
+		/**
+	*******************************************************************
+	* NEX komponenty strona: SCREEN SAVER 34
+	*******************************************************************
+	*/
+	NexObject SStxt				= NexObject(34, 3, "g0");
 
 
 	// 132*13 = 1716 bajt�w
@@ -545,6 +553,96 @@
   // Function pointer to menu functions.
   typedef void (*screenFunc_t)();
 
+// Random Splash Message
+void sendRandomSplashMessage(){
+	int32_t randtemp = random(1,21);
+
+	if(randtemp == 1)
+	{
+		SStxt.setText_PGM(PSTR("Let's print!"));
+	}
+	else if(randtemp == 2)
+	{
+		SStxt.setText_PGM(PSTR("Did you print something today?"));
+	}
+	else if(randtemp == 3)
+	{
+		SStxt.setText_PGM(PSTR("Clean your 3D printer, it has feelings too.."));
+	}
+	else if(randtemp == 4)
+	{
+		SStxt.setText_PGM(PSTR("Don't try this.. I know you want to.."));
+	}
+	else if(randtemp == 5)
+	{
+		SStxt.setText_PGM(PSTR("How are you?"));
+	}
+	else if(randtemp == 6)
+	{
+		SStxt.setText_PGM(PSTR("Good day!"));
+	}
+	else if(randtemp == 7)
+	{
+		SStxt.setText_PGM(PSTR("Dont print waste.. It's waste."));
+	}
+	else if(randtemp == 8)
+	{
+		SStxt.setText_PGM(PSTR("Be hero in your home, print some spare parts!"));
+	}
+	else if(randtemp == 9)
+	{
+		SStxt.setText_PGM(PSTR("Good filament is 50% of succesfull print."));
+	}
+	else if(randtemp == 10)
+	{
+		SStxt.setText_PGM(PSTR("Yeah, cupholder is a good idea.."));
+	}
+	else if(randtemp == 11)
+	{
+		SStxt.setText_PGM(PSTR("If you didnt print today, i'll tell my dad."));
+	}
+	else if(randtemp == 12)
+	{
+		SStxt.setText_PGM(PSTR("It's not my fault.. :<"));
+	}
+	else if(randtemp == 13)
+	{
+		SStxt.setText_PGM(PSTR("Hey! You created gcode, not me!"));
+	}
+	else if(randtemp == 14)
+	{
+		SStxt.setText_PGM(PSTR("Uaaaaaghh... Did I sleep?"));
+	}
+	else if(randtemp == 15)
+	{
+		SStxt.setText_PGM(PSTR("YOU'RE BACK!"));
+	}
+	else if(randtemp == 16)
+	{
+		SStxt.setText_PGM(PSTR("Dont push me, I print at my own pace."));
+	}
+	else if(randtemp == 17)
+	{
+		SStxt.setText_PGM(PSTR("Why are you waking me up?"));
+	}
+	else if(randtemp == 18)
+	{
+		SStxt.setText_PGM(PSTR("Nope."));
+	}
+	else if(randtemp == 19)
+	{
+		SStxt.setText_PGM(PSTR("Seriously.. Do i have to?"));
+	}
+	else if(randtemp == 20)
+	{
+		SStxt.setText_PGM(PSTR("I'm  watching you.."));
+	}
+	else if(randtemp == 21)
+	{
+		SStxt.setText_PGM(PSTR("Stroke my belts and gears.. mrrrrr.."));
+	}
+}
+
   /**
    *
    * Menu actions
@@ -591,8 +689,6 @@
 	// wywo�ywana raz w lcdinit()
   void setpagePrinter() 
 	{
-    char temp[8] = { 0 };
-
     #if HOTENDS > 0
       Hotend00.setValue(0, "stat");
 			Hotend01.setValue(0, "stat");
@@ -1327,7 +1423,7 @@
         planner.synchronize();
       }
       else if (ptr == &ProbeSend) {
-				SERIAL_ECHOLNPGM("probesend:");
+				SERIAL_ECHOLNPGM("Probesend:");
         #if HAS_LEVELING && ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
 				if (g29_in_progress == true) {
 					enqueue_and_echo_commands_P(PSTR("G29 S2")); 
@@ -1366,7 +1462,7 @@
   }
 
 	void setfanandgoPopCallback(void *ptr) {
-		uint8_t fanpagefrom, vfanbuff;
+		uint8_t vfanbuff;
 		UNUSED(ptr);
 		ZERO(bufferson);
 		vfanbuff = FanSpeedNex.getValue("fanspeedpage");
@@ -1443,6 +1539,7 @@
 	}
 	void getaccelPagePopCallback(void *ptr)
 	{
+		UNUSED(ptr);
 		buzzer.tone(100,2300);
 		planner.acceleration = Awork.getValue("accelpage");
 		planner.retract_acceleration = Aretr.getValue("accelpage");
@@ -1455,41 +1552,44 @@
 	void setjerkpagePopCallback(void *ptr)
 	{
 			UNUSED(ptr);
-			Awork.setValue(planner.max_jerk[X_AXIS], "accelpage"); //va0
-			Aretr.setValue(planner.max_jerk[Y_AXIS], "accelpage");	//va1
-			Atravel.setValue(planner.max_jerk[Z_AXIS],"accelpage"); //va2
-			Amaxx.setValue(planner.max_jerk[E_AXIS],"accelpage");	//va3
+			//Awork.setValue(planner.max_jerk[X_AXIS], "accelpage"); //va0
+			//Aretr.setValue(planner.max_jerk[Y_AXIS], "accelpage");	//va1
+			//Atravel.setValue(planner.max_jerk[Z_AXIS],"accelpage"); //va2
+			//Amaxx.setValue(planner.max_jerk[E_AXIS],"accelpage");	//va3
 	}
 
 	void setstepspagePopCallback(void *ptr)
 	{
 			UNUSED(ptr);
-			Awork.setValue(planner.axis_steps_per_mm[X_AXIS], "accelpage"); //va0
-			Aretr.setValue(planner.axis_steps_per_mm[Y_AXIS], "accelpage");	//va1
-			Atravel.setValue(planner.axis_steps_per_mm[Z_AXIS], "accelpage");	//va2
-			Amaxx.setValue(planner.axis_steps_per_mm[E_AXIS+active_extruder], "accelpage");	//va3
+			//Awork.setValue(planner.axis_steps_per_mm[X_AXIS], "accelpage"); //va0
+			//Aretr.setValue(planner.axis_steps_per_mm[Y_AXIS], "accelpage");	//va1
+			//Atravel.setValue(planner.axis_steps_per_mm[Z_AXIS], "accelpage");	//va2
+			//Amaxx.setValue(planner.axis_steps_per_mm[E_AXIS+active_extruder], "accelpage");	//va3
 	}
 #endif
 	void setaccelsavebtnPopCallback(void *ptr)
 	{
 		settings.save();
-		SERIAL_ECHOPGM("zapisane");
+		SERIAL_ECHOPGM("Zapisane");
 		buzzer.tone(100, 2300);
 	}
 	void setaccelloadbtnPopCallback(void *ptr)
 	{
 		settings.load();
-		SERIAL_ECHOPGM("zaladowane");
+		SERIAL_ECHOPGM("Zaladowane");
 		buzzer.tone(100, 2300);
 	}
 
-	void setBabystepUpPopCallback(void *ptr)
+	void setBabystepPopCallback(void *ptr)
 	{
-		nextion_babystep_z(false);
-	}
-	void setBabystepDownPopCallback(void *ptr)
-	{
-		nextion_babystep_z(true);
+		if(ptr == &ZbabyUp)
+		{
+			nextion_babystep_z(false);
+		}
+		else if(ptr == &ZbabyDown)
+		{
+			nextion_babystep_z(true);
+		}
 	}
 	void setBabystepEEPROMPopCallback(void *ptr)
 	{
@@ -1705,7 +1805,7 @@
           gfx.set_position(274, 213, 250, 155);
       #endif
       }
-	  SERIAL_CHAR('"'); SERIAL_ECHOLNPGM(" connected!");
+		SERIAL_ECHOLNPGM(" connected!");
 
       #if ENABLED(NEXTION_GFX)
         gfx.color_set(NX_AXIS + X_AXIS, 63488);
@@ -1761,9 +1861,9 @@
 			SetFlowBtn.attachPop(setflowPopCallback); //obsluga przycisku set flow
 
 			// BABYSTEP
-			ZbabyUp.attachPush(setBabystepUpPopCallback);	// obsluga przycisku babystep up
-			ZbabyDown.attachPush(setBabystepDownPopCallback); // obsluga przycisku babystep down
-			ZbabyBack_Save.attachPop(setBabystepEEPROMPopCallback);
+			ZbabyUp.attachPush(setBabystepPopCallback);	// obsluga przycisku babystep up
+			ZbabyDown.attachPush(setBabystepPopCallback); // obsluga przycisku babystep down
+			ZbabyBack_Save.attachPop(setBabystepEEPROMPopCallback); // zapis przy wyjsciu 
 			
 			// MOVE PAGE
       XYHome.attachPop(setmovePopCallback);
@@ -1871,10 +1971,9 @@
 		const bool sd_status = IS_SD_INSERTED();
 		if (sd_status != lcd_sd_status && lcd_detected())								// sprawdz czy nastapila zmiana? SD DET ->
 		{																																// TAK:
-			SERIAL_ECHOLNPGM("zmiana sd det:");
 			if (!sd_status)																									// je�li SD_DETECT == false:
 			{
-				SERIAL_ECHOLNPGM("sd_status:false");
+				SERIAL_ECHOLNPGM("sd:false");
 				card.initsd();																								// inicjalizacja karty
 				SDstatus = SD_INSERT;
 				SD.setValue(SDstatus, "stat");
@@ -1884,7 +1983,7 @@
 			}
 			else																														// je�li SD_DETECT == true:
 			{
-				SERIAL_ECHOLNPGM("sd_status:true");
+				SERIAL_ECHOLNPGM("sd:true");
 				card.release();																								// odmontuj kart� SD
 				SDstatus = SD_NO_INSERT;
 				SD.setValue(SDstatus, "stat");
@@ -1928,6 +2027,7 @@
     nexLoop(nex_listen_list); // odswieza sie z delayem 5 ms
 
 		//sprawdzamy timeout ekranu
+		// do przerzucenia na periodical update
 		millis_t timeout_check;
 		timeout_check = millis();
 		if (timeout_check > screen_timeout_millis + NEX_SCREEN_TIME && screen_timeout_millis != 0)
@@ -1950,16 +2050,27 @@
     static float    PreviousdegHeater[1] = { 0.0 },
                     PrevioustargetdegHeater[1] = { 0.0 };
 
+		nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
+
     if (!NextionON) return;
-	
     PageID = Nextion_PageID();
 
-		nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
+		// timeout screen saver
+		if(PreviousPage != PageID) // jesli strona sie zmienila
+		{
+			nex_ss = millis(); // ustaw timeout
+		}
+		else if(PreviousPage == PageID && nex_ss + NEX_SCREEN_SAVER < millis())
+		{
+			// lecisz na screen saver
+			Psav.show();
+		}
+		
 
     switch(PageID)
 		{
       case StatusPage: // status screen
-        if (PreviousPage != StatusPage) 
+        if (PreviousPage != StatusPage) // jednorazowo przy wejsciu w strone STAT
 				{
 					lcd_setstatus(lcd_status_message);
           #if ENABLED(NEXTION_GFX)
@@ -1969,22 +2080,35 @@
               gfx_clear(X_MAX_POS, Y_MAX_POS, Z_MAX_POS);
             #endif
           #endif
+
+					ZERO(bufferson);
+					strcat(bufferson, itostr3(progress_printing));
+					strcat(bufferson, " %");
+					percentdone.setText(bufferson, "stat");						// procenty
+					progressbar.setValue(progress_printing, "stat"); 	// progressbar
+					if(SDstatus == SD_PRINTING || SDstatus == SD_PAUSE)
+					{
+						NexFilename.setText(filename_printing);					// nazwa pliku
+					}
+
 				}
-				//fanek
+
+				//FAN
          if (PreviousfanSpeed != fanSpeeds[0]) {
 					PrinterFanspeed.setValue(((float)(fanSpeeds[0]) / 255) * 100,"stat");
           PreviousfanSpeed = fanSpeeds[0];
          }
-				//feedrate
+				//FR
         if (Previousfeedrate != feedrate_percentage) {
           VSpeed.setValue(feedrate_percentage,"stat");
           Previousfeedrate = feedrate_percentage;
         }
-				//flow
+				//FLOW
 				if (Previousflow != planner.flow_percentage[0]) {
 					vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
 					Previousflow = planner.flow_percentage[0];
 				}
+				// TEMPERATURA HOTEND
         #if HAS_HEATER_0
           if (PreviousdegHeater[0] != thermalManager.current_temperature[0]) 
 					{
@@ -1993,10 +2117,11 @@
           }
           if (PrevioustargetdegHeater[0] != thermalManager.target_temperature[0]) 
 					{
-			  PrevioustargetdegHeater[0] = thermalManager.target_temperature[0];
+			  		PrevioustargetdegHeater[0] = thermalManager.target_temperature[0];
             targetdegtoLCD(0, PrevioustargetdegHeater[0]);
           }
         #endif
+				// TEMPERATURA BED
 				#if HAS_TEMP_BED
 					if (PreviousdegHeater[1] != thermalManager.current_temperature_bed) {
 						PreviousdegHeater[1] = thermalManager.current_temperature_bed;
@@ -2011,8 +2136,8 @@
         coordtoLCD();
 				
 				if (PreviouspercentDone != progress_printing) {
-					// Progress bar solid part
-					progressbar.setValue(progress_printing,"stat");
+					progressbar.setValue(progress_printing,"stat");	// Progress bar
+
 					// Estimate End Time
 					ZERO(bufferson);
 					char buffer1[10];
@@ -2037,19 +2162,7 @@
 					strcat(bufferson, " %");
 					percentdone.setText(bufferson, "stat");
 				}
-				else
-				{
-					ZERO(bufferson);
-					strcat(bufferson, itostr3(progress_printing));
-					strcat(bufferson, " %");
-					percentdone.setText(bufferson, "stat");
-					progressbar.setValue(progress_printing, "stat"); // dodatkowo odswiez progressbar
-					if(SDstatus == SD_PRINTING || SDstatus == SD_PAUSE)
-					{
-						NexFilename.setText(filename_printing);
-					}
-				}
-				//nex_check_sdcard_present();
+
 				nex_update_sd_status();
 
 				#if HAS_SD_RESTART
@@ -2066,15 +2179,14 @@
 						if(SDstatus == SD_PRINTING || SDstatus == SD_PAUSE)
 						{
 							// cos gdy drukuje
-							//sdfolder.setText_PGM(PSTR(MSG_SD_PRINTING));
-							//setpageSD();
 						}
 						else
 						{
 							setpageSD();
 						}
 					}
-					nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
+					// nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
+					// jest w glownej petli draw nextion
           break;
 			#endif
 			case HeatingPage:
@@ -2100,13 +2212,13 @@
 				// pokaz temp glowicy podczas nagrzewania m600 na stronie select
 				if (nex_m600_heatingup == 1)
 				{
-					char *temp_he;
-					char *temp_te;
+					//char *temp_he;
+					//char *temp_te;
 					char temptemp[14];
 
-					temp_te = itostr3(thermalManager.target_temperature[0]);
-					temp_he = itostr3(thermalManager.current_temperature[0]);
-					strlcpy(temptemp,temp_he,4);
+					//temp_te = itostr3(thermalManager.target_temperature[0]);
+					//temp_he = itostr3(thermalManager.current_temperature[0]);
+					strlcpy(temptemp, itostr3(thermalManager.current_temperature[0]), 4);
 					strcat_P(temptemp, PSTR(" / "));
 					strcat(temptemp, itostr3(thermalManager.target_temperature[0]));
 					LcdRiga4.setText(temptemp);
@@ -2118,6 +2230,13 @@
 			case FlowPage: // flow page
 				vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
 				break;
+			case ScreenSaver:
+				if(PreviousPage != ScreenSaver)
+				{
+					sendRandomSplashMessage();
+				}
+				break;
+
     }
     PreviousPage = PageID;
   }
@@ -2140,16 +2259,6 @@
     strncpy_P(lcd_status_message, message, 24);
     lcd_status_message_level = level;
     if (PageID == StatusPage) LcdStatus.setText(lcd_status_message);
-  }
-
-  void lcd_status_printf_P(const uint8_t level, const char * const fmt, ...) {
-    //if (level < lcd_status_message_level || !NextionON) return;
-    //lcd_status_message_level = level;
-    //va_list args;
-    //va_start(args, fmt);
-    //vsnprintf(lcd_status_message, 24, fmt, args);
-    //va_end(args);
-    //if (PageID == StatusPage) LcdStatus.setText(lcd_status_message);
   }
 
   void lcd_setalertstatusPGM(const char * const message) {

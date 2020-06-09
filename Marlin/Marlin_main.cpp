@@ -15241,7 +15241,7 @@ void check_periodical_actions()
 	const millis_t now = millis();
 	
 	if (ELAPSED(now, cycle_1s)) {
-		cycle_1s = now + 1000UL; // zmianka z 1000UL
+		cycle_1s = now + 1200UL; // zmianka z 1000UL
 
 		#if ENABLED(NEXTION)
 			nextion_draw_update();
@@ -15553,15 +15553,11 @@ void ploss_recover(uint8_t automatic) {
 	//thermalManager.setTargetHotend(thermalManager.target_temperature[0], 0);
 	//thermalManager.setTargetHotend(eeprom_read_word((uint16_t*)EEPROM_PANIC_TARGET_HOTEND), 0);
 
-	// Aplikujemy Babystepping
-	//_babystep_z_shift = eeprom_read_dword((uint32_t*)EEPROM_PANIC_BABYSTEP_Z);
-	//thermalManager.babystep_axis(Z_AXIS, _babystep_z_shift); //dodane
-
 	SERIAL_ECHOPGM("before:");
 	SERIAL_ECHOLN(_babystep_z_shift);
 	SERIAL_ECHOLN(current_position[Z_AXIS]);
-	// Bazujemy cala drukarke
-	home_all_axes(); // zamiast: enqueue_and_echo_commands_P(PSTR("G28")); 
+
+	home_all_axes(); 	// Bazujemy cala drukarke
 
 	SERIAL_ECHOPGM("afterhome:");
 	SERIAL_ECHOLN(_babystep_z_shift);
@@ -15593,7 +15589,7 @@ void ploss_recover(uint8_t automatic) {
 */
 void recover_machine_state_after_power_panic()
 {
-	char cmd[30]; // moze da sie zmniejszyc? 30 znakow dla ustawienia G92 E to chyba za duzo..
+	//char cmd[30]; // moze da sie zmniejszyc? 30 znakow dla ustawienia G92 E to chyba za duzo..
 	// Przywroc pozycje sprzed zaniku na dane zapisane w eepromie
 	current_position[X_AXIS] = eeprom_read_float((float*)EEPROM_PANIC_CURRENT_XPOS);
 	current_position[Y_AXIS] = eeprom_read_float((float*)EEPROM_PANIC_CURRENT_YPOS);
@@ -15665,15 +15661,13 @@ void restore_print_from_eeprom() {
 	for (c = &cmd_buff[4]; *c; c++)
 		*c = tolower(*c);
 
-	//enqueue_and_echo_command(cmd_buff); //5
 	card.openFile(filename, true); // zamiast enqueue M23
 
 	/******************************************************/
 	/*** 2. Ekstruder tryb relative									  *****/
 	/******************************************************/
-	//enqueue_and_echo_commands_P(PSTR("M83")); //6 (5+1PGM)
+	//enqueue_and_echo_commands_P(PSTR("M83"));
 	axis_relative_modes[E_AXIS] = true;
-
 
 	/******************************************************/
 	/*** 3. Pozycja gotowosci												  *****/
@@ -15682,6 +15676,8 @@ void restore_print_from_eeprom() {
 	//float _z_half = (Z_MAX_POS - _z) / 2 + _z; //problem bo pojawiaja sie liczby niewymierne i powoduja pręgi na zetce
 
   point_t park_point = NOZZLE_PARK_POINT;
+
+  
 
 	strcpy_P(cmd_buff, PSTR("G1 X")); strcat(cmd_buff, ftostr32(park_point.x));
 	strcat_P(cmd_buff, PSTR(" Y"));   strcat(cmd_buff, ftostr32(park_point.y));
@@ -15716,18 +15712,17 @@ void restore_print_from_eeprom() {
 	/******************************************************/
 	/*** 4. Ekstruder tryb absolute //12 (8+4PGM)		  *****/
 	/******************************************************/
-	enqueue_and_echo_commands_P(PSTR("M82")); // zmiana z powrotem na gcode?
+	enqueue_and_echo_commands_P(PSTR("M82")); //7 - zmiana z powrotem na gcode?
 	//axis_relative_modes[E_AXIS] = false;
 
 	/******************************************************/
 	/*** 5. Ustaw poz ekstrudera na ta sprzed zaniku  *****/
 	/******************************************************/
 
-
 	sprintf_P(cmd_buff, PSTR("G92 E"));
 	//dtostrf(current_position[E_AXIS], 6, 3, cmd_buff + strlen(cmd_buff));
 	dtostrf(eeprom_read_float((float*)EEPROM_PANIC_CURRENT_EPOS), 6, 3, cmd_buff + strlen(cmd_buff));
-	enqueue_and_echo_command(cmd_buff); //13 (9+4PGM)  // tu jest chyba babol, current_position E moze byc juz inny niz z eeprom
+	enqueue_and_echo_command(cmd_buff); //8 // tu jest chyba babol, current_position E moze byc juz inny niz z eeprom
 
 	current_position[E_AXIS] = eeprom_read_float((float*)EEPROM_PANIC_CURRENT_EPOS); // do uzycia zmienna z poczatku funkcji
 	planner.synchronize();
@@ -15762,8 +15757,7 @@ void restore_print_from_eeprom() {
 		card.startFileprint();
 		print_job_timer.start();
 
-
-	enqueue_and_echo_commands_P(PSTR("M117 Drukowanie.."));//7 (6+1PGM)
+	//enqueue_and_echo_commands_P(PSTR("M117 Drukowanie.."));//9 (6+1PGM)
 }
 
 
