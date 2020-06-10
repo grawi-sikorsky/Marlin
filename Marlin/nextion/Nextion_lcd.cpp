@@ -71,20 +71,38 @@
   #if ENABLED(SDSUPPORT)
     // 0 card not present, 1 SD not insert, 2 SD insert, 3 SD printing
     enum SDstatus_enum {NO_SD = 0, SD_NO_INSERT = 1, SD_INSERT = 2, SD_PRINTING = 3, SD_PAUSE = 4 };
+
 		enum NexPage_enum {
-			StatusPage = 1,
-			SDPage = 2,
-			HeatingPage = 3,
-			MaintainPage = 4,
-			SetupPage = 5,
-			MovePage = 6,
-			SpeedPage = 7,
-			FilamentPage = 11,
-			BedLevelPage = 12,
-			SelectPage = 14,
-			YesNoPage = 15,
-			FlowPage = 21,
-			KillPage = 30,
+			EPageStatus = 1,
+			EPageSD = 2,
+			EPageHeating = 3,
+			EPageMaintain = 4,
+			EPageSetup = 5,
+			EPageMove = 6,
+			EPageSpeed = 7,
+			EPageFilament = 11,
+			EPageBedlevel = 12,
+			EPageSelect = 14,
+			EPageYesno = 15,
+			EPageFlow = 21,
+			EPageKill = 30,
+			EPageScreenSaver = 34,
+		};
+
+		enum NexPage_enum {
+			EPageStatus = 1,
+			EPageSD = 2,
+			EPageHeating = 3,
+			EPageMaintain = 4,
+			EPageSetup = 5,
+			EPageMove = 6,
+			EPageSpeed = 7,
+			EPageFilament = 11,
+			EPageBedlevel = 12,
+			EPageSelect = 14,
+			EPageYesno = 15,
+			EPageFlow = 21,
+			EPageKill = 30,
 			ScreenSaver = 34,
 		};
     SDstatus_enum SDstatus    = NO_SD;
@@ -236,8 +254,6 @@
 	NexObject heatupenter		= NexObject(3, 6, "m3");
 	NexObject temphe				= NexObject(3, 7, "temphe");
 	NexObject tempbe				= NexObject(3, 8, "tempbe");
-	//NexObject heatbedenter	= NexObject(3, 12, "m4");
-	//NexObject hotendenter		= NexObject(3, 13, "m5");
 	NexObject chillenter		= NexObject(3, 12, "m5");
 	// 
 	// == 6
@@ -1991,13 +2007,13 @@ void sendRandomSplashMessage(){
   static void coordtoLCD() {
     char* valuetemp;
     ZERO(bufferson);
-    if (PageID == StatusPage) // status page
+    if (PageID == EPageStatus) // status page
 		{
       LcdX.setText(ftostr41sign(LOGICAL_X_POSITION(current_position[X_AXIS])),"stat");
       LcdY.setText(ftostr41sign(LOGICAL_Y_POSITION(current_position[Y_AXIS])),"stat");
       LcdZ.setText(ftostr41sign(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS]))),"stat");
     }
-    else if (PageID == MovePage) // move page
+    else if (PageID == EPageMove) // move page
 		{
       if (all_axes_homed()){
         valuetemp = ftostr4sign(LOGICAL_X_POSITION(current_position[X_AXIS]));
@@ -2017,7 +2033,7 @@ void sendRandomSplashMessage(){
 
       LedCoord5.setText(bufferson,"move");
     }
-    else if (PageID == BedLevelPage) // bed level page
+    else if (PageID == EPageBedlevel) // bed level page
 		{
       ProbeZ.setText(ftostr43sign(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS]))),"bedlevel");
     }
@@ -2043,7 +2059,7 @@ void sendRandomSplashMessage(){
 				SDstatus = SD_INSERT;
 				SD.setValue(SDstatus, "stat");
 				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_SD_INSERTED);			// MSG
-				if (PageID == SDPage){ setpageSD(); }													// ustaw strone i przekaz flage do strony status
+				if (PageID == EPageSD){ setpageSD(); }													// ustaw strone i przekaz flage do strony status
 
 			}
 			else																														// je�li SD_DETECT == true:
@@ -2053,7 +2069,7 @@ void sendRandomSplashMessage(){
 				SDstatus = SD_NO_INSERT;
 				SD.setValue(SDstatus, "stat");
 				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_SD_REMOVED);				// MSG
-				if (PageID == SDPage){ setpageSD(); }													// ustaw strone i przekaz flage do strony status
+				if (PageID == EPageSD){ setpageSD(); }													// ustaw strone i przekaz flage do strony status
 			}
 			lcd_sd_status = sd_status;
 		} // CALY IF SPRAWDZA STAN SD_DETECT I JEGO ZMIANE: SD jest->init / SD niet->release
@@ -2160,8 +2176,8 @@ void sendRandomSplashMessage(){
 
     switch(PageID)
 		{
-      case StatusPage: // status screen
-        if (PreviousPage != StatusPage) // jednorazowo przy wejsciu w strone STAT
+      case EPageStatus: // status screen
+        if (PreviousPage != EPageStatus) // jednorazowo przy wejsciu w strone STAT
 				{
 					//nex_ss = millis();
 					lcd_setstatus(lcd_status_message);
@@ -2265,8 +2281,8 @@ void sendRandomSplashMessage(){
         break;
 				
 			#if ENABLED(SDSUPPORT)
-      case SDPage: // sd card page
-					if (PreviousPage != SDPage){
+      case EPageSD: // sd card page
+					if (PreviousPage != EPageSD){
 						if(SDstatus == SD_PRINTING || SDstatus == SD_PAUSE)
 						{
 							// cos gdy drukuje
@@ -2280,27 +2296,27 @@ void sendRandomSplashMessage(){
 					// jest w glownej petli draw nextion
           break;
 			#endif
-			case HeatingPage:
+			case EPageHeating:
 				nex_update_sd_status();
 				break;
-			case MaintainPage:
+			case EPageMaintain:
 				nex_update_sd_status();
 				break;
-			case SetupPage:
+			case EPageSetup:
 				nex_update_sd_status();
 				break;
-      case MovePage: // move page
+      case EPageMove: // move page
         coordtoLCD();
         break;
-      case SpeedPage: // speed page
+      case EPageSpeed: // speed page
         //Previousfeedrate = feedrate_percentage = (int)VSpeed.getValue("stat");
         break;
-			case FilamentPage:	// filament page
+			case EPageFilament:	// filament page
 				// odswiez temp glowicy na ekranie filament [przyciski]
 					nex_ss = millis(); // ustaw SS timeout
 					degtoLCD(0, thermalManager.current_temperature[0]);
 				break;
-			case SelectPage: // select page
+			case EPageSelect: // select page
 				nex_ss = millis(); // ustaw SS timeout
 				// pokaz temp glowicy podczas nagrzewania m600 na stronie select
 				if (nex_m600_heatingup == 1)
@@ -2317,15 +2333,15 @@ void sendRandomSplashMessage(){
 					LcdRiga4.setText(temptemp);
 				}
 				break;
-      case BedLevelPage: // bedlevel
+      case EPageBedlevel: // bedlevel
 				nex_ss = millis(); // ustaw SS timeout
         coordtoLCD();
         break;
-			case FlowPage: // flow page
+			case EPageFlow: // flow page
 				vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
 				break;
-			case ScreenSaver:
-				if(PreviousPage != ScreenSaver)
+			case EPageScreenSaver:
+				if(PreviousPage != EPageScreenSaver)
 				{
 					sendRandomSplashMessage();
 					SSprog.setValue(progress_printing); // nie wiadomo jak sie zachowa gdy brak druku
@@ -2347,7 +2363,7 @@ void sendRandomSplashMessage(){
     UNUSED(persist);
     if (lcd_status_message_level > 0 || !NextionON) return;
     strncpy(lcd_status_message, message, 24);
-    if (PageID == StatusPage) LcdStatus.setText(lcd_status_message);
+    if (PageID == EPageStatus) LcdStatus.setText(lcd_status_message);
   }
 
   void lcd_setstatusPGM(const char* message, int8_t level) {
@@ -2355,7 +2371,7 @@ void sendRandomSplashMessage(){
     if (level < lcd_status_message_level || !NextionON) return;
     strncpy_P(lcd_status_message, message, 24);
     lcd_status_message_level = level;
-    if (PageID == StatusPage) LcdStatus.setText(lcd_status_message);
+    if (PageID == EPageStatus) LcdStatus.setText(lcd_status_message);
   }
 
   void lcd_setalertstatusPGM(const char * const message) {
@@ -2414,7 +2430,7 @@ void sendRandomSplashMessage(){
     }
 
     void gfx_clear(const float x, const float y, const float z, bool force_clear) {
-      if (PageID == StatusPage && (print_job_counter.isRunning() || IS_SD_PRINTING() || force_clear)) {
+      if (PageID == EPageStatus && (print_job_counter.isRunning() || IS_SD_PRINTING() || force_clear)) {
         Wavetemp.SetVisibility(false);
         show_Wave = !force_clear;
         gfx.clear(x, y, z);
@@ -2422,12 +2438,12 @@ void sendRandomSplashMessage(){
     }
 
     void gfx_cursor_to(const float x, const float y, const float z, bool force_cursor) {
-      if (PageID == StatusPage && (print_job_counter.isRunning() || IS_SD_PRINTING() || force_cursor))
+      if (PageID == EPageStatus && (print_job_counter.isRunning() || IS_SD_PRINTING() || force_cursor))
         gfx.cursor_to(x, y, z);
     }
 
     void gfx_line_to(const float x, const float y, const float z) {
-      if (PageID == StatusPage && (print_job_counter.isRunning() || IS_SD_PRINTING())) {
+      if (PageID == EPageStatus && (print_job_counter.isRunning() || IS_SD_PRINTING())) {
         #if ENABLED(ARDUINO_ARCH_SAM)
           gfx.line_to(NX_TOOL, x, y, z, true);
         #else
@@ -2438,7 +2454,7 @@ void sendRandomSplashMessage(){
 
     void gfx_plane_to(const float x, const float y, const float z) {
       uint8_t color;
-      if (PageID == StatusPage) {
+      if (PageID == EPageStatus) {
         if (z < 10) color = NX_LOW;
         else color = NX_HIGH;
         gfx.line_to(color, x, y, z, true);
