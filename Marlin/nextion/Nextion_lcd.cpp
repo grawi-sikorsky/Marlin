@@ -1580,15 +1580,15 @@ void sendRandomSplashMessage(){
 #endif
 	void setaccelsavebtnPopCallback(void *ptr)
 	{
-		settings.save();
-		SERIAL_ECHOPGM("Zapisane");
-		buzzer.tone(100, 2300);
+		enqueue_and_echo_commands_P(PSTR("M500"));
+		SERIAL_ECHOLNPGM("Zapisane");
+		//buzzer.tone(100, 2300);
 	}
 	void setaccelloadbtnPopCallback(void *ptr)
 	{
-		settings.load();
-		SERIAL_ECHOPGM("Zaladowane");
-		buzzer.tone(100, 2300);
+		enqueue_and_echo_commands_P(PSTR("M501"));
+		SERIAL_ECHOLNPGM("Zaladowane");
+		//buzzer.tone(100, 2300);
 	}
 	void setBabystepUpPopCallback(void *ptr)
 	{
@@ -1813,6 +1813,7 @@ void sendRandomSplashMessage(){
 		#endif
 
 		#if ENABLED(NEX_SCREENSAVER)
+			nex_ss = millis();
 			nex_ss_state = eeprom_read_byte((uint8_t*)EEPROM_NEX_SS_STATE);
 			nex_ss_timeout = eeprom_read_word((uint16_t*)EEPROM_NEX_SS_TIME);
 			setCurrentBrightness(100); // ustaw brightness na max gdyby po resecie zostało na malym
@@ -2114,32 +2115,41 @@ void sendRandomSplashMessage(){
     static float    PreviousdegHeater[1] = { 0.0 },
                     PrevioustargetdegHeater[1] = { 0.0 };
 
-		nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
-
     if (!NextionON) return;
     PageID = Nextion_PageID();
+
+		nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
 
 		// timeout screen saver
 		#if ENABLED(NEX_SCREENSAVER)
 			if(nex_ss_state == true)
 			{
-				if(PreviousPage != PageID) // jesli strona sie zmienila
+				SERIAL_ECHOPGM("PAGEID:");
+				SERIAL_ECHOLN(itostr3left(PageID));
+				SERIAL_ECHOPGM("PREV:");
+				SERIAL_ECHOLN(itostr3left(PreviousPage));
+				if(PreviousPage != PageID && PageID != 100) // jesli strona sie zmienila i nie jest zwroconym szambem z Nextion_PageID()
 				{
+					SERIAL_ECHOLNPGM("Prev != PAGEID");
 					nex_ss = millis(); // ustaw SS timeout
 				}
 				else if(PreviousPage == PageID && nex_ss + (nex_ss_timeout*1000) < millis()) // *1000 bo w eepromie sa zapisywane sekundy zamias ms.
 				{
+					SERIAL_ECHOLNPGM("Prev == PAGEID &&");
 					if(PreviousPage != ScreenSaver)// lecisz na screen saver
 					{
 						nex_ss_pagebefore = PreviousPage;// zapisz poprzednia strone do wyswietlenia po wylaczeniu SS
 						Psav.show();		// show screen saver
 					}
 				}
+					SERIAL_ECHOPGM("nex_ss:");
 					SERIAL_ECHOLN(nex_ss);
+					SERIAL_ECHOPGM("millis:");
 					SERIAL_ECHOLN(millis());
 			}
 			else if(nex_ss_state == false)
 			{
+				SERIAL_ECHOPGM("nex_ss_state:false");
 					// nyc
 			}
 		#endif
@@ -2149,7 +2159,7 @@ void sendRandomSplashMessage(){
       case StatusPage: // status screen
         if (PreviousPage != StatusPage) // jednorazowo przy wejsciu w strone STAT
 				{
-					nex_ss = millis();
+					//nex_ss = millis();
 					lcd_setstatus(lcd_status_message);
           #if ENABLED(NEXTION_GFX)
             #if MECH(DELTA)
@@ -2283,9 +2293,11 @@ void sendRandomSplashMessage(){
         break;
 			case FilamentPage:	// filament page
 				// odswiez temp glowicy na ekranie filament [przyciski]
+					nex_ss = millis(); // ustaw SS timeout
 					degtoLCD(0, thermalManager.current_temperature[0]);
 				break;
 			case SelectPage: // select page
+				nex_ss = millis(); // ustaw SS timeout
 				// pokaz temp glowicy podczas nagrzewania m600 na stronie select
 				if (nex_m600_heatingup == 1)
 				{
@@ -2302,6 +2314,7 @@ void sendRandomSplashMessage(){
 				}
 				break;
       case BedLevelPage: // bedlevel
+				nex_ss = millis(); // ustaw SS timeout
         coordtoLCD();
         break;
 			case FlowPage: // flow page

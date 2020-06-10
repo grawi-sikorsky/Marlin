@@ -491,6 +491,7 @@ void MarlinSettings::postprocess() {
     //
     // Global Leveling
     //
+    reset_stepper_timeout(); // dodane nex
 
     #if ENABLED(ENABLE_LEVELING_FADE_HEIGHT)
       const float zfh = planner.z_fade_height;

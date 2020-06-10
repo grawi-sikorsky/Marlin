@@ -786,12 +786,12 @@
     nexSerial.setTimeout(NEX_TIMEOUT);
 
     if (sizeof(temp) != nexSerial.readBytes((char *)temp, sizeof(temp)))
-      return 0; // niechaj zwraca zero zamist 2
+      return 100; // niechaj zwraca zero zamist 2
 
     if (temp[0] == NEX_RET_CURRENT_PAGE_ID_HEAD && temp[2] == 0xFF && temp[3] == 0xFF && temp[4] == 0xFF)
       return temp[1];
     else
-      return 0; // niechaj zwraca zero zamist 2
+      return 100; // niechaj zwraca zero zamist 2
   }
 
   void setCurrentBrightness(uint8_t dimValue) {

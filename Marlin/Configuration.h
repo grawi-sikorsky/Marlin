@@ -420,9 +420,14 @@
   // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
 
 	// Printo H3
-	#define  DEFAULT_Kp 10.22
-	#define  DEFAULT_Ki 0.56
-	#define  DEFAULT_Kd 46.36
+	//#define  DEFAULT_Kp 10.22
+	//#define  DEFAULT_Ki 0.56
+	//#define  DEFAULT_Kd 46.36
+
+  // Printo H3 Biggie
+  #define DEFAULT_Kp 18.97
+  #define DEFAULT_Ki 1.55
+  #define DEFAULT_Kd 57.88
 
   // MakerGear
   //#define DEFAULT_Kp 7.0
@@ -681,9 +686,9 @@
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
-#define DEFAULT_ACCELERATION          1400    // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_ACCELERATION          1200    // X, Y, Z and E acceleration for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   2000    // X, Y, Z acceleration for travel (non printing) moves
+#define DEFAULT_TRAVEL_ACCELERATION   1200    // X, Y, Z acceleration for travel (non printing) moves
 
 /**
  * Default Jerk (mm/s)
@@ -1333,7 +1338,7 @@
 //
 #define HOST_KEEPALIVE_FEATURE        // Disable this if your host doesn't like keepalive messages
 #define DEFAULT_KEEPALIVE_INTERVAL 2  // Number of seconds between "busy" messages. Set with M113.
-#define BUSY_WHILE_HEATING            // Some hosts require "busy" messages even during heating
+//#define BUSY_WHILE_HEATING            // Some hosts require "busy" messages even during heating
 
 //
 // M100 Free Memory Watcher
