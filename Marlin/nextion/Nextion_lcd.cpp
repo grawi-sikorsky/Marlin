@@ -2128,24 +2128,28 @@ void sendRandomSplashMessage(){
 				SERIAL_ECHOLN(itostr3left(PageID));
 				SERIAL_ECHOPGM("PREV:");
 				SERIAL_ECHOLN(itostr3left(PreviousPage));
-				if(PreviousPage != PageID && PageID != 100) // jesli strona sie zmienila i nie jest zwroconym szambem z Nextion_PageID()
+
+				if(PageID != 100) // jesli nie zwraca szamba z Nextion_PageID() 
 				{
-					SERIAL_ECHOLNPGM("Prev != PAGEID");
-					nex_ss = millis(); // ustaw SS timeout
-				}
-				else if(PreviousPage == PageID && nex_ss + (nex_ss_timeout*1000) < millis()) // *1000 bo w eepromie sa zapisywane sekundy zamias ms.
-				{
-					SERIAL_ECHOLNPGM("Prev == PAGEID &&");
-					if(PreviousPage != ScreenSaver)// lecisz na screen saver
+					if(PreviousPage != PageID && PreviousPage != 100) // jesli strona sie zmienila i nie jest zwroconym szambem z Nextion_PageID()
 					{
-						nex_ss_pagebefore = PreviousPage;// zapisz poprzednia strone do wyswietlenia po wylaczeniu SS
-						Psav.show();		// show screen saver
+						SERIAL_ECHOLNPGM("Prev != PAGEID");
+						nex_ss = millis(); // ustaw SS timeout
+					}
+					else if(PreviousPage == PageID && nex_ss + (nex_ss_timeout*1000) < millis()) // *1000 bo w eepromie sa zapisywane sekundy zamias ms.
+					{
+						SERIAL_ECHOLNPGM("Prev == PAGEID &&");
+						if(PreviousPage != ScreenSaver)// lecisz na screen saver
+						{
+							nex_ss_pagebefore = PreviousPage;// zapisz poprzednia strone do wyswietlenia po wylaczeniu SS
+							Psav.show();		// show screen saver
+						}
 					}
 				}
-					SERIAL_ECHOPGM("nex_ss:");
-					SERIAL_ECHOLN(nex_ss);
-					SERIAL_ECHOPGM("millis:");
-					SERIAL_ECHOLN(millis());
+				SERIAL_ECHOPGM("nex_ss:");
+				SERIAL_ECHOLN(nex_ss);
+				SERIAL_ECHOPGM("millis:");
+				SERIAL_ECHOLN(millis());
 			}
 			else if(nex_ss_state == false)
 			{
