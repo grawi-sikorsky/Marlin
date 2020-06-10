@@ -89,22 +89,6 @@
 			EPageScreenSaver = 34,
 		};
 
-		enum NexPage_enum {
-			EPageStatus = 1,
-			EPageSD = 2,
-			EPageHeating = 3,
-			EPageMaintain = 4,
-			EPageSetup = 5,
-			EPageMove = 6,
-			EPageSpeed = 7,
-			EPageFilament = 11,
-			EPageBedlevel = 12,
-			EPageSelect = 14,
-			EPageYesno = 15,
-			EPageFlow = 21,
-			EPageKill = 30,
-			ScreenSaver = 34,
-		};
     SDstatus_enum SDstatus    = NO_SD;
 		#if ENABLED(NEX_UPLOAD)
 			NexUpload Firmware(NEXTION_FIRMWARE_FILE, 57600);
@@ -2155,7 +2139,7 @@ void sendRandomSplashMessage(){
 					else if(PreviousPage == PageID && nex_ss + (nex_ss_timeout*1000) < millis()) // *1000 bo w eepromie sa zapisywane sekundy zamias ms.
 					{
 						SERIAL_ECHOLNPGM("Prev == PAGEID &&");
-						if(PreviousPage != ScreenSaver)// lecisz na screen saver
+						if(PreviousPage != EPageScreenSaver)// lecisz na screen saver
 						{
 							nex_ss_pagebefore = PreviousPage;// zapisz poprzednia strone do wyswietlenia po wylaczeniu SS
 							Psav.show();		// show screen saver
