@@ -874,12 +874,6 @@
 			thermalManager.setTargetHotend(temp_hotend, 0);
 			thermalManager.setTargetBed(temp_bed);
 		}
-		else if(ptr == &hotendenter){											// ROZGRZEJ GLOWICE
-			thermalManager.setTargetHotend(temp_hotend, 0);
-		}
-		else if(ptr == &heatbedenter){										// ROZGRZEJ PLATFORME
-			thermalManager.setTargetBed(temp_bed);
-		}
     PagePrinter.show();
 		buzzer.tone(100,2300);
   }
