@@ -95,7 +95,7 @@ void recalc_delta_settings() {
   float delta_calibration_radius() {
     return calibration_radius_factor * (
       #if HAS_BED_PROBE
-        FLOOR((DELTA_PRINTABLE_RADIUS) - _MAX(HYPOT(probe.offset_xy.x, probe.offset_xy.y), MIN_PROBE_EDGE))
+        FLOOR((DELTA_PRINTABLE_RADIUS) - _MAX(HYPOT(probe.offset_xy.x, probe.offset_xy.y), PROBING_MARGIN))
       #else
         DELTA_PRINTABLE_RADIUS
       #endif
@@ -249,11 +249,7 @@ void home_delta() {
   #endif
 
   // Move all carriages together linearly until an endstop is hit.
-  current_position.z = (delta_height + 10
-    #if HAS_BED_PROBE
-      - probe.offset.z
-    #endif
-  );
+  current_position.z = (delta_height + 10 - TERN0(HAS_BED_PROBE, probe.offset.z));
   line_to_current_position(homing_feedrate(Z_AXIS));
   planner.synchronize();
 

@@ -31,11 +31,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#if HAS_L64XX
-  #include "libs/L64XX/L64XX_Marlin.h"
-  extern uint8_t axis_known_position;
-#endif
-
 void stop();
 
 // Pass true to keep steppers from timing out
@@ -95,10 +90,6 @@ extern bool wait_for_heatup;
 // Inactivity shutdown timer
 extern millis_t max_inactive_time, stepper_inactive_time;
 
-#if ENABLED(USE_CONTROLLER_FAN)
-  extern uint8_t controllerfan_speed;
-#endif
-
 #if ENABLED(PSU_CONTROL)
   extern bool powersupply_on;
   #define PSU_PIN_ON()  do{ OUT_WRITE(PS_ON_PIN,  PSU_ACTIVE_HIGH); powersupply_on = true; }while(0)
@@ -117,6 +108,13 @@ void protected_pin_err();
 
 #if HAS_SUICIDE
   inline void suicide() { OUT_WRITE(SUICIDE_PIN, SUICIDE_PIN_INVERTING); }
+#endif
+
+#if HAS_KILL
+  #ifndef KILL_PIN_STATE
+    #define KILL_PIN_STATE LOW
+  #endif
+  inline bool kill_state() { return READ(KILL_PIN) == KILL_PIN_STATE; }
 #endif
 
 #if ENABLED(G29_RETRY_AND_RECOVER)
