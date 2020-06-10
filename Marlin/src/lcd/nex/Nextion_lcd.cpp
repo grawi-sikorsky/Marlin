@@ -33,8 +33,6 @@
 
 	NextionLCD nexlcd;
 
-
-
   uint8_t     PageID                    = 0,
               lcd_status_message_level  = 0;
   uint16_t    slidermaxval              = 20;
@@ -42,8 +40,13 @@
   //const float manual_feedrate_mm_s[]    = MANUAL_FEEDRATE; //bylo w ultralcd, obecnie jest w planner.h 
 	millis_t		screen_timeout_millis;
 
+		// Zmienne dluga nazwa na ekranie statusu
+	int		nex_file_number[6];
+	int 	nex_file_row_clicked;
+	char	filename_printing[40];
+
 	#if PIN_EXISTS(SD_DETECT)
-	uint8_t lcd_sd_status;
+		uint8_t lcd_sd_status;
 	#endif
 	
 	// ZMIENNE ZEWNETRZNE MARLINa
@@ -55,28 +58,29 @@
 	extern inline void set_destination_to_current() { COPY(destination, current_position); }
 	extern void home_all_axes();
 
+
+	enum NexPage_enum {
+		EPageStatus = 1,
+		EPageSD = 2,
+		EPageHeating = 3,
+		EPageMaintain = 4,
+		EPageSetup = 5,
+		EPageMove = 6,
+		EPageSpeed = 7,
+		EPageFilament = 11,
+		EPageBedlevel = 12,
+		EPageSelect = 14,
+		EPageYesno = 15,
+		EPageFlow = 21,
+		EPageKill = 30,
+		EPageScreenSaver = 34,
+	};
+
   #if ENABLED(SDSUPPORT)
 		extern CardReader card;
     // 0 card not present, 1 SD not insert, 2 SD insert, 3 SD printing
     enum SDstatus_enum {NO_SD = 0, SD_NO_INSERT = 1, SD_INSERT = 2, SD_PRINTING = 3, SD_PAUSE = 4 };
     SDstatus_enum SDstatus    = NO_SD;
-
-		enum NexPage_enum {
-			EPageStatus = 1,
-			EPageSD = 2,
-			EPageHeating = 3,
-			EPageMaintain = 4,
-			EPageSetup = 5,
-			EPageMove = 6,
-			EPageSpeed = 7,
-			EPageFilament = 11,
-			EPageBedlevel = 12,
-			EPageSelect = 14,
-			EPageYesno = 15,
-			EPageFlow = 21,
-			EPageKill = 30,
-			EPageScreenSaver = 34,
-		};
 
 		#if ENABLED(NEX_UPLOAD)
 			NexUpload Firmware(NEXTION_FIRMWARE_FILE, 57600);
@@ -123,7 +127,6 @@
 	 */
   void NextionLCD::nex_stop_printing() {
 		card.flag.abort_sd_printing = true; 		// Ta flaga zatrzymuje wydruk w kolejnej wolnej instrukcji idle();
-		
 		// 2.0 did_pause_print = false;					// flaga pause_print na false, na wypadek gdyby drukarka byla w stanie pauzy @_@
 		//stepper.quick_stop_panic();						// pomocne z panic'a, trzeba to zaserwowac aby mozna bylo ponownie wykonac jakakolwiek komende
 		#if ENABLED(PLOSS_SUPPORT)
@@ -131,8 +134,8 @@
 			persistentStore.writedata((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);	// zeruj babystepping w eeprom
 		#endif
 
-		percentdone.setText("0", "printer");		// zeruj procenty
-		progressbar.setValue(0, "printer");			// zeruj progress bar
+		percentdone.setText("0", "stat");		// zeruj procenty
+		progressbar.setValue(0, "stat");			// zeruj progress bar
 		ui.set_status_P(GET_TEXT(MSG_PRINT_ABORTED), -1);	// status bar info
 	}
 
@@ -168,24 +171,36 @@
 	 */
   void NextionLCD::setpage_Status(){
     #if HOTENDS > 0
-      Hotend00.setValue(0, "printer");
-			Hotend01.setValue(0, "printer");
+      Hotend00.setValue(0, "stat");
+			Hotend01.setValue(0, "stat");
     #endif
 
     #if HAS_TEMP_BED
-      Bed0.setValue(0,"printer");
-			Bed1.setValue(0,"printer");
+      Bed0.setValue(0,"stat");
+			Bed1.setValue(0,"stat");
     #endif
 
 		#if FAN_COUNT > 0
-			PrinterFanspeed.setValue(0, "printer");
+			PrinterFanspeed.setValue(0, "stat");
 		#endif
 
-		VSpeed.setValue(100, "printer");
+		VSpeed.setValue(100, "stat");
+
+    #if ENABLED(SDSUPPORT)
+      if (!card.isMounted) card.mount();
+      delay(100);
+      if (card.isMounted) {
+        SDstatus = SD_INSERT;
+        card.cdroot();  // Initial boot
+      }
+      else SDstatus = SD_NO_INSERT;
+
+      SD.setValue(SDstatus, "stat");
+    #endif
 
     #define LANGUAGE_STRING(M) STRINGIFY(M)
     #define NEXTION_LANGUAGE LANGUAGE_STRING(LCD_LANGUAGE)
-    Language.setText(NEXTION_LANGUAGE, "printer");
+    Language.setText(NEXTION_LANGUAGE, "stat");
   }
 
 	/**
@@ -253,6 +268,7 @@
       if (card.filename[0] != '/') {
         Folderup.SetVisibility(true);
         Folderup.attachPop(nexlcd.sdfolderUpPopCallback);
+
 				if(card.isMounted())
 				{
 					sdfolder.setText(card.longFilename);
@@ -279,21 +295,23 @@
 
 						#if ENABLED(NEXTION_SD_LONG_NAMES)
 							printrowsd(row, card.isFilenameisDir(), card.filename, card.longFilename);
+							nex_file_number[row] = i;
 						#else
 							printrowsd(row, card.isFilenameisDir(), card.filename);
+							nex_file_number[row] = i;
 						#endif
 
           } else {
 						#if ENABLED(NEXTION_SD_LONG_NAMES)
 							printrowsd(row, false, "", "");
+							nex_file_number[row] = NULL; // nie mozna wyzerowac (bo bedzie w wolnych polach wszezie plik nr: 0 czyli jakiś) może tu być potencjalny bug.
 						#else
 							printrowsd(row, false, "");
+							nex_file_number[row] = NULL; // nie mozna wyzerowac (bo bedzie w wolnych polach wszezie plik nr: 0 czyli jakiś) może tu być potencjalny bug.
 						#endif
-						
           }
         }
       }
-      //sendCommand("ref 0");
     }
 
 		/**
@@ -348,6 +366,10 @@
       else
         slidermaxval  = fileCnt - 6;
 
+			uint16_t hig = 210 - slidermaxval * 10;
+      if (hig < 10) hig = 10;
+		
+      sdscrollbar.Set_cursor_height_hig(hig);	
       sdscrollbar.setMaxval(slidermaxval);
       sdscrollbar.setValue(slidermaxval,"sdcard");
 
@@ -367,18 +389,24 @@
     void NextionLCD::sdfilePopCallback(void *ptr) {
       ZERO(bufferson);
 			#if ENABLED(NEXTION_SD_LONG_NAMES)
-				if (ptr == &sdrow0)
+				if (ptr == &sdrow0){
 					file0.getText(bufferson, sizeof(bufferson));
-				else if (ptr == &sdrow1)
+					nex_file_row_clicked = 0;}
+				else if (ptr == &sdrow1){
 					file1.getText(bufferson, sizeof(bufferson));
-				else if (ptr == &sdrow2)
+					nex_file_row_clicked = 1;}
+				else if (ptr == &sdrow2){
 					file2.getText(bufferson, sizeof(bufferson));
-				else if (ptr == &sdrow3)
+					nex_file_row_clicked = 2;}
+				else if (ptr == &sdrow3){
 					file3.getText(bufferson, sizeof(bufferson));
-				else if (ptr == &sdrow4)
+					nex_file_row_clicked = 3;}
+				else if (ptr == &sdrow4){
 					file4.getText(bufferson, sizeof(bufferson));
-				else if (ptr == &sdrow5)
+					nex_file_row_clicked = 4;}
+				else if (ptr == &sdrow5){
 					file5.getText(bufferson, sizeof(bufferson));
+					nex_file_row_clicked = 5;}
 			#else
 				if (ptr == &sdrow0)
 					sdrow0.getText(bufferson, sizeof(bufferson));
@@ -1511,32 +1539,54 @@ void NextionLCD::init(){
 	void NextionLCD::nex_check_sdcard_present()
 	{
 		#if ENABLED(SDSUPPORT) && PIN_EXISTS(SD_DETECT)
-
 			const bool sd_status = IS_SD_INSERTED();
 			if (sd_status != lcd_sd_status && lcd_detected())								// sprawdz czy nastapila zmiana? SD DET ->
 			{																																// TAK:
-				if (!sd_status)																									// je�li SD_DETECT == false:
+				if (!sd_status)		// jesli SD_DETECT == false:
 				{
-					SERIAL_ECHOLNPGM("sd_status:false");
-					card.mount();																								// inicjalizacja karty
-					setpageSD();																									// ustaw strone i przekaz flage do strony status
-					SDstatus = SD_INSERT;
-					SD.setValue(SDstatus, "stat");
-					ui.set_status_P(GET_TEXT(MSG_MEDIA_INSERTED));			// MSG TRZEBA PRZEKSZTALCIC NA WYSIETLANIE NA PASKU
+					SERIAL_ECHOLNPGM("sd:false");
+					card.mount();																														// inicjalizacja karty
+					SDstatus = SD_INSERT;																										// flaga
+					SD.setValue(SDstatus, "stat");																					// przekazana do nex
+					if (lcd_sd_status != 2) ui.set_status_P(GET_TEXT(MSG_MEDIA_INSERTED));	// MSG
+					if (PageID == EPageSD){ setpageSD(); }																	// ustaw strone i przekaz flage do strony status
 				}
-				else																														// je�li SD_DETECT == true:
+				else							// jesli SD_DETECT == true:
 				{
-					SERIAL_ECHOLNPGM("sd_status:true");
-					card.release();																								// odmontuj kart� SD
-					setpageSD();																									// ustaw strone i przekaz flage do strony status
-					SDstatus = SD_NO_INSERT;
-					SD.setValue(SDstatus, "stat");
-					ui.set_status_P(GET_TEXT(MSG_MEDIA_REMOVED));				// MSG TRZEBA PRZEKSZTALCIC NA WYSIETLANIE NA PASKU 
+					SERIAL_ECHOLNPGM("sd:true");
+					card.release();																												// odmontuj karte SD
+					SDstatus = SD_NO_INSERT;																							// flaga
+					SD.setValue(SDstatus, "stat");																				// przekazana do nex
+					if (lcd_sd_status != 2) ui.set_status_P(GET_TEXT(MSG_MEDIA_REMOVED));	// MSG
+					if (PageID == EPageSD){ setpageSD(); }																// ustaw strone i przekaz flage do strony status
 				}
 				lcd_sd_status = sd_status;
 			} // CALY IF SPRAWDZA STAN SD_DETECT I JEGO ZMIANE: SD jest->init / SD niet->release
-
 		#endif
+	}
+
+	void NextionLCD::nex_update_sd_status()
+	{
+		#if ENABLED(SDSUPPORT)
+			if (card.isFileOpen()) {
+				if (IS_SD_PRINTING() && SDstatus != SD_PRINTING) {
+					SDstatus = SD_PRINTING;
+					SD.setValue(SDstatus,"stat");
+				}
+				else if (!IS_SD_PRINTING() && SDstatus != SD_PAUSE) {
+					SDstatus = SD_PAUSE;
+					SD.setValue(SDstatus,"stat");
+				}
+			}
+			else if (card.isMounted && SDstatus != SD_INSERT) {
+				SDstatus = SD_INSERT;
+				SD.setValue(SDstatus,"stat");
+			}
+			else if (!card.isMounted && SDstatus != SD_NO_INSERT) {
+				SDstatus = SD_NO_INSERT;
+				SD.setValue(SDstatus,"stat");
+			}
+		#endif // HAS_SD_SUPPORT
 	}
 
 // =======================
@@ -1544,7 +1594,6 @@ void NextionLCD::init(){
 // =======================
 	void NextionLCD::update(){
 		if (!NextionON) return;
-		
     nexLoop(nex_listen_list); // odswieza sie z delayem 5 ms
 
 		//sprawdzamy timeout ekranu
@@ -1583,13 +1632,53 @@ void NextionLCD::init(){
 											PreviousTargetHotendTemp = 0;
 
     if (!NextionON) return;
-	
     PageID = Nextion_PageID();
+
+		nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
+
+		// timeout screen saver
+		#if ENABLED(NEX_SCREENSAVER)
+			if(nex_ss_state == true)
+			{
+				SERIAL_ECHOPGM("PAGEID:");
+				SERIAL_ECHOLN(itostr3left(PageID));
+				SERIAL_ECHOPGM("PREV:");
+				SERIAL_ECHOLN(itostr3left(PreviousPage));
+
+				if(PageID != 100) // jesli nie zwraca szamba z Nextion_PageID() 
+				{
+					if(PreviousPage != PageID && PreviousPage != 100) // jesli strona sie zmienila i nie jest zwroconym szambem z Nextion_PageID()
+					{
+						SERIAL_ECHOLNPGM("Prev != PAGEID");
+						nex_ss = millis(); // ustaw SS timeout
+					}
+					else if(PreviousPage == PageID && nex_ss + (nex_ss_timeout*1000) < millis()) // *1000 bo w eepromie sa zapisywane sekundy zamias ms.
+					{
+						SERIAL_ECHOLNPGM("Prev == PAGEID &&");
+						if(PreviousPage != EPageScreenSaver)// lecisz na screen saver
+						{
+							nex_ss_pagebefore = PreviousPage;// zapisz poprzednia strone do wyswietlenia po wylaczeniu SS
+							Psav.show();		// show screen saver
+						}
+					}
+				}
+				SERIAL_ECHOPGM("nex_ss:");
+				SERIAL_ECHOLN(nex_ss);
+				SERIAL_ECHOPGM("millis:");
+				SERIAL_ECHOLN(millis());
+			}
+			else if(nex_ss_state == false)
+			{
+				SERIAL_ECHOPGM("nex_ss_state:false");
+					// nyc
+			}
+		#endif
 
     switch(PageID)
 		{
       case EPageStatus: //STATUS PAGE
-        if (PreviousPage != EPageStatus) {
+        if (PreviousPage != EPageStatus) // jednorazowo przy wejsciu w strone STAT
+				{
 					LcdStatus.setText(lcd_status_message);
           #if ENABLED(NEXTION_GFX)
             #if MECH(DELTA)
@@ -1598,7 +1687,18 @@ void NextionLCD::init(){
               gfx_clear(X_MAX_POS, Y_MAX_POS, Z_MAX_POS);
             #endif
           #endif
+
+					ZERO(bufferson);
+					strcat(bufferson, ui8tostr3rj(card.percentDone()));
+					strcat(bufferson, " %");
+					percentdone.setText(bufferson, "stat");						// procenty
+					progressbar.setValue(card.percentDone(), "stat"); 	// progressbar
+					if(SDstatus == SD_PRINTING || SDstatus == SD_PAUSE)
+					{
+						//NexFilename.setText(filename_printing);					// nazwa pliku
+					}
 				}
+
 				//Wentylator
         if (PreviousfanSpeed != thermalManager.fan_speed[0]) {
 					PrinterFanspeed.setValue(((float)(thermalManager.fan_speed[0]) / 255) * 100,"stat");
@@ -1612,9 +1712,9 @@ void NextionLCD::init(){
 				//flow
 				if (Previousflow != planner.flow_percentage[0]) {
 					vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
-					Previousflow = planner.flow_percentage[0]; //thermalManager.degHotend[0];
+					Previousflow = planner.flow_percentage[0];
 				}
-        
+        // HOTEND DOCELOWE I TARGET
         if (PreviousHotendTemp != thermalManager.degHotend(0)) // porownaj dotychczasowa z obecna
 				{
 						PreviousHotendTemp = thermalManager.degHotend(0);
@@ -1625,23 +1725,24 @@ void NextionLCD::init(){
 			  		PreviousTargetHotendTemp = thermalManager.degTargetHotend(0);
             targetdegtoLCD(0, PreviousTargetHotendTemp);
         }
-        
+        // BED DOCELOWE I TARGET
 				#if HAS_TEMP_BED
-					if (PreviousBedTemp != thermalManager.degBed()){ //.current_temperature_bed) {
-						PreviousBedTemp = thermalManager.degBed(); //.current_temperature_bed;
+					if (PreviousBedTemp != thermalManager.degBed()){
+						PreviousBedTemp = thermalManager.degBed();
 						degtoLCD(1, PreviousBedTemp);
 					}
-					if (PreviousTargetBedTemp != thermalManager.degTargetBed()){ //.target_temperature_bed) {
-						PreviousTargetBedTemp = thermalManager.degTargetBed(); //.target_temperature_bed;
+					if (PreviousTargetBedTemp != thermalManager.degTargetBed()){ 
+						PreviousTargetBedTemp = thermalManager.degTargetBed();
 						targetdegtoLCD(1, PreviousTargetBedTemp);
 					}
 				#endif
  
         coordtoLCD();
 				
-				if (PreviouspercentDone != card.percentDone()) { // bylo progress_printing
-					// Progress bar solid part
-					progressbar.setValue(card.percentDone(),"stat");
+				// JESLI NASTAPILA ZMIANA PROCENOW:
+				if (PreviouspercentDone != card.percentDone()) {
+					progressbar.setValue(card.percentDone(),"stat");		// Progress bar
+
 					// Estimate End Time
 					ZERO(bufferson);
 					char buffer1[10];
@@ -1666,35 +1767,8 @@ void NextionLCD::init(){
 					strcat(bufferson, " %");
 					percentdone.setText(bufferson, "stat");
 				}
-				else
-				{
-					ZERO(bufferson);
-					strcat(bufferson, i8tostr3rj(card.percentDone()));
-					strcat(bufferson, " %");
-					percentdone.setText(bufferson, "stat");
-					progressbar.setValue(card.percentDone(), "stat"); // dodatkowo odswiez progressbar
-				}
 
-				#if ENABLED(SDSUPPORT)
-				if (card.isFileOpen()) {
-					if (card.isPrinting && SDstatus != SD_PRINTING) {
-						SDstatus = SD_PRINTING;
-						SD.setValue(SDstatus,"stat");
-					}
-					else if (!card.isPrinting && SDstatus != SD_PAUSE) {
-						SDstatus = SD_PAUSE;
-						SD.setValue(SDstatus,"stat");
-					}
-				}
-				else if (card.isMounted && SDstatus != SD_INSERT) {
-					SDstatus = SD_INSERT;
-					SD.setValue(SDstatus,"stat");
-				}
-				else if (card.isMounted && SDstatus != SD_NO_INSERT) {
-					SDstatus = SD_NO_INSERT;
-					SD.setValue(SDstatus,"stat");
-				}
-				#endif // HAS_SD_SUPPORT
+				nex_update_sd_status();
 
 				#if HAS_SD_RESTART
           if (restart.count && restart.job_phase == RESTART_IDLE) {
@@ -1703,19 +1777,34 @@ void NextionLCD::init(){
           }
         #endif 
         break;
-		#if ENABLED(SDSUPPORT)
-      case EPageSD: // SD CARD LIST
-					//nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
-					if (PreviousPage != EPageSD) {
-						setpageSD();
+
+			#if ENABLED(SDSUPPORT)
+				case EPageSD: // SD CARD LIST
+					if (PreviousPage != EPageSD){
+						if(SDstatus == SD_PRINTING || SDstatus == SD_PAUSE)
+						{
+							// cos gdy drukuje NYC
+						}
+						else
+						{
+							setpageSD();
+						}
 					}
-          break;
-		#endif
-      case EPageMove:	// MOVE PAGE
+				break;
+			#endif
+			case EPageHeating:
+				nex_update_sd_status();
+				break;
+			case EPageMaintain:
+				nex_update_sd_status();
+				break;
+			case EPageSetup:
+				nex_update_sd_status();
+				break;
+      case EPageMove: // move page
         coordtoLCD();
         break;
-      case EPageSpeed:	// FEEDRATE PAGE?
-        //Previousfeedrate = feedrate_percentage = (int)VSpeed.getValue("printer");
+      case EPageSpeed: // speed page
         break;
 			case EPageFilament:	// 
 				// odswiez temp glowicy na ekranie filament [przyciski]
@@ -1725,20 +1814,15 @@ void NextionLCD::init(){
 				
 				if (nex_m600_heatingup == 1) // pokaz temp glowicy podczas nagrzewania m600 na stronie select
 				{
-					char *temp_he; 	// temperatura hotendu
-					char *temp_te;	// temperatura hotendu docelowa
-					char temptemp[14];	// temporary temp @_@ xD
-
-					//temp_te = i8tostr3(thermalManager.degTargetHotend(0));
-					//temp_he = i8tostr3(thermalManager.degHotend(0));
-					//strlcpy(temptemp,temp_he,4);
-					
-					//strcat(temptemp, PSTR(" / "));
-					//strcat(temptemp, i8tostr3(thermalManager.degTargetHotend(0)));
+					char temptemp[14];
+					strlcpy(temptemp, i8tostr3rj(thermalManager.degHotend(0)), 4);
+					strcat(temptemp, PSTR(" / "));
+					strcat(temptemp, i8tostr3rj(thermalManager.degTargetHotend(0)));
 					LcdRiga4.setText(temptemp);
 				}
 				break;
       case EPageBedlevel:
+				//nex_ss = millis(); // ustaw SS timeout
         coordtoLCD();
         break;
 			case EPageFlow:
@@ -1902,9 +1986,9 @@ void NextionLCD::init(){
 
 		// SD CARD OBSLUGA
 		void onMediaInserted() {
-			SDstatus = SD_INSERT; // przekaz flage do strony status
-			SD.setValue(SDstatus, "stat");
-			ui.set_status_P(GET_TEXT(MSG_MEDIA_INSERTED));	// MSG TRZEBA PRZEKSZTALCIC NA WYSIETLANIE NA PASKU
+			//SDstatus = SD_INSERT; // przekaz flage do strony status
+			//SD.setValue(SDstatus, "stat");
+			ui.set_status_P(GET_TEXT(MSG_MEDIA_INSERTED));
 
 			PageID = Nextion_PageID();
 			if (PageID == EPageSD)
@@ -1914,9 +1998,10 @@ void NextionLCD::init(){
 		};
 
 		void onMediaRemoved() { 
-			SDstatus = SD_NO_INSERT; // przekaz flage do strony status
-			SD.setValue(SDstatus, "stat");
+			//SDstatus = SD_NO_INSERT; // przekaz flage do strony status
+			//SD.setValue(SDstatus, "stat");
 			ui.set_status_P(GET_TEXT(MSG_MEDIA_REMOVED));
+
 			PageID = Nextion_PageID();
 			if (PageID == EPageSD)
 			{

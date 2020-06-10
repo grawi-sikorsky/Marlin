@@ -45,6 +45,12 @@ class NextionLCD
               lcd_clicked               = false,
 							nex_m600_heatingup 				= false;
 
+    // Zmienne Screensaver
+    bool nex_ss_state;											// screensaver status
+    uint16_t nex_ss_timeout;								// screensaver timeout
+    uint8_t nex_ss_pagebefore;							// saved page before screen saver
+	
+
     //Główne metody ekranu
     void check_periodical_actions();  //Aktualizacja LCD z mniejsza czestotliwosca - 0.4s -> nextion_draw_update();
     void nextion_draw_update();       //Odswieza aktualny ekran -> switch
@@ -69,6 +75,7 @@ class NextionLCD
     void setpage_Status();
     void menu_action_sdfile(const char* filename);
     void nex_check_sdcard_present();
+    void nex_update_sd_status();
     void menu_action_sddirectory(const char* filename);
     void setrowsdcard(uint32_t number = 0);
     void printrowsd(uint8_t row, const bool folder, const char* filename, const char* longfilename);
