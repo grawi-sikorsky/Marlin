@@ -338,7 +338,12 @@
 			#endif // jezeli VLCS wlaczone
 
       card.openAndPrintFile(filename);
+
+			card.getfilename(nex_file_number[nex_file_row_clicked]);
+			strncpy(filename_printing, card.longFilename, 40); // card.longFilename
+
       PagePrinter.show();
+			sendCommand("ref 0");
     }
 
 
@@ -1993,7 +1998,7 @@ void NextionLCD::init(){
 			PageID = Nextion_PageID();
 			if (PageID == EPageSD)
 			{
-				nexlcd.setpageSD();	// ustaw strone i 
+				nexlcd.setpageSD();	// ustaw strone i
 			}
 		};
 
