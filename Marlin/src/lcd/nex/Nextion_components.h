@@ -29,7 +29,7 @@
 	NexObject Pprobe        = NexObject(12, 0,  "bedlevel");
 
 	NexObject PageSelect       = NexObject(14, 0,  "select");
-  NexObject Pyesno        = NexObject(15, 0,  "yesno");
+  NexObject PageYesNo        = NexObject(15, 0,  "yesno");
 
   //NexObject Ptime         = NexObject(17, 0,  "infomove");
   //NexObject Pfanspeedpage = NexObject(18, 0,  "fanspeedpage");
@@ -39,7 +39,7 @@
 	//NexObject Pservice			= NexObject(22, 0, "servicepage");
 	NexObject Paccel				= NexObject(18, 0, "accelpage");
 	//NexObject Pjerk					= NexObject(25, 0, "jerkpage");
-	NexObject Pkill					= NexObject(30, 0, "kill");
+	NexObject PageKill					= NexObject(30, 0, "kill");
 	NexObject Psav 					= NexObject(34, 0, "wyga");
 	// 
 	// == 9 
@@ -50,7 +50,7 @@
    *******************************************************************
    */
   //NexObject NexVersion     = NexObject(0, 7,  "t1"); // out? nieuzywane
-
+  NexObject splashText        = NexObject(0, 5, "t0");
 
   /**
    *******************************************************************
