@@ -1490,6 +1490,8 @@ void sendRandomSplashMessage(){
 				char buffer[21];
 				printStatistics stats = print_job_timer.getStats();
 
+				manage_inactivity();
+
 				Sprints.setText(itostr3left(stats.totalPrints),"statscreen");        // Print Count: 999
 				Scompl.setText(itostr3left(stats.finishedPrints), "statscreen");			// Completed  : 666
 
@@ -1497,27 +1499,40 @@ void sendRandomSplashMessage(){
 					Spanic.setText(itostr3left(eeprom_read_byte((uint8_t*)EEPROM_PANIC_POWER_FAIL_COUNT)), "statscreen"); // dodane power fail count
 				#endif
 
+				manage_inactivity();
+
 				duration_t elapsed = stats.printTime;
 				elapsed.toString(buffer);
 				Stimetotal.setText(buffer, "statscreen");               // Total print Time: 99y 364d 23h 59m 59s
+
+				manage_inactivity();
 
 				elapsed = stats.longestPrint;
 				elapsed.toString(buffer);
 				Stimelong.setText(buffer, "statscreen");								// Longest job time: 99y 364d 23h 59m 59s
 
+				manage_inactivity();
+
 				sprintf_P(buffer, PSTR("%ld.%im"), long(stats.filamentUsed / 1000), int16_t(stats.filamentUsed / 100) % 10);
 				Sfilament.setText(buffer, "statscreen");								// Extruded total: 125m
 				// END OF PRINTSTATS
+
+				manage_inactivity();
 
 				// PRINTER INFO START
 				Sfirmware.setText_PGM(PSTR(SHORT_BUILD_VERSION), "statscreen");
 				Skompil.setText_PGM(PSTR(STRING_DISTRIBUTION_DATE), "statscreen");
 				Sleveling.setText_PGM(PSTR(MSG_MESH_LEVELING), "statscreen");
+
+				manage_inactivity();
+
 				#if ENABLED(PLOSS_SUPPORT)
 							Svlcs.setText_PGM(PSTR(MSG_INFO_YES), "statscreen");
 				#else
 							Svlcs.setText_PGM(PSTR(MSG_INFO_NO), "statscreen");
 				#endif
+
+				manage_inactivity();
 
 				#if ENABLED(FILAMENT_RUNOUT_SENSOR)
 							if (eeprom_read_byte((uint8_t*)EEPROM_NEX_FILAMENT_SENSOR) == 1)
@@ -1532,6 +1547,8 @@ void sendRandomSplashMessage(){
 							Sfilsensor.setText_PGM(PSTR(MSG_INFO_NO), "statscreen");
 				#endif			
 				// END OF PRINTER INFO
+
+				manage_inactivity();
 
 		}
 	#endif
