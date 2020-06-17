@@ -2141,10 +2141,10 @@ void sendRandomSplashMessage(){
 		#if ENABLED(NEX_SCREENSAVER)
 			if(nex_ss_state == true)
 			{
-				SERIAL_ECHOPGM("PAGEID:");
-				SERIAL_ECHOLN(itostr3left(PageID));
-				SERIAL_ECHOPGM("PREV:");
-				SERIAL_ECHOLN(itostr3left(PreviousPage));
+				//SERIAL_ECHOPGM("PAGEID:");
+				//SERIAL_ECHOLN(itostr3left(PageID));
+				//SERIAL_ECHOPGM("PREV:");
+				//SERIAL_ECHOLN(itostr3left(PreviousPage));
 
 				if(PageID != 100) // jesli nie zwraca szamba z Nextion_PageID() 
 				{
@@ -2163,10 +2163,10 @@ void sendRandomSplashMessage(){
 						}
 					}
 				}
-				SERIAL_ECHOPGM("nex_ss:");
-				SERIAL_ECHOLN(nex_ss);
-				SERIAL_ECHOPGM("millis:");
-				SERIAL_ECHOLN(millis());
+				//SERIAL_ECHOPGM("nex_ss:");
+				//SERIAL_ECHOLN(nex_ss);
+				//SERIAL_ECHOPGM("millis:");
+				//SERIAL_ECHOLN(millis());
 			}
 			else if(nex_ss_state == false)
 			{
