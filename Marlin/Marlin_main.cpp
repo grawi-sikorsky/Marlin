@@ -5872,6 +5872,8 @@ void home_all_axes() { gcode_G28(true); }
     #if HAS_BED_PROBE && defined(Z_AFTER_PROBING)
       move_z_after_probing();
     #endif
+    
+    nex_return_after_leveling(true); //dodane, powrot do status
 
     report_current_position();
   }

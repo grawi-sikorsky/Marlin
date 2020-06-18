@@ -37,27 +37,39 @@
   #include "Nextion_gfx.h"
   #include "library/Nextion.h"
 
-  bool        NextionON                 = false,
-              show_Wave                 = true,
+  bool        NextionON                 = false, 	// flaga czy nex jest podlaczony prawidlowo
+              //show_Wave                 = true,		// nex GFX
               lcdDrawUpdate             = false,
-              lcd_clicked               = false;
+              lcd_clicked               = false,
+							nex_m600_heatingup 				= 0;			// flaga czy pokazywac temp glowicy przy rozgrzewaniu
+
+	extern bool nex_filament_runout_sensor_flag;
+
   uint8_t     PageID                    = 0,
               lcd_status_message_level  = 0;
+
+	extern uint8_t progress_printing; // dodane nex
+
   uint16_t    slidermaxval              = 20;
   char        bufferson[70]             = { 0 };
   char        lcd_status_message[24]    = WELCOME_MSG;
-  const float manual_feedrate_mm_m[]    = MANUAL_FEEDRATE;
-	millis_t		screen_timeout_millis, nex_ss;
-	int		nex_file_number[6];
+
+	#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
+  	const float manual_feedrate_mm_m[]    = MANUAL_FEEDRATE; // zmienna wylacznie do przepisania definicji MANUAL FEEDRATE a potem przerzucenia do float feedrate_mm_s
+	#endif
+
+	millis_t		screen_timeout_millis;
+	uint8_t		nex_file_number[6];						// byl int trzeba sprawdzic
 	int 	nex_file_row_clicked;
 	char	filename_printing[40];
 
-  extern uint8_t progress_printing; // dodane nex
-	extern bool nex_filament_runout_sensor_flag;
+	#if ENABLED(NEX_SCREENSAVER)
+	millis_t nex_ss;
 	bool nex_ss_state;											// screensaver status
 	uint16_t nex_ss_timeout;								// screensaver timeout
 	uint8_t nex_ss_pagebefore;							// saved page before screen saver
-	bool nex_m600_heatingup = 0;
+	#endif
+
 	#if PIN_EXISTS(SD_DETECT)
 		uint8_t lcd_sd_status;
 	#endif
@@ -87,6 +99,7 @@
 			EPageFlow = 21,
 			EPageKill = 30,
 			EPageScreenSaver = 34,
+			EPageBedlevelAuto = 35,
 		};
 
     SDstatus_enum SDstatus    = NO_SD;
@@ -135,26 +148,28 @@
 
   NexObject Pprinter      = NexObject(1,  0,  "stat");
 
-	NexObject Pheatup				= NexObject(3, 0,	"heatup");
+	//NexObject Pheatup				= NexObject(3, 0,	"heatup"); **
 	NexObject Poptions			= NexObject(4, 0,	"maintain");
   NexObject Psetup        = NexObject(5,  0,  "setup");
 
   NexObject Pfilament     = NexObject(11, 0, "filament");
-	NexObject Pprobe        = NexObject(12, 0,  "bedlevel");
-
 	NexObject Pselect       = NexObject(14, 0,  "select");
   NexObject Pyesno        = NexObject(15, 0,  "yesno");
 
-  //NexObject Ptime         = NexObject(17, 0,  "infomove");
-  //NexObject Pfanspeedpage = NexObject(18, 0,  "fanspeedpage");
-	//NexObject Pstats				= NexObject(19, 0,	"statscreen");
-	//NexObject Ptsettings		= NexObject(20, 0,  "tempsettings");
-	//NexObject Pinfobedlevel = NexObject(21, 0, "infobedlevel");
-	//NexObject Pservice			= NexObject(22, 0, "servicepage");
-	NexObject Paccel				= NexObject(18, 0, "accelpage");
+	//NexObject Paccel				= NexObject(18, 0, "accelpage"); **
 	//NexObject Pjerk					= NexObject(25, 0, "jerkpage");
 	NexObject Pkill					= NexObject(30, 0, "kill");
+
+	#if ENABLED(NEX_SCREENSAVER)
 	NexObject Psav 					= NexObject(34, 0, "wyga");
+	#endif
+
+	#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
+	NexObject Pprobe        = NexObject(EPageBedlevel, 0,  "bedlevel");
+	#endif
+	#if ENABLED(NEXTION_AUTO_BED_LEVEL)
+	NexObject Palevel				= NexObject(EPageBedlevelAuto, 0, "ABL");
+	#endif
 	// 
 	// == 9 
 
@@ -301,13 +316,22 @@
    * NEX komponenty strona: Probe BEDLEVEL 12
    *******************************************************************
    */
+	#if ENABLED (NEXTION_SEMIAUTO_BED_LEVEL)
   NexObject ProbeUp     = NexObject(12, 1,  "p0");
   NexObject ProbeSend   = NexObject(12, 2,  "p1");
   NexObject ProbeDown   = NexObject(12, 3,  "p2");
   //NexObject ProbeMsg    = NexObject(14, 4,  "t0");
   NexObject ProbeZ      = NexObject(12, 5,  "t1");
-	// 
-	// == 4
+	#endif
+  /**
+   *******************************************************************
+   * NEX komponenty strona: Probe AUTOBEDLEVEL 35
+   *******************************************************************
+   */
+	#if ENABLED (NEXTION_AUTO_BED_LEVEL)
+	  NexObject ProbeZ      = NexObject(EPageBedlevelAuto, 5,  "t1");
+		//NexObject Points      = NexObject(EPageBedlevelAuto, 5,  "t1");
+	#endif
 
 	/**
 	*******************************************************************
@@ -430,10 +454,11 @@
 	* NEX komponenty strona: SCREEN SAVER 34
 	*******************************************************************
 	*/
+	#if ENABLED(NEX_SCREENSAVER)
 	NexObject SStxt				= NexObject(34, 2, "g0");
 	NexObject SSprog			= NexObject(34, 3, "j0");
 	NexObject SSval				= NexObject(34, 8, "SStime");
-
+	#endif
 
 	// 132*13 = 1716 bajt�w
 
@@ -477,7 +502,12 @@
     &LcdSend,
 
     // Page 14 touch listen
+		#if ENABLED (NEXTION_SEMIAUTO_BED_LEVEL)
     &ProbeUp, &ProbeDown, &ProbeSend,
+		#endif
+		#if ENABLED (NEXTION_AUTO_BED_LEVEL)
+		 // nic?
+		#endif
 
 		// Page 15 tacz listen
 		&heatupenter, &chillenter,
@@ -495,7 +525,9 @@
 		&SetFlowBtn,
 
 		// page 34 screensaver
+		#if ENABLED(NEX_SCREENSAVER)
 		&Psav,
+		#endif
 
     NULL
   };
@@ -562,6 +594,7 @@
   typedef void (*screenFunc_t)();
 
 // Random Splash Message
+#if ENABLED(NEX_SCREENSAVER)
 void sendRandomSplashMessage(){
 	int32_t randtemp = random(1,21);
 
@@ -650,6 +683,7 @@ void sendRandomSplashMessage(){
 		SStxt.setText_PGM(PSTR("Stroke my belts and gears.. mrrrrr.."));
 	}
 }
+#endif
 
   /**
    *
@@ -1427,6 +1461,7 @@ void sendRandomSplashMessage(){
 
         const float old_feedrate = feedrate_mm_s;
         feedrate_mm_s = MMM_TO_MMS(manual_feedrate_mm_m[Z_AXIS]);
+				
         prepare_move_to_destination(); // will call set_current_from_destination()
         feedrate_mm_s = old_feedrate;
 
@@ -1442,18 +1477,16 @@ void sendRandomSplashMessage(){
 					wait_for_user = false;
       }
     }
-
-		void nex_return_after_leveling(bool finish)
-		{
-			nex_ss_state = eeprom_read_byte((uint8_t*)EEPROM_NEX_SS_STATE); // przywroc stan SS sprzed poziomowania
-			if (finish == true)
-			{
-				Pprinter.show();
-			}
-		}
-
-
 #endif
+
+	void nex_return_after_leveling(bool finish)
+	{
+		//nex_ss_state = eeprom_read_byte((uint8_t*)EEPROM_NEX_SS_STATE); // przywroc stan SS sprzed poziomowania
+		if (finish == true)
+		{
+			Pprinter.show();
+		}
+	}
 // ==============================
 // END OF BED LEVELING SUPPORT ==
 // ==============================
@@ -1598,14 +1631,14 @@ void sendRandomSplashMessage(){
 	void setaccelsavebtnPopCallback(void *ptr)
 	{
 		enqueue_and_echo_commands_P(PSTR("M500"));
-		SERIAL_ECHOLNPGM("Zapisane");
-		//buzzer.tone(100, 2300);
+		//SERIAL_ECHOLNPGM("Zapisane");
+		buzzer.tone(100, 2300);
 	}
 	void setaccelloadbtnPopCallback(void *ptr)
 	{
 		enqueue_and_echo_commands_P(PSTR("M501"));
-		SERIAL_ECHOLNPGM("Zaladowane");
-		//buzzer.tone(100, 2300);
+		//SERIAL_ECHOLNPGM("Zaladowane");
+		buzzer.tone(100, 2300);
 	}
 	void setBabystepUpPopCallback(void *ptr)
 	{
@@ -1721,6 +1754,7 @@ void sendRandomSplashMessage(){
   }
 
 	// SCREEN SAVER
+	#if ENABLED(NEX_SCREENSAVER)
 	void setScreensaverPagePopCallback(void *ptr)
 	{
 		char cmdss[7];
@@ -1729,6 +1763,7 @@ void sendRandomSplashMessage(){
 		sendCommand(cmdss); // wyslij "page x" aby wylaczyc screensaver
 		nex_ss = millis(); 	// resetnij timeout
 	}
+	#endif
 
   void setmovePopCallback(void *ptr) {
     UNUSED(ptr);
@@ -1970,7 +2005,9 @@ void sendRandomSplashMessage(){
       LcdSend.attachPop(sendPopCallback);
 
 			// SCREENSAVER
+			#if ENABLED(NEX_SCREENSAVER)
 			Psav.attachPush(setScreensaverPagePopCallback); //obsluga calego ekranu SS
+			#endif
 
       setpagePrinter();
 
@@ -2194,7 +2231,7 @@ void sendRandomSplashMessage(){
           #endif
 
 					ZERO(bufferson);
-					strcat(bufferson, itostr3(progress_printing));
+					strcat(bufferson, itostr3(progress_printing));		// progress printing mozna chyba w calym pliku zamienic na card.percentDone();
 					strcat(bufferson, " %");
 					percentdone.setText(bufferson, "stat");						// procenty
 					progressbar.setValue(progress_printing, "stat"); 	// progressbar
@@ -2297,8 +2334,6 @@ void sendRandomSplashMessage(){
 							setpageSD();
 						}
 					}
-					// nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
-					// jest w glownej petli draw nextion
           break;
 			#endif
 			case EPageHeating:
@@ -2318,11 +2353,11 @@ void sendRandomSplashMessage(){
         break;
 			case EPageFilament:	// filament page
 				// odswiez temp glowicy na ekranie filament [przyciski]
-					nex_ss = millis(); // ustaw SS timeout
+					//nex_ss = millis(); // ustaw SS timeout
 					degtoLCD(0, thermalManager.current_temperature[0]);
 				break;
 			case EPageSelect: // select page
-				nex_ss = millis(); // ustaw SS timeout
+				//nex_ss = millis(); // ustaw SS timeout
 				// pokaz temp glowicy podczas nagrzewania m600 na stronie select
 				if (nex_m600_heatingup == 1)
 				{
@@ -2339,13 +2374,18 @@ void sendRandomSplashMessage(){
 				}
 				break;
       case EPageBedlevel: // bedlevel
-				nex_ss = millis(); // ustaw SS timeout
+				#if ENABLED(NEX_SCREENSAVER)
+					nex_ss = millis(); // ustaw SS timeout
+				#endif
         coordtoLCD();
         break;
 			case EPageFlow: // flow page
 				vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
 				break;
+			
+			#if ENABLED(NEX_SCREENSAVER)
 			case EPageScreenSaver:
+			
 				if(PreviousPage != EPageScreenSaver)
 				{
 					sendRandomSplashMessage();
@@ -2355,6 +2395,7 @@ void sendRandomSplashMessage(){
 					SSprog.setValue(progress_printing); // nie wiadomo jak sie zachowa gdy brak druku
 				}
 				break;
+			#endif
     }
     PreviousPage = PageID;
   }
