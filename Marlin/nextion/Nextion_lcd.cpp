@@ -2401,7 +2401,6 @@ void sendRandomSplashMessage(){
 		buzzer.tone(120, 700);
 		Pkill.show();
 		Kmsg.setText_PGM(lcd_msg,"kill");
-
 	}
 
 	// dodana obsluga babystep

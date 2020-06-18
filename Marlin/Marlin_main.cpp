@@ -5021,6 +5021,7 @@ void home_all_axes() { gcode_G28(true); }
     #else
       constexpr bool seenQ = false;
     #endif
+    SERIAL_ECHOLNPGM("->g29 start"); // cut
 
     // G29 Q is also available if debugging
     #if ENABLED(DEBUG_LEVELING_FEATURE)
