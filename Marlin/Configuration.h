@@ -671,7 +671,7 @@
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4]]]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 260, 260, 30, 80 }
+#define DEFAULT_MAX_FEEDRATE          { 260, 260, 20, 80 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -682,7 +682,7 @@
 
 
 #if ENABLED (NEXTION_AUTO_BED_LEVEL)
-  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 60, 9000 }
+  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 9000 }
 #else
   #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 9000 }
 #endif
@@ -1262,12 +1262,12 @@
 #endif
 
 // Homing speeds (mm/m)
-#define HOMING_FEEDRATE_XY (90*60)
+#define HOMING_FEEDRATE_XY (60*60)
 
 #if ENABLED (NEXTION_AUTO_BED_LEVEL)
-  #define HOMING_FEEDRATE_Z  (35*60)
+  #define HOMING_FEEDRATE_Z  (20*60)
 #else
-  #define HOMING_FEEDRATE_Z  (45*60)
+  #define HOMING_FEEDRATE_Z  (20*60)
 #endif
 
 
@@ -1354,7 +1354,7 @@
 // every couple of seconds when it can't accept commands.
 //
 #define HOST_KEEPALIVE_FEATURE        // Disable this if your host doesn't like keepalive messages
-#define DEFAULT_KEEPALIVE_INTERVAL 2  // Number of seconds between "busy" messages. Set with M113.
+#define DEFAULT_KEEPALIVE_INTERVAL 4  // Number of seconds between "busy" messages. Set with M113.
 //#define BUSY_WHILE_HEATING            // Some hosts require "busy" messages even during heating
 
 //
