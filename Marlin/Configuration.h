@@ -682,7 +682,7 @@
 
 
 #if ENABLED (NEXTION_AUTO_BED_LEVEL)
-  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 30, 9000 }
+  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 60, 9000 }
 #else
   #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 9000 }
 #endif
@@ -712,7 +712,7 @@
 #define DEFAULT_EJERK                  5.0
 
 #if ENABLED (NEXTION_AUTO_BED_LEVEL)
-  #define DEFAULT_ZJERK                  0.3
+  #define DEFAULT_ZJERK                  0.4
 #else
   #define DEFAULT_ZJERK                  0.6
 #endif

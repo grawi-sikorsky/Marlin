@@ -2137,7 +2137,7 @@ void sendRandomSplashMessage(){
     if (!NextionON) return;
     PageID = Nextion_PageID();
 
-		nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
+		//nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
 
 		// timeout screen saver
 		#if ENABLED(NEX_SCREENSAVER)
@@ -2180,6 +2180,7 @@ void sendRandomSplashMessage(){
     switch(PageID)
 		{
       case EPageStatus: // status screen
+				nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
         if (PreviousPage != EPageStatus) // jednorazowo przy wejsciu w strone STAT
 				{
 					//nex_ss = millis();
@@ -2285,6 +2286,7 @@ void sendRandomSplashMessage(){
 				
 			#if ENABLED(SDSUPPORT)
       case EPageSD: // sd card page
+					nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
 					if (PreviousPage != EPageSD){
 						if(SDstatus == SD_PRINTING || SDstatus == SD_PAUSE)
 						{
