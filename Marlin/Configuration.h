@@ -139,10 +139,10 @@
 // ============================================
 
 //#define PRINTO_H3
-//#define PRINTO_H3_PLUS
+#define PRINTO_H3_PLUS
 //#define PRINTO_H3_TOWER
 //#define PRINTO_H3_TOWERPLUS
-#define PRINTO_H3_BIGGIE
+//#define PRINTO_H3_BIGGIE
 //#define PRINTO_H3_MIDI
 //lcd 3.0
 // ============================================
@@ -177,6 +177,9 @@
 #define CUSTOM_MACHINE_NAME "Printo H3 Midi"
 #endif
 
+// BED LEVELING NEXTION
+	//#define NEXTION_SEMIAUTO_BED_LEVEL  // mesh bed leveling - semi auto
+  #define NEXTION_AUTO_BED_LEVEL     // bilinear bed leveling - auto
 
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
 // You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)
@@ -676,8 +679,13 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4]]]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 9000 }
 
+
+#if ENABLED (NEXTION_AUTO_BED_LEVEL)
+  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 30, 9000 }
+#else
+  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 9000 }
+#endif
 /**
  * Default Acceleration (change/s) change = mm/s
  * Override with M204
@@ -702,6 +710,12 @@
 #define DEFAULT_YJERK                 14.0
 #define DEFAULT_ZJERK                  0.6
 #define DEFAULT_EJERK                  5.0
+
+#if ENABLED (NEXTION_AUTO_BED_LEVEL)
+  #define DEFAULT_ZJERK                  0.3
+#else
+  #define DEFAULT_ZJERK                  0.6
+#endif
 
 /**
  * S-Curve Acceleration
@@ -1055,10 +1069,6 @@
 //#define MESH_BED_LEVELING
 
 
-// BED LEVELING NEXTION
-	#define NEXTION_SEMIAUTO_BED_LEVEL  // mesh bed leveling - semi auto
-  //#define NEXTION_AUTO_BED_LEVEL     // bilinear bed leveling - auto
-
   // semi auto
   #ifdef NEXTION_SEMIAUTO_BED_LEVEL
     #define MESH_BED_LEVELING
@@ -1253,7 +1263,14 @@
 
 // Homing speeds (mm/m)
 #define HOMING_FEEDRATE_XY (90*60)
-#define HOMING_FEEDRATE_Z  (45*60)
+
+#if ENABLED (NEXTION_AUTO_BED_LEVEL)
+  #define HOMING_FEEDRATE_Z  (35*60)
+#else
+  #define HOMING_FEEDRATE_Z  (45*60)
+#endif
+
+
 
 // @section calibrate
 
@@ -2090,7 +2107,7 @@
 	#define NEX_SCREEN_TIMEOUT
 	#define NEX_SCREEN_TIME	8000
 
-  #define NEX_SCREENSAVER
+  //#define NEX_SCREENSAVER
   #define NEX_SCREEN_SAVER_DEFAULT 180
 
 	#define NEXTION_SD_LONG_NAMES

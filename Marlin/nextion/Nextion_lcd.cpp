@@ -1689,6 +1689,7 @@ void sendRandomSplashMessage(){
 			#endif
 		}
 		// ScreenSaver
+		#if ENABLED(NEX_SCREENSAVER)
 		else if(strcmp(bufferson, "SSS") == 0)
 		{
 			SERIAL_ECHOLNPGM("otrzymalem SSS");
@@ -1710,6 +1711,7 @@ void sendRandomSplashMessage(){
 				SERIAL_ECHOLNPGM("SS oN");
 			}
 		}
+		#endif
 		// DEFAULT
 		else
 		{ 
