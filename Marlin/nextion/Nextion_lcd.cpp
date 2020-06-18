@@ -329,7 +329,7 @@
    *******************************************************************
    */
 	#if ENABLED (NEXTION_AUTO_BED_LEVEL)
-	  NexObject ProbeZ      = NexObject(EPageBedlevelAuto, 5,  "t1");
+	  NexObject ProbeZ      = NexObject(EPageBedlevelAuto, 2,  "t1");
 		//NexObject Points      = NexObject(EPageBedlevelAuto, 5,  "t1");
 	#endif
 
@@ -1445,7 +1445,9 @@ void sendRandomSplashMessage(){
 #if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
 
     void ProbelPopCallBack(void *ptr) {
+			#if ENABLED(NEX_SCREENSAVER)
 			if(nex_ss_state == true) nex_ss_state != nex_ss_state; // jeśli ON -> OFF screensaver
+			#endif
 
       if (ptr == &ProbeUp || ptr == &ProbeDown) {
 
@@ -1708,12 +1710,13 @@ void sendRandomSplashMessage(){
 		{																					// inaczej trzeba bedzie miec osobne wsady do NEXa z auto i semi levelingiem
 			#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
 				enqueue_and_echo_command(bufferson);
+				Pprobe.show();		// pokaz ekran semiauto leveling
 			#endif
 			
 			#if ENABLED(NEXTION_AUTO_BED_LEVEL)
 				enqueue_and_echo_command("G28");	// bazowanie przed poziomowaniem
 				enqueue_and_echo_command("G29");	// poziomowanie auto
-				// to do: jakis ekran dot automatycznego poziomowania
+				Palevel.show();										// pokaz ekran auto leveling
 				// to do: g28 after auto leveling
 			#endif
 
@@ -2073,7 +2076,7 @@ void sendRandomSplashMessage(){
 
       LedCoord5.setText(bufferson,"move");
     }
-    else if (PageID == EPageBedlevel) // bed level page
+    else if (PageID == EPageBedlevel || PageID == EPageBedlevelAuto) // bed level page lub ABL -> ProbeZ: ta sama zmienna zdefiniowana z innym ID.
 		{
       ProbeZ.setText(ftostr43sign(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS]))),"bedlevel");
     }
@@ -2379,6 +2382,9 @@ void sendRandomSplashMessage(){
 				#endif
         coordtoLCD();
         break;
+			case EPageBedlevelAuto:
+				coordtoLCD();
+				break;
 			case EPageFlow: // flow page
 				vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
 				break;
