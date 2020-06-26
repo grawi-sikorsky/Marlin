@@ -138,8 +138,8 @@
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
 // ============================================
 
-#define PRINTO_H3
-//#define PRINTO_H3_PLUS
+//#define PRINTO_H3
+#define PRINTO_H3_PLUS
 //#define PRINTO_H3_TOWER
 //#define PRINTO_H3_TOWERPLUS
 //#define PRINTO_H3_BIGGIE
@@ -178,8 +178,8 @@
 #endif
 
 // BED LEVELING NEXTION
-	//#define NEXTION_SEMIAUTO_BED_LEVEL  // mesh bed leveling - semi auto
-  #define NEXTION_AUTO_BED_LEVEL     // bilinear bed leveling - auto
+	#define NEXTION_SEMIAUTO_BED_LEVEL  // mesh bed leveling - semi auto
+  //#define NEXTION_AUTO_BED_LEVEL     // bilinear bed leveling - auto
 
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
 // You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)
@@ -576,8 +576,8 @@
   //#define ENDSTOPPULLUP_ZMAX
   //#define ENDSTOPPULLUP_XMIN
   //#define ENDSTOPPULLUP_YMIN
-  //#define ENDSTOPPULLUP_ZMIN
-  //#define ENDSTOPPULLUP_ZMIN_PROBE
+  #define ENDSTOPPULLUP_ZMIN
+  #define ENDSTOPPULLUP_ZMIN_PROBE
 #endif
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
