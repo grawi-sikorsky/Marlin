@@ -1487,17 +1487,7 @@ void NextionLCD::init(){
 
     ZERO(bufferson);
     if (PageID == EPageStatus) {
-			/*
-			if( (current_position[X_AXIS] != temppos[X_AXIS]) ||	// if sprawdza czy nastapila zmiana pozycji aby nie spamowalo po serialu pozycja bez zmian -> todo: przeniesc na 8 bit...
-					(current_position[Y_AXIS] != temppos[Y_AXIS]) ||	// mozna rozwinac funkcje o odswiezanie tylko konkretnej osi jesli jest zmieniona!
-					(current_position[Z_AXIS] != temppos[Z_AXIS]) )
-			{
-				temppos[X_AXIS] = current_position[X_AXIS]; temppos[Y_AXIS] = current_position[Y_AXIS]; temppos[Z_AXIS] = current_position[Z_AXIS];
-				LcdX.setText(ftostr41sign(LOGICAL_X_POSITION(current_position[X_AXIS])),"stat");
-      	LcdY.setText(ftostr41sign(LOGICAL_Y_POSITION(current_position[Y_AXIS])),"stat");
-      	LcdZ.setText(ftostr41sign(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS]))),"stat");
-			}*/
-			
+			// if sprawdza czy nastapila zmiana pozycji aby nie spamowalo po serialu pozycja bez zmian -> todo: przeniesc na 8 bit...
 			if( current_position[X_AXIS] != temppos[X_AXIS] )
 			{
 				LcdX.setText(ftostr41sign(LOGICAL_X_POSITION(current_position[X_AXIS])),"stat");
