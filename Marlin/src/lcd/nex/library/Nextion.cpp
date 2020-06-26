@@ -136,10 +136,8 @@
     sendCommand(cmd.c_str());
     recvRetString(buffer_temp, len);
 
-    SERIAL_ECHO("getText-cmd:");
+    SERIAL_ECHOPGM("getText-cmd:");
 		SERIAL_ECHOLN(cmd.c_str());
-    SERIAL_ECHO("getText-__name:");
-    SERIAL_ECHOLN(__name);
   }
 
 	void NexObject::setText(const char *buffer, const char *pname) {
@@ -154,9 +152,8 @@
 		cmd += "\"";
 		sendCommand(cmd.c_str());
 		recvRetCommandFinished();
-    SERIAL_ECHO("setText-__name:");
-    SERIAL_ECHOLN(__name);
-    SERIAL_ECHO("setText-cmd:");
+
+    SERIAL_ECHOPGM("setText-cmd:");
     SERIAL_ECHOLN(cmd.c_str());
 	}
 
@@ -204,6 +201,8 @@
     cmd += this->__name;
     cmd += ".val=";
     cmd += buf;
+
+    SERIAL_ECHOLN(cmd.c_str());
 
     sendCommand(cmd.c_str());
     recvRetCommandFinished();
@@ -696,11 +695,8 @@
     uint8_t c;  
 
     while (nexSerial.available() > 0) {   
-      delay(5); // sprawdzic czy nie delay czasem?
+      delayMicroseconds(20); // sprawdzic czy nie delay czasem?
       c = nexSerial.read();
-
-      SERIAL_ECHO("nexSerial.read:");
-      SERIAL_ECHOLN(c);
 
       if (c == NEX_RET_EVENT_TOUCH_HEAD) {
         if (nexSerial.available() >= 6) {
@@ -788,12 +784,12 @@
     nexSerial.setTimeout(NEX_TIMEOUT);
 
     if (sizeof(temp) != nexSerial.readBytes((char *)temp, sizeof(temp)))
-      return 0; // niechaj zwraca zero zamist 2
+      return 100; // niechaj zwraca zero zamist 2
 
     if (temp[0] == NEX_RET_CURRENT_PAGE_ID_HEAD && temp[2] == 0xFF && temp[3] == 0xFF && temp[4] == 0xFF)
       return temp[1];
-    else
-      return 0; // niechaj zwraca zero zamist 2
+    //else
+      //return 101; // niechaj zwraca 100 zamiast 0 -> gdyby na nex pojawiala sie strona nr 100 bedzie lipa
   }
 
   void setCurrentBrightness(uint8_t dimValue) {

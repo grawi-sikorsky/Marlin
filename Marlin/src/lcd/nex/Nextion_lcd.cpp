@@ -1074,7 +1074,7 @@
   void NextionLCD::setgcodePopCallback(void *ptr) {
     UNUSED(ptr);
     ZERO(bufferson);
-		SERIAL_ECHOLN("setgcodepopcallbac");
+		SERIAL_ECHOLNPGM("setgcodepopcallbac");
     Tgcode.getText(bufferson, sizeof(bufferson), "gcode");
     Tgcode.setText("", "gcode");
 
@@ -1630,13 +1630,15 @@ void NextionLCD::init(){
 											Previousflow = 0,					// dotychczasowy flow
                     	PreviouspercentDone = 0;	// dotychczasowy postep %
 
-    static uint8_t   	PreviousBedTemp = 0,
+    static float   		PreviousBedTemp = 0,
                     	PreviousTargetBedTemp = 0;
-		static uint8_t		PreviousHotendTemp = 0,
+		static float			PreviousHotendTemp = 0,
 											PreviousTargetHotendTemp = 0;
 
     if (!NextionON) return;
-    PageID = Nextion_PageID();
+
+    PageID = Nextion_PageID();																		// sprawdz strone
+		if(PageID == 100 || PageID == 101)	PageID = PreviousPage;		// jesli na serialu lipa (przyczyna?) to loop do nastepnej proby
 
 		nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
 
@@ -1701,12 +1703,12 @@ void NextionLCD::init(){
 					{
 						//NexFilename.setText(filename_printing);					// nazwa pliku
 					}
-				}
+				} // jednorazowo przy wejsciu end
 
 				//Wentylator
         if (PreviousfanSpeed != thermalManager.fan_speed[0]) {
 					PrinterFanspeed.setValue(((float)(thermalManager.fan_speed[0]) / 255) * 100,"stat");
-          PreviousfanSpeed = thermalManager.fan_speed[0]; 
+          PreviousfanSpeed = thermalManager.fan_speed[0];
         }
 				//feedrate
         if (Previousfeedrate != feedrate_percentage) {
@@ -1722,7 +1724,7 @@ void NextionLCD::init(){
         if (PreviousHotendTemp != thermalManager.degHotend(0)) // porownaj dotychczasowa z obecna
 				{
 						PreviousHotendTemp = thermalManager.degHotend(0);
-            degtoLCD(0, PreviousHotendTemp); //
+            degtoLCD(0, PreviousHotendTemp);
         }
         if (PreviousTargetHotendTemp != thermalManager.degTargetHotend(0)) 
 				{
