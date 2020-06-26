@@ -2052,9 +2052,22 @@ void sendRandomSplashMessage(){
     ZERO(bufferson);
     if (PageID == EPageStatus) // status page
 		{
-      LcdX.setText(ftostr41sign(LOGICAL_X_POSITION(current_position[X_AXIS])),"stat");
-      LcdY.setText(ftostr41sign(LOGICAL_Y_POSITION(current_position[Y_AXIS])),"stat");
-      LcdZ.setText(ftostr41sign(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS]))),"stat");
+			// if sprawdza czy nastapila zmiana pozycji aby nie spamowalo po serialu pozycja bez zmian -> todo: przeniesc na 8 bit...
+			if( current_position[X_AXIS] != temppos[X_AXIS] )
+			{
+				LcdX.setText(ftostr41sign(LOGICAL_X_POSITION(current_position[X_AXIS])),"stat");
+				temppos[X_AXIS] = current_position[X_AXIS];
+			}
+			if( current_position[Y_AXIS] != temppos[Y_AXIS] )
+			{
+				LcdY.setText(ftostr41sign(LOGICAL_Y_POSITION(current_position[Y_AXIS])),"stat");
+				temppos[Y_AXIS] = current_position[Y_AXIS];
+			}
+			if( current_position[Z_AXIS] != temppos[Z_AXIS] )
+			{
+				LcdZ.setText(ftostr41sign(LOGICAL_Z_POSITION(current_position[Z_AXIS])),"stat");
+				temppos[Z_AXIS] = current_position[Z_AXIS];
+			}
     }
     else if (PageID == EPageMove) // move page
 		{
