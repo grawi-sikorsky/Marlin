@@ -13,6 +13,25 @@
   #include "library/Nextion.h"
 #endif
 
+	enum NexPage_enum {
+		EPageStatus = 1,
+		EPageSD = 2,
+		EPageHeating = 3,
+		EPageMaintain = 4,
+		EPageSetup = 5,
+		EPageMove = 6,
+		EPageSpeed = 7,
+		EPageFilament = 11,
+		EPageBedlevel = 12,
+		EPageSelect = 14,
+		EPageYesno = 15,
+		EPageFlow = 21,
+		EPageKill = 30,
+		EPageScreenSaver = 34,
+		EPageBedlevelAuto = 35,
+	};
+
+
   /**
    *******************************************************************
    * NEX lista stron uzytych
@@ -21,28 +40,33 @@
   NexObject Pstart        = NexObject(0,  0,  "start");
   NexObject PagePrinter   = NexObject(1,  0,  "stat");
 
-	NexObject PageHeatup		= NexObject(3, 0,	"heatup");
+	NexObject PageHeatup		= NexObject(3, 0,	"heatup"); // ** nie trza?
 	NexObject PageOptions		= NexObject(4, 0,	"maintain");
   NexObject PageSetup     = NexObject(5,  0,  "setup");
 
   NexObject Pfilament     = NexObject(11, 0, "filament");
-	NexObject Pprobe        = NexObject(12, 0,  "bedlevel");
+	NexObject Pprobe        = NexObject(12, 0,  "bedlevel"); // nie ma w 8bit?
 
 	NexObject PageSelect       = NexObject(14, 0,  "select");
   NexObject PageYesNo        = NexObject(15, 0,  "yesno");
 
-  //NexObject Ptime         = NexObject(17, 0,  "infomove");
-  //NexObject Pfanspeedpage = NexObject(18, 0,  "fanspeedpage");
-	//NexObject Pstats				= NexObject(19, 0,	"statscreen");
-	//NexObject Ptsettings		= NexObject(20, 0,  "tempsettings");
-	//NexObject Pinfobedlevel = NexObject(21, 0, "infobedlevel");
-	//NexObject Pservice			= NexObject(22, 0, "servicepage");
-	NexObject Paccel				= NexObject(18, 0, "accelpage");
-	//NexObject Pjerk					= NexObject(25, 0, "jerkpage");
+	NexObject Paccel				= NexObject(18, 0, "accelpage"); // ** nie trzeba?
 	NexObject PageKill					= NexObject(30, 0, "kill");
 	NexObject Psav 					= NexObject(34, 0, "wyga");
 	// 
-	// == 9 
+	// == 9
+
+
+ // do zaaplikowania
+	#if ENABLED(NEX_SCREENSAVER)
+	NexObject Psav 					= NexObject(34, 0, "wyga");
+	#endif
+	#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
+	NexObject Pprobe        = NexObject(EPageBedlevel, 0,  "bedlevel");
+	#endif
+	#if ENABLED(NEXTION_AUTO_BED_LEVEL)
+	NexObject Palevel				= NexObject(EPageBedlevelAuto, 0, "ABL");
+	#endif
 
   /**
    *******************************************************************

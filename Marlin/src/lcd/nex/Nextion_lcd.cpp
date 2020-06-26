@@ -59,23 +59,6 @@
 	extern void home_all_axes();
 
 
-	enum NexPage_enum {
-		EPageStatus = 1,
-		EPageSD = 2,
-		EPageHeating = 3,
-		EPageMaintain = 4,
-		EPageSetup = 5,
-		EPageMove = 6,
-		EPageSpeed = 7,
-		EPageFilament = 11,
-		EPageBedlevel = 12,
-		EPageSelect = 14,
-		EPageYesno = 15,
-		EPageFlow = 21,
-		EPageKill = 30,
-		EPageScreenSaver = 34,
-	};
-
   #if ENABLED(SDSUPPORT)
 		extern CardReader card;
     // 0 card not present, 1 SD not insert, 2 SD insert, 3 SD printing
@@ -339,7 +322,7 @@
 
       card.openAndPrintFile(filename);
 
-			card.getfilename(nex_file_number[nex_file_row_clicked]);
+			//card.getfilename(nex_file_number[nex_file_row_clicked]);
 			strncpy(filename_printing, card.longFilename, 40); // card.longFilename
 
       PagePrinter.show();
@@ -1496,14 +1479,40 @@ void NextionLCD::init(){
     heater_list1[h]->setValue(temp);
   }
 
+
 	// Wysyla koordynaty do do NEX / MOVE PAGE / STATUS / BEDLEVEL
   static void coordtoLCD() {
     const char* valuetemp;
+		static xyze_pos_t temppos;
+
     ZERO(bufferson);
     if (PageID == EPageStatus) {
-      LcdX.setText(ftostr41sign(LOGICAL_X_POSITION(current_position[X_AXIS])),"stat");
-      LcdY.setText(ftostr41sign(LOGICAL_Y_POSITION(current_position[Y_AXIS])),"stat");
-      LcdZ.setText(ftostr41sign(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS]))),"stat");
+			/*
+			if( (current_position[X_AXIS] != temppos[X_AXIS]) ||	// if sprawdza czy nastapila zmiana pozycji aby nie spamowalo po serialu pozycja bez zmian -> todo: przeniesc na 8 bit...
+					(current_position[Y_AXIS] != temppos[Y_AXIS]) ||	// mozna rozwinac funkcje o odswiezanie tylko konkretnej osi jesli jest zmieniona!
+					(current_position[Z_AXIS] != temppos[Z_AXIS]) )
+			{
+				temppos[X_AXIS] = current_position[X_AXIS]; temppos[Y_AXIS] = current_position[Y_AXIS]; temppos[Z_AXIS] = current_position[Z_AXIS];
+				LcdX.setText(ftostr41sign(LOGICAL_X_POSITION(current_position[X_AXIS])),"stat");
+      	LcdY.setText(ftostr41sign(LOGICAL_Y_POSITION(current_position[Y_AXIS])),"stat");
+      	LcdZ.setText(ftostr41sign(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS]))),"stat");
+			}*/
+			
+			if( current_position[X_AXIS] != temppos[X_AXIS] )
+			{
+				LcdX.setText(ftostr41sign(LOGICAL_X_POSITION(current_position[X_AXIS])),"stat");
+				temppos[X_AXIS] = current_position[X_AXIS];
+			}
+			if( current_position[Y_AXIS] != temppos[Y_AXIS] )
+			{
+				LcdY.setText(ftostr41sign(LOGICAL_Y_POSITION(current_position[Y_AXIS])),"stat");
+				temppos[Y_AXIS] = current_position[Y_AXIS];
+			}
+			if( current_position[Z_AXIS] != temppos[Z_AXIS] )
+			{
+				LcdZ.setText(ftostr41sign(LOGICAL_Z_POSITION(current_position[Z_AXIS])),"stat");
+				temppos[Z_AXIS] = current_position[Z_AXIS];
+			}
     }
     else if (PageID == EPageMove) {
       if (all_axes_homed) {

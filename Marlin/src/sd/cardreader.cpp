@@ -834,6 +834,7 @@ void CardReader::cdroot() {
  * Get the name of a file in the current directory by index
  */
 /*
+// dodane nex
 void CardReader::getfilename(uint16_t nr, const char * const match) { //=/=NULL
   #if ENABLED(SDSORT_CACHE_NAMES)
     if (match != NULL) {
@@ -855,7 +856,7 @@ void CardReader::getfilename(uint16_t nr, const char * const match) { //=/=NULL
   nrFiles = nr;
   curDir->rewind();
   lsDive("", *curDir, match);
-} */
+}*/
 
 #if ENABLED(SDCARD_SORT_ALPHA)
 
