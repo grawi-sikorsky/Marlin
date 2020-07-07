@@ -665,17 +665,17 @@
   //
 
   bool nexInit(char *buffer) {
-	  SERIAL_ECHOLN(" Wejscie w nex_init ");
+	  SERIAL_ECHOLNPGM(" Wejscie w nex_init ");
     // Try default baudrate
     nexSerial.begin(9600);
 
     ZERO(buffer);
-	SERIAL_ECHOLN(" przed getConnect ");
+	SERIAL_ECHOLNPGM(" przed getConnect ");
     bool connect = getConnect(buffer);
-	SERIAL_ECHOLN(" za get connect ");
+	SERIAL_ECHOLNPGM(" za get connect ");
     // If baudrate is 9600 set to 115200 and reconnect
     if (connect) {
-			SERIAL_ECHOLNPGM(" weszlo w 9600, proba zmiany na 115 ");
+			SERIAL_ECHOLNPGM(" 9600 ok, change to 115 ");
       sendCommand("baud=115200");
       nexSerial.end();
       delay(1000);
@@ -684,7 +684,7 @@
       //return true;
     }
     else { // Else try to 115200 baudrate
-			SERIAL_ECHOLNPGM(" nie weszlo w 9600 proba wejscia na 115 ");
+			SERIAL_ECHOLNPGM("9600 fail -> try 115 ");
       nexSerial.end();
 	  delay(1000);
       nexSerial.begin(115200);
@@ -791,7 +791,7 @@
     if (temp[0] == NEX_RET_CURRENT_PAGE_ID_HEAD && temp[2] == 0xFF && temp[3] == 0xFF && temp[4] == 0xFF)
       return temp[1];
     else
-      return 100; // niechaj zwraca zero zamist 2
+      return 101; // niechaj zwraca zero zamist 2
   }
 
   void setCurrentBrightness(uint8_t dimValue) {

@@ -2049,6 +2049,7 @@ void sendRandomSplashMessage(){
 	// Wysyla koordynaty do do NEX / MOVE PAGE / STATUS / BEDLEVEL
   static void coordtoLCD() {
     char* valuetemp;
+		static float temppos[2];
     ZERO(bufferson);
     if (PageID == EPageStatus) // status page
 		{
