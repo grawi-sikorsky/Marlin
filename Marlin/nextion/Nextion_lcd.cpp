@@ -47,6 +47,7 @@
 
   uint8_t     PageID                    = 0,
               lcd_status_message_level  = 0;
+	uint8_t 		lcd_sd_status;
 
 	extern uint8_t progress_printing; // dodane nex
 
@@ -59,7 +60,7 @@
 	#endif
 
 	millis_t		screen_timeout_millis;
-	uint8_t		nex_file_number[6];						// byl int trzeba sprawdzic
+	uint8_t			nex_file_number[6];						// byl int trzeba sprawdzic
 	int 	nex_file_row_clicked;
 	char	filename_printing[40];
 
@@ -70,12 +71,9 @@
 	uint8_t nex_ss_pagebefore;							// saved page before screen saver
 	#endif
 
-	#if PIN_EXISTS(SD_DETECT)
-		uint8_t lcd_sd_status;
-	#endif
-
 	extern float destination[XYZE];// = { 0.0 };
 	extern bool g29_in_progress;// = false;
+
 	extern inline void set_current_to_destination() { COPY(current_position, destination); }
 	extern inline void set_destination_to_current() { COPY(destination, current_position); }
 	extern void home_all_axes();
@@ -85,21 +83,21 @@
     enum SDstatus_enum {NO_SD = 0, SD_NO_INSERT = 1, SD_INSERT = 2, SD_PRINTING = 3, SD_PAUSE = 4 };
 
 		enum NexPage_enum {
-			EPageStatus = 1,
-			EPageSD = 2,
-			EPageHeating = 3,
-			EPageMaintain = 4,
-			EPageSetup = 5,
-			EPageMove = 6,
-			EPageSpeed = 7,
-			EPageFilament = 11,
-			EPageBedlevel = 12,
-			EPageSelect = 14,
-			EPageYesno = 15,
-			EPageFlow = 21,
-			EPageKill = 30,
-			EPageScreenSaver = 34,
-			EPageBedlevelAuto = 35,
+			EPageStatus 				= 1,
+			EPageSD 						= 2,
+			EPageHeating 				= 3,
+			EPageMaintain 			= 4,
+			EPageSetup 					= 5,
+			EPageMove 					= 6,
+			EPageSpeed 					= 7,
+			EPageFilament 			= 11,
+			EPageBedlevel 			= 12,
+			EPageSelect 				= 14,
+			EPageYesno 					= 15,
+			EPageFlow 					= 21,
+			EPageKill 					= 30,
+			EPageScreenSaver 		= 34,
+			EPageBedlevelAuto 	= 35,
 		};
 
     SDstatus_enum SDstatus    = NO_SD;
@@ -110,7 +108,6 @@
 	#if ENABLED(BABYSTEPPING)
 			int _babystep_z_shift = 0;
 	#endif
-
 
   #if ENABLED(NEXTION_GFX)
     GFX gfx = GFX(1, 1, 1, 1);
@@ -146,19 +143,19 @@
    *******************************************************************
    */
 
-  NexObject Pprinter      = NexObject(1,  0,  "stat");
+  NexObject Pprinter      = NexObject(EPageStatus,  0,  "stat");
 
 	//NexObject Pheatup				= NexObject(3, 0,	"heatup"); **
-	NexObject Poptions			= NexObject(4, 0,	"maintain");
-  NexObject Psetup        = NexObject(5,  0,  "setup");
+	NexObject Poptions			= NexObject(EPageMaintain, 0,	"maintain");
+  NexObject Psetup        = NexObject(EPageSetup,  0,  "setup");
 
-  NexObject Pfilament     = NexObject(11, 0, "filament");
-	NexObject Pselect       = NexObject(14, 0,  "select");
-  NexObject Pyesno        = NexObject(15, 0,  "yesno");
+  NexObject Pfilament     = NexObject(EPageFilament, 0, "filament");
+	NexObject Pselect       = NexObject(EPageSelect, 0,  "select");
+  NexObject Pyesno        = NexObject(EPageYesno, 0,  "yesno");
 
-	//NexObject Paccel				= NexObject(18, 0, "accelpage"); **
+	//NexObject Paccel				= NexObject(18, 0, "accelpage");  **
 	//NexObject Pjerk					= NexObject(25, 0, "jerkpage");
-	NexObject Pkill					= NexObject(30, 0, "kill");
+	NexObject Pkill					= NexObject(EPageKill, 0, "kill");
 
 	#if ENABLED(NEX_SCREENSAVER)
 	NexObject Psav 					= NexObject(34, 0, "wyga");
@@ -2117,7 +2114,6 @@ void sendRandomSplashMessage(){
 				SD.setValue(SDstatus, "stat");
 				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_SD_INSERTED);			// MSG
 				if (PageID == EPageSD){ setpageSD(); }													// ustaw strone i przekaz flage do strony status
-
 			}
 			else																														// je�li SD_DETECT == true:
 			{
@@ -2239,7 +2235,6 @@ void sendRandomSplashMessage(){
 				nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
         if (PreviousPage != EPageStatus) // jednorazowo przy wejsciu w strone STAT
 				{
-					//nex_ss = millis();
 					lcd_setstatus(lcd_status_message);
           #if ENABLED(NEXTION_GFX)
             #if MECH(DELTA)
