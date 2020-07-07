@@ -665,7 +665,7 @@
   //
 
   bool nexInit(char *buffer) {
-	  SERIAL_ECHOLNPGM(" Wejscie w nex_init ");
+	  SERIAL_ECHOLNPGM("->N=nex_init ");
     // Try default baudrate
     nexSerial.begin(9600);
 
