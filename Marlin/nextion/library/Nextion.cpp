@@ -665,14 +665,14 @@
   //
 
   bool nexInit(char *buffer) {
-	  SERIAL_ECHOLNPGM("->N=nex_init ");
+	  SERIAL_ECHOLNPGM("->nex_init ");
     // Try default baudrate
     nexSerial.begin(9600);
 
     ZERO(buffer);
-	SERIAL_ECHOLNPGM(" przed getConnect ");
+	SERIAL_ECHOLNPGM(" ->getConnect ");
     bool connect = getConnect(buffer);
-	SERIAL_ECHOLNPGM(" za get connect ");
+	SERIAL_ECHOLNPGM(" getConnect-> ");
     // If baudrate is 9600 set to 115200 and reconnect
     if (connect) {
 			SERIAL_ECHOLNPGM(" 9600 ok, change to 115 ");
