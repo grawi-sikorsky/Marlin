@@ -2189,7 +2189,9 @@ void sendRandomSplashMessage(){
                     PrevioustargetdegHeater[1] = { 0.0 };
 
     if (!NextionON) return;
+		
     PageID = Nextion_PageID();
+		if(PageID == 100 || PageID == 101)	PageID = PreviousPage;		// jesli na serialu lipa (przyczyna?) to loop do nastepnej proby
 
 		//nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
 
