@@ -905,7 +905,7 @@
 							temp_bed = tempbe.getValue();
 
 		if (ptr == &heatupenter || ptr == &chillenter){		// ROZGRZEJ OBA LUB COOLING
-			thermalManager.setTargetHotend(temp_hotend, 0);
+			thermalManager.setTargetHotend(temp_hotend, 0);	
 			thermalManager.setTargetBed(temp_bed);
 			SERIAL_ECHOLN("if");
 		}
