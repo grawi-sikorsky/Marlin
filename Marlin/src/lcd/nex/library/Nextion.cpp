@@ -695,7 +695,8 @@
     uint8_t c;  
 
     while (nexSerial.available() > 0) {   
-      delayMicroseconds(20); // sprawdzic czy nie delay czasem?
+      //delayMicroseconds(20); // sprawdzic czy nie delay czasem?
+      delay(5);
       c = nexSerial.read();
 
       if (c == NEX_RET_EVENT_TOUCH_HEAD) {

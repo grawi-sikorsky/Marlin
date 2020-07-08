@@ -86,7 +86,6 @@ class NextionLCD
     static void handle_heatingPopCallback(void *ptr);       // Obsluga strony Rozgrzej
     static void handle_fanPage_PopCallback(void *ptr);      // Obsluga strony Fan
 
-
     static void YesNoPopCallback(void *ptr);
     static void setmovePopCallback(void *ptr);
     static void setgcodePopCallback(void *ptr);
