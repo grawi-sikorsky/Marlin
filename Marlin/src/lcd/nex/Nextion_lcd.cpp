@@ -898,16 +898,19 @@
 	 */
 
 	// Rozgrzewanie głowicy/blatu/chlodzenie
-  void NextionLCD::handle_heatingPopCallback(void *ptr) {
-    UNUSED(ptr);
+  void NextionLCD::handle_heatingPopCallback(void *ptr){
+    //UNUSED(ptr);
+		SERIAL_ECHOLN("->pop heatup");
 		uint16_t	temp_hotend = temphe.getValue(),
 							temp_bed = tempbe.getValue();
 
 		if (ptr == &heatupenter || ptr == &chillenter){		// ROZGRZEJ OBA LUB COOLING
 			thermalManager.setTargetHotend(temp_hotend, 0);
 			thermalManager.setTargetBed(temp_bed);
+			SERIAL_ECHOLN("if");
 		}
     PagePrinter.show();
+		SERIAL_ECHOLN("after printer show");
 		buzzer.tone(100,2300);
   }
 
@@ -1374,10 +1377,10 @@ void NextionLCD::setup_callbacks(){
 	#endif
 
 	// TEMPERATURA
-	heatupenter.attachPop	(handle_heatingPopCallback, &heatupenter); // obsluga przycisku rozgrzej oba
+	heatupenter.attachPop(handle_heatingPopCallback, &heatupenter); // obsluga przycisku rozgrzej oba
 	//hotendenter.attachPop	(handle_heatingPopCallback, &hotendenter); //obsluga przycisku rozgrzej hotend
 	//heatbedenter.attachPop(handle_heatingPopCallback, &heatbedenter); //obsluga przycisku rozgrzej bed
-	chillenter.attachPop	(handle_heatingPopCallback, &chillenter); //obsluga przycisku chlodzenie
+	chillenter.attachPop(handle_heatingPopCallback, &chillenter); //obsluga przycisku chlodzenie
 
 	
 
@@ -1487,7 +1490,7 @@ void NextionLCD::init(){
 
     ZERO(bufferson);
     if (PageID == EPageStatus) {
-			// if sprawdza czy nastapila zmiana pozycji aby nie spamowalo po serialu pozycja bez zmian -> todo: przeniesc na 8 bit...
+			// if sprawdza czy nastapila zmiana pozycji aby nie spamowalo po serialu pozycja bez zmian -> todo: przeniesc na 8 bit... OK
 			if( current_position[X_AXIS] != temppos[X_AXIS] )
 			{
 				LcdX.setText(ftostr41sign(LOGICAL_X_POSITION(current_position[X_AXIS])),"stat");
@@ -1721,9 +1724,9 @@ void NextionLCD::init(){
 					Previousflow = planner.flow_percentage[0];
 				}
         // HOTEND DOCELOWE I TARGET
-        if (PreviousHotendTemp != thermalManager.degHotend(0)) // porownaj dotychczasowa z obecna
+        if (PreviousHotendTemp != round(thermalManager.degHotend(0))) // porownaj dotychczasowa z obecna
 				{
-						PreviousHotendTemp = thermalManager.degHotend(0);
+						PreviousHotendTemp = round(thermalManager.degHotend(0));
             degtoLCD(0, PreviousHotendTemp);
         }
         if (PreviousTargetHotendTemp != thermalManager.degTargetHotend(0)) 
@@ -1733,8 +1736,9 @@ void NextionLCD::init(){
         }
         // BED DOCELOWE I TARGET
 				#if HAS_TEMP_BED
-					if (PreviousBedTemp != thermalManager.degBed()){
-						PreviousBedTemp = thermalManager.degBed();
+					if (PreviousBedTemp != round(thermalManager.degBed()))
+					{
+						PreviousBedTemp = round(thermalManager.degBed());
 						degtoLCD(1, PreviousBedTemp);
 					}
 					if (PreviousTargetBedTemp != thermalManager.degTargetBed()){ 

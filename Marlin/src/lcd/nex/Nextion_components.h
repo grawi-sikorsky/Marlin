@@ -148,8 +148,6 @@
 	NexObject heatupenter		= NexObject(3, 6, "m3");
 	NexObject temphe				= NexObject(3, 7, "temphe");
 	NexObject tempbe				= NexObject(3, 8, "tempbe");
-	//NexObject heatbedenter	= NexObject(3, 12, "m4");
-	//NexObject hotendenter		= NexObject(3, 13, "m5");
 	NexObject chillenter		= NexObject(3, 12, "m5");
 	// 
 	// == 6
