@@ -14,21 +14,21 @@
 #endif
 
 	enum NexPage_enum {
-		EPageStatus = 1,
-		EPageSD = 2,
-		EPageHeating = 3,
-		EPageMaintain = 4,
-		EPageSetup = 5,
-		EPageMove = 6,
-		EPageSpeed = 7,
-		EPageFilament = 11,
-		EPageBedlevel = 12,
-		EPageSelect = 14,
-		EPageYesno = 15,
-		EPageFlow = 21,
-		EPageKill = 30,
-		EPageScreenSaver = 34,
-		EPageBedlevelAuto = 35,
+			EPageStatus 				= 1,
+			EPageSD 						= 2,
+			EPageHeating 				= 3,
+			EPageMaintain 			= 4,
+			EPageSetup 					= 5,
+			EPageMove 					= 6,
+			EPageSpeed 					= 7,
+			EPageFilament 			= 11,
+			EPageBedlevel 			= 12,
+			EPageSelect 				= 14,
+			EPageYesno 					= 15,
+			EPageFlow 					= 21,
+			EPageKill 					= 30,
+			EPageScreenSaver 		= 34,
+			EPageBedlevelAuto 	= 35,
 	};
 
 
@@ -47,11 +47,11 @@
   NexObject Pfilament     = NexObject(11, 0, "filament");
 	NexObject Pprobe        = NexObject(12, 0,  "bedlevel"); // nie ma w 8bit?
 
-	NexObject PageSelect       = NexObject(14, 0,  "select");
-  NexObject PageYesNo        = NexObject(15, 0,  "yesno");
+	NexObject PageSelect    = NexObject(14, 0,  "select");
+  NexObject PageYesNo     = NexObject(15, 0,  "yesno");
 
 	NexObject Paccel				= NexObject(18, 0, "accelpage"); // ** nie trzeba?
-	NexObject PageKill					= NexObject(30, 0, "kill");
+	NexObject PageKill			= NexObject(30, 0, "kill");
 	NexObject Psav 					= NexObject(34, 0, "wyga");
 	// 
 	// == 9
