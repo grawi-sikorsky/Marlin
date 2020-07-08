@@ -45,7 +45,7 @@
   NexObject PageSetup     = NexObject(5,  0,  "setup");
 
   NexObject Pfilament     = NexObject(11, 0, "filament");
-	NexObject Pprobe        = NexObject(12, 0,  "bedlevel"); // nie ma w 8bit?
+	//NexObject Pprobe        = NexObject(12, 0,  "bedlevel"); // nie ma w 8bit?
 
 	NexObject PageSelect    = NexObject(14, 0,  "select");
   NexObject PageYesNo     = NexObject(15, 0,  "yesno");

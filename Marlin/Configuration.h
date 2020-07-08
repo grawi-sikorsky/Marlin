@@ -122,7 +122,7 @@
 #endif
 
 // BED LEVELING NEXTION
-	#define NEXTION_SEMIAUTO_BED_LEVEL  // mesh bed leveling - semi auto
+	//#define NEXTION_SEMIAUTO_BED_LEVEL  // mesh bed leveling - semi auto
   //#define NEXTION_AUTO_BED_LEVEL     // bilinear bed leveling - auto
 
 
@@ -2367,15 +2367,6 @@
 
 
 //#define PRINTOH3_SPEAKER_SOUNDS //sd in out beeper sounds and more..
-
-#if defined(PRINTO_H3_PLUS) || defined(PRINTO_H3_TOWERPLUS)
-	#define PLOSS_SUPPORT
-	#define PLOSS_MANUAL_RECOVERY
-#endif
-#if defined(PRINTO_H3) || defined(PRINTO_H3_TOWER)
-	//#define PLOSS_SUPPORT
-	//#define PLOSS_MANUAL_RECOVERY
-#endif
 
 //#define DEBUG_VLCS
 
