@@ -177,6 +177,15 @@
 #define CUSTOM_MACHINE_NAME "Printo H3 Midi"
 #endif
 
+#if defined(PRINTO_H3_PLUS) || defined(PRINTO_H3_TOWERPLUS) || defined(PRINTO_H3_BIGGIE)
+	#define PLOSS_SUPPORT
+	#define PLOSS_MANUAL_RECOVERY
+#endif
+#if defined(PRINTO_H3) || defined(PRINTO_H3_TOWER)
+	//#define PLOSS_SUPPORT
+	//#define PLOSS_MANUAL_RECOVERY
+#endif
+
 // BED LEVELING NEXTION
 	#define NEXTION_SEMIAUTO_BED_LEVEL  // mesh bed leveling - semi auto
   //#define NEXTION_AUTO_BED_LEVEL     // bilinear bed leveling - auto
@@ -1178,8 +1187,6 @@
   //=================================== Mesh ==================================
   //===========================================================================
 
-
-
   #define MESH_INSET 40          // Set Mesh bounds as an inset region of the bed
 
   #if ENABLED(PRINTO_H3_MIDI) || ENABLED(PRINTO_H3_BIGGIE)
@@ -2054,14 +2061,7 @@
 
 //#define PRINTOH3_SPEAKER_SOUNDS //sd in out beeper sounds and more..
 
-#if defined(PRINTO_H3_PLUS) || defined(PRINTO_H3_TOWERPLUS) || defined(PRINTO_H3_BIGGIE)
-	#define PLOSS_SUPPORT
-	#define PLOSS_MANUAL_RECOVERY
-#endif
-#if defined(PRINTO_H3) || defined(PRINTO_H3_TOWER)
-	//#define PLOSS_SUPPORT
-	//#define PLOSS_MANUAL_RECOVERY
-#endif
+
 
 //#define DEBUG_VLCS
 
