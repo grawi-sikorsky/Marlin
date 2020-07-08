@@ -85,30 +85,7 @@
 //#define PRINTO_H3_MIDI350
 //#define PRINTO_H3_BIGGIE
 
-/**
- * Definiuje nazwe i opcje drukarki 
- */
-#ifdef PRINTO_H3
-	#define CUSTOM_MACHINE_NAME "Printo H3"
-#endif
-#ifdef PRINTO_H3_PLUS
-	#define CUSTOM_MACHINE_NAME "Printo H3+"
-#endif
-#ifdef PRINTO_H3_TOWER
-	#define CUSTOM_MACHINE_NAME "Printo H3 Tower"
-#endif
-#ifdef PRINTO_H3_TOWERPLUS
-	#define CUSTOM_MACHINE_NAME "Printo H3+ Tower"
-#endif
-#ifdef PRINTO_H3_MIDI
-#define CUSTOM_MACHINE_NAME "Printo H3 Midi"
-#endif
-#ifdef PRINTO_H3_MIDI350
-#define CUSTOM_MACHINE_NAME "Printo H3 Midi350"
-#endif
-#ifdef PRINTO_H3_BIGGIE
-	#define CUSTOM_MACHINE_NAME "Printo H3 Ex"
-#endif
+
 
 #if defined(PRINTO_H3_PLUS) || defined(PRINTO_H3_TOWERPLUS) || defined(PRINTO_H3_BIGGIE)
 	#define PLOSS_SUPPORT
