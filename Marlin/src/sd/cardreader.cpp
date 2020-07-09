@@ -856,8 +856,8 @@ void CardReader::getfilename(uint16_t nr, const char * const match) { //=/=NULL
   nrFiles = nr;
   curDir->rewind();
   lsDive("", *curDir, match);
-}*/
-
+}
+*/
 #if ENABLED(SDCARD_SORT_ALPHA)
 
   /**

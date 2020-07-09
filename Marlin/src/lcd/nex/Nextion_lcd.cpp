@@ -900,17 +900,14 @@
 	// Rozgrzewanie głowicy/blatu/chlodzenie
   void NextionLCD::handle_heatingPopCallback(void *ptr){
     //UNUSED(ptr);
-		SERIAL_ECHOLN("->pop heatup");
 		uint16_t	temp_hotend = temphe.getValue(),
 							temp_bed = tempbe.getValue();
 
 		if (ptr == &heatupenter || ptr == &chillenter){		// ROZGRZEJ OBA LUB COOLING
 			thermalManager.setTargetHotend(temp_hotend, 0);	
 			thermalManager.setTargetBed(temp_bed);
-			SERIAL_ECHOLN("if");
 		}
     PagePrinter.show();
-		SERIAL_ECHOLN("after printer show");
 		buzzer.tone(100,2300);
   }
 
@@ -1546,7 +1543,7 @@ void NextionLCD::init(){
 	void NextionLCD::nex_check_sdcard_present()
 	{
 		#if ENABLED(SDSUPPORT) && PIN_EXISTS(SD_DETECT)
-			const bool sd_status = IS_SD_INSERTED();
+			const bool sd_status = IS_SD_INSERTED();												// IS_SD_INSERTED zwraca 0 jeśli prawda.
 			if (sd_status != lcd_sd_status && lcd_detected())								// sprawdz czy nastapila zmiana? SD DET ->
 			{																																// TAK:
 				if (!sd_status)		// jesli SD_DETECT == false:
@@ -1628,10 +1625,10 @@ void NextionLCD::init(){
 // ODSWIEZANE 0.4s ()
   void NextionLCD::nextion_draw_update() {
     static uint8_t  	PreviousPage = 0,					// strona nex
-                    	Previousfeedrate = 0,			// dotychczasowa predkosc druku
                     	PreviousfanSpeed = 0,			// dotychczasowa predkosc wentylatora
 											Previousflow = 0,					// dotychczasowy flow
                     	PreviouspercentDone = 0;	// dotychczasowy postep %
+		static uint16_t 	Previousfeedrate = 0;			// dotychczasowa predkosc druku
 
     static float   		PreviousBedTemp = 0,
                     	PreviousTargetBedTemp = 0;
@@ -1704,7 +1701,7 @@ void NextionLCD::init(){
 					progressbar.setValue(card.percentDone(), "stat"); 	// progressbar
 					if(SDstatus == SD_PRINTING || SDstatus == SD_PAUSE)
 					{
-						//NexFilename.setText(filename_printing);					// nazwa pliku
+						NexFilename.setText(filename_printing);					// nazwa pliku
 					}
 				} // jednorazowo przy wejsciu end
 
@@ -1998,24 +1995,26 @@ void NextionLCD::init(){
 		void onMediaInserted() {
 			//SDstatus = SD_INSERT; // przekaz flage do strony status
 			//SD.setValue(SDstatus, "stat");
-			ui.set_status_P(GET_TEXT(MSG_MEDIA_INSERTED));
+			SERIAL_ECHOLN("onMediaInsert..");
+			//ui.set_status_P(GET_TEXT(MSG_MEDIA_INSERTED));
 
 			PageID = Nextion_PageID();
 			if (PageID == EPageSD)
 			{
-				nexlcd.setpageSD();	// ustaw strone i
+				//nexlcd.setpageSD();	// ustaw strone i
 			}
 		};
 
 		void onMediaRemoved() { 
 			//SDstatus = SD_NO_INSERT; // przekaz flage do strony status
 			//SD.setValue(SDstatus, "stat");
-			ui.set_status_P(GET_TEXT(MSG_MEDIA_REMOVED));
+			SERIAL_ECHOLN("onMediaRemoved..");
+			//ui.set_status_P(GET_TEXT(MSG_MEDIA_REMOVED));
 
 			PageID = Nextion_PageID();
 			if (PageID == EPageSD)
 			{
-				nexlcd.setpageSD();	// ustaw strone i 
+				//nexlcd.setpageSD();	// ustaw strone i 
 			}
 		};
 
