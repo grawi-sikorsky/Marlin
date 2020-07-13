@@ -29,6 +29,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#if ENABLED(MKS_GEN)
+  #include <stdio.h>
+  #include <stdlib.h>
+#endif
+
 #if ENABLED(NEXTION)
 
   #include "Nextion.h"
@@ -106,17 +111,27 @@
    */
 
   void NexObject::show() {
-    std::string cmd;// = String("");
+    #if ENABLED(MKS_GEN)
+      String cmd;
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+    #endif
+
     cmd += "page ";
     cmd += this->__name;
     sendCommand(cmd.c_str());
     recvRetCommandFinished();
-    SERIAL_ECHO("show()-cmd:");
+    SERIAL_ECHOPGM("show()-cmd:");
     SERIAL_ECHO(cmd.c_str());
   }
 
   void NexObject::enable(const bool en /* true */) {
-    std::string cmd;// = String("");
+    #if ENABLED(MKS_GEN)
+      String cmd;
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+    #endif
+
     cmd += this->__name;
     cmd += ".en=";
     cmd += en ? "1" : "0";
@@ -125,7 +140,12 @@
   }
 
   void NexObject::getText(char *buffer_temp, uint16_t len, const char *pname) {
-    std::string cmd;// = std::string("");
+    #if ENABLED(MKS_GEN)
+      String cmd;
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+    #endif
+
     cmd += "get ";
     if (pname) {
       cmd += pname;
@@ -141,7 +161,12 @@
   }
 
 	void NexObject::setText(const char *buffer, const char *pname) {
-		std::string cmd;// = String("");
+    #if ENABLED(MKS_GEN)
+      String cmd;
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+    #endif
+
 		if (pname) {
 			cmd += pname;
 			cmd += ".";
@@ -158,7 +183,12 @@
 	}
 
 	void NexObject::setText_PGM(const char *buffer, const char *pname) {
-		std::string cmd;// = String("");
+    #if ENABLED(MKS_GEN)
+      String cmd;
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+    #endif
+
 		if (pname) {
 			cmd += pname;
 			cmd += ".";
@@ -177,7 +207,12 @@
 	}
 
   uint16_t NexObject::getValue(const char *pname) {
-    std::string cmd;// = String("");
+    #if ENABLED(MKS_GEN)
+      String cmd;
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+    #endif
+
     cmd += "get ";
     if (pname) {
       cmd += pname;
@@ -191,8 +226,16 @@
 
   void NexObject::setValue(const uint16_t number, const char *pname) {
     char buf[10] = {0};
-    std::string cmd;// = String("");
-    __utoa(number, buf, 10);
+
+    #if ENABLED(MKS_GEN)
+      String cmd;
+      utoa(number, buf, 10);
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+      __utoa(number, buf, 10);
+    #endif
+
+    
 
     if (pname) {
       cmd += pname;
@@ -216,7 +259,12 @@
   }
 
   uint16_t NexObject::Get_cursor_height_hig() {
-    std::string cmd;// = String("");
+    #if ENABLED(MKS_GEN)
+      String cmd;
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+    #endif
+
     cmd += "get ";
     cmd += this->__name;
     cmd += ".hig";
@@ -226,9 +274,15 @@
 
   void NexObject::Set_cursor_height_hig(const uint16_t number) {
     char buf[10] = {0};
-    std::string cmd;// = String("");
+    #if ENABLED(MKS_GEN)
+      String cmd;
+      utoa(number, buf, 10);
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+      __utoa(number, buf, 10);
+    #endif
 
-    __utoa(number, buf, 10);
+
     cmd += this->__name;
     cmd += ".hig=";
     cmd += buf;
@@ -242,7 +296,12 @@
   }
 
   uint16_t NexObject::getMaxval() {
-    std::string cmd;// = String("");
+    #if ENABLED(MKS_GEN)
+      String cmd;
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+    #endif
+
     cmd += "get ";
     cmd += this->__name;
     cmd += ".maxval";
@@ -252,9 +311,15 @@
 
   void NexObject::setMaxval(const uint16_t number) {
     char buf[10] = {0};
-    std::string cmd;//;
+    #if ENABLED(MKS_GEN)
+      String cmd;
+      utoa(number, buf, 10);
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+      __utoa(number, buf, 10);
+    #endif
 
-    __utoa(number, buf, 10);
+    
     cmd += this->__name;
     cmd += ".maxval=";
     cmd += buf;
@@ -268,7 +333,12 @@
   }
 
   uint16_t NexObject::getMinval() {
-    std::string cmd;//;
+    #if ENABLED(MKS_GEN)
+      String cmd;
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+    #endif
+
     cmd += "get ";
     cmd += this->__name;
     cmd += ".minval";
@@ -278,9 +348,15 @@
 
   void NexObject::setMinval(const uint16_t number) {
     char buf[10] = {0};
-    std::string cmd;//;
+    #if ENABLED(MKS_GEN)
+      String cmd;
+      utoa(number, buf, 10);
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+      __utoa(number, buf, 10);
+    #endif
 
-    __utoa(number, buf, 10);
+    
     cmd += this->__name;
     cmd += ".minval=";
     cmd += buf;
@@ -294,7 +370,12 @@
   }
 
   uint16_t NexObject::Get_background_color_bco() {
-    std::string cmd;//;
+    #if ENABLED(MKS_GEN)
+      String cmd;
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+    #endif
+
     cmd += "get ";
     cmd += this->__name;
     cmd += ".bco";
@@ -304,9 +385,14 @@
 
   void NexObject::Set_background_color_bco(const uint16_t number) {
     char buf[10] = {0};
-    std::string cmd;//;
+    #if ENABLED(MKS_GEN)
+      String cmd;
+      utoa(number, buf, 10);
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+      __utoa(number, buf, 10);
+    #endif
 
-    __utoa(number, buf, 10);
     cmd += this->__name;
     cmd += ".bco=";
     cmd += buf;
@@ -320,7 +406,12 @@
   }
 
   uint16_t NexObject::Get_font_color_pco() {
-    std::string cmd;//;
+    #if ENABLED(MKS_GEN)
+      String cmd;
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+    #endif
+
     cmd += "get ";
     cmd += this->__name;
     cmd += ".pco";
@@ -330,9 +421,14 @@
 
   void NexObject::Set_font_color_pco(const uint16_t number) {
     char buf[10] = {0};
-    std::string cmd;//;
+    #if ENABLED(MKS_GEN)
+      String cmd;
+      utoa(number, buf, 10);
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+      __utoa(number, buf, 10);
+    #endif
 
-    __utoa(number, buf, 10);
     cmd += this->__name;
     cmd += ".pco=";
     cmd += buf;
@@ -346,7 +442,12 @@
   }
 
   uint16_t NexObject::Get_place_xcen() {
-    std::string cmd;//;
+    #if ENABLED(MKS_GEN)
+      String cmd;
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+    #endif
+
     cmd += "get ";
     cmd += this->__name;
     cmd += ".xcen";
@@ -356,9 +457,14 @@
 
   void NexObject::Set_place_xcen(const uint16_t number) {
     char buf[10] = {0};
-    std::string cmd;//;
+    #if ENABLED(MKS_GEN)
+      String cmd;
+      utoa(number, buf, 10);
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+      __utoa(number, buf, 10);
+    #endif
 
-    __utoa(number, buf, 10);
     cmd += this->__name;
     cmd += ".xcen=";
     cmd += buf;
@@ -372,7 +478,12 @@
   }
 
   uint16_t NexObject::Get_place_ycen() {
-    std::string cmd;//;
+    #if ENABLED(MKS_GEN)
+      String cmd;
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+    #endif
+
     cmd += "get ";
     cmd += this->__name;
     cmd += ".ycen";
@@ -382,9 +493,14 @@
 
   void NexObject::Set_place_ycen(const uint16_t number) {
     char buf[10] = {0};
-    std::string cmd;//;
+    #if ENABLED(MKS_GEN)
+      String cmd;
+      utoa(number, buf, 10);
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+      __utoa(number, buf, 10);
+    #endif
 
-    __utoa(number, buf, 10);
     cmd += this->__name;
     cmd += ".ycen=";
     cmd += buf;
@@ -398,7 +514,12 @@
   }
 
   uint16_t NexObject::getFont() {
-    std::string cmd;//;
+    #if ENABLED(MKS_GEN)
+      String cmd;
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+    #endif
+
     cmd += "get ";
     cmd += this->__name;
     cmd += ".font";
@@ -408,9 +529,14 @@
 
   void NexObject::setFont(const uint16_t number) {
     char buf[10] = {0};
-    std::string cmd;//;
+    #if ENABLED(MKS_GEN)
+      String cmd;
+      utoa(number, buf, 10);
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+      __utoa(number, buf, 10);
+    #endif
 
-    __utoa(number, buf, 10);
     cmd += this->__name;
     cmd += ".font=";
     cmd += buf;
@@ -424,7 +550,12 @@
   }
 
   uint16_t NexObject::getCropPic() {
-    std::string cmd;//;
+    #if ENABLED(MKS_GEN)
+      String cmd;
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+    #endif
+
     cmd += "get ";
     cmd += this->__name;
     cmd += ".picc";
@@ -434,9 +565,14 @@
 
   void NexObject::setCropPic(const uint16_t number) {
     char buf[10] = {0};
-    std::string cmd;//;
+    #if ENABLED(MKS_GEN)
+      String cmd;
+      utoa(number, buf, 10);
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+      __utoa(number, buf, 10);
+    #endif
 
-    __utoa(number, buf, 10);
     cmd += this->__name;
     cmd += ".picc=";
     cmd += buf;
@@ -459,9 +595,14 @@
 
   void NexObject::setPic(const uint16_t number) {
     char buf[10] = {0};
-    std::string cmd;//;
+    #if ENABLED(MKS_GEN)
+      String cmd;
+      utoa(number, buf, 10);
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+      __utoa(number, buf, 10);
+    #endif
 
-    __utoa(number, buf, 10);
     cmd += this->__name;
     cmd += ".pic=";
     cmd += buf;
@@ -471,7 +612,12 @@
   }
 
   void NexObject::SetVisibility(const bool visible) {
-    std::string cmd;//;
+    #if ENABLED(MKS_GEN)
+      String cmd;
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+    #endif
+
     cmd += "vis ";
     cmd += this->__name;
     cmd += ',';
@@ -646,7 +792,12 @@
     delay(20);
 
 	  uint8_t   c = 0;
-	  std::string temp;//= String("");
+
+    #if ENABLED(MKS_GEN)
+      String temp = String("");
+    #elif ENABLED(MKS_SKR)
+      std::string temp;
+    #endif
 
 	#if ENABLED(NEXTION_CONNECT_DEBUG)
 	  SERIAL_ECHO(" NEXTION Debug Connect receveid:");
@@ -675,7 +826,7 @@
   //
 
   bool nexInit(char *buffer) {
-	  SERIAL_ECHOLN("nex_init");
+	  SERIAL_ECHOLNPGM("nex_init");
 
     ZERO(buffer);
 
@@ -735,7 +886,13 @@
     uint16_t ret = 0;
     bool str_start_flag = false;
     uint8_t cnt_0xFF = 0;
-    std::string temp;// = "";//String("");
+
+    #if ENABLED(MKS_GEN)
+      String temp = String("");
+    #elif ENABLED(MKS_SKR)
+      std::string temp;
+    #endif
+
     uint8_t c = 0;
     millis_t start;
 
@@ -795,8 +952,15 @@
 
   void setCurrentBrightness(uint8_t dimValue) {
     char buf[10] = {0};
-    std::string cmd;//;
-    __utoa(dimValue, buf, 10);
+
+    #if ENABLED(MKS_GEN)
+      String cmd = String("");
+      utoa(dimValue, buf, 10);
+    #elif ENABLED(MKS_SKR)
+      std::string cmd;
+      __utoa(dimValue, buf, 10);
+    #endif
+
     cmd += "dim=";
     cmd += buf;
     sendCommand(cmd.c_str());

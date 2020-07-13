@@ -82,6 +82,8 @@
 //#define PRINTO_H3_TOWER
 //#define PRINTO_H3_TOWERPLUS
 
+//#define MKS_GEN
+#define MKS_SKR
 
 /**
  * *** VENDORS PLEASE READ ***
@@ -113,7 +115,11 @@
  *
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#define SERIAL_PORT -1
+#if ENABLED(MKS_GEN)
+  #define SERIAL_PORT 0
+#elif ENABLED(MKS_SKR)
+  #define SERIAL_PORT -1
+#endif
 // FOR PRINTOH3 MKS GEN = 0
 // FOR PRINTOH3 MKS SKR = -1
 
@@ -139,8 +145,13 @@
 
 // Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-  #define MOTHERBOARD BOARD_BIGTREE_SKR_V1_3_PH3
-  //#define MOTHERBOARD BOARD_MKSGEN_PRINTOH3
+
+  #if ENABLED(MKS_GEN)
+    #define MOTHERBOARD BOARD_MKSGEN_PRINTOH3
+  #elif ENABLED(MKS_SKR)
+    #define MOTHERBOARD BOARD_BIGTREE_SKR_V1_3_PH3
+  #endif
+ 
 #endif
 
 // Name displayed in the LCD "Ready" message and Info menu

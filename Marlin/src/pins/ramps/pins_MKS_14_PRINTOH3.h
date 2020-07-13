@@ -32,7 +32,7 @@
 #endif
 
 #ifndef BOARD_NAME
-	#define BOARD_NAME "Printo H3 MKS OLED"
+	#define BOARD_NAME "Printo H3 MKS TFT"
 #endif
 
 #define LARGE_FLASH true

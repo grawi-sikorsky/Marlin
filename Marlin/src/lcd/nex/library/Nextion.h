@@ -33,7 +33,8 @@
   #if NEXTION_SERIAL == 1
     #define nexSerial Serial1
   #elif NEXTION_SERIAL == 2
-    #define nexSerial Serial//MSerial//Serial
+    //#define nexSerial Serial//MSerial//Serial
+    #define nexSerial Serial2//MSerial//Serial
   #elif NEXTION_SERIAL == 3
     #define nexSerial Serial3
   #endif

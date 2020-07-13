@@ -849,7 +849,7 @@ void stop() {
  */
 void setup() {
 
-  #if ENABLED(NEXTION)
+  #if ENABLED(MKS_SKR) // nextion skr
     nexlcd.setRandomSeed();
   #endif
 

@@ -1194,7 +1194,9 @@ void NextionLCD::connect(){
 	}
 	Pstart.show(); // show boot screen
 
-	nexlcd.sendRandomSplashMessage();
+	#if ENABLED(MKS_SKR)
+		nexlcd.sendRandomSplashMessage();
+	#endif
 
 	if (!NextionON) { SERIAL_ECHOLNPGM("Nextion NOT connected.."); buzzer.tone(220, 700); return; }
 	else {
@@ -1234,9 +1236,12 @@ void NextionLCD::connect(){
 	SERIAL_CHAR('"'); SERIAL_ECHOLNPGM(" connected!");
 	}
 
+	#if ENABLED(MKS_SKR)
 	nexlcd.sendRandomSplashMessage(); 		// Funkcja ma wysylac randomowa liczbe dla nextiona ktory na jej podstawie wyswietli mesydz
+	#endif
 }
 
+#if ENABLED(MKS_SKR)
 void NextionLCD::setRandomSeed()
 {
   int r = 0;
@@ -1246,7 +1251,11 @@ void NextionLCD::setRandomSeed()
   }
   randomSeed(r);
 }
+#endif
+
 // Random Splash Message
+#if ENABLED(MKS_SKR)
+
 void NextionLCD::sendRandomSplashMessage(){
 	int32_t randtemp = random(1,21);
 
@@ -1335,6 +1344,7 @@ void NextionLCD::sendRandomSplashMessage(){
 		splashText.setText("Stroke my belts and gears.. mrrrrr..","start");
 	}
 }
+#endif
 
 // SETUP CALLBACKS
 void NextionLCD::setup_callbacks(){
@@ -1615,7 +1625,11 @@ void NextionLCD::init(){
 		const millis_t now = millis();
 		
 		if (ELAPSED(now, cycle_1s)) {
-			cycle_1s = now + 200UL; // zmianka z 1000UL
+			#if ENABLED(MKS_GEN)
+				cycle_1s = now + 1000UL; // zmianka z 1000UL
+			#elif ENABLED(MKS_SKR)
+				cycle_1s = now + 200UL; // zmianka z 1000UL
+			#endif
 			nextion_draw_update();
 		}
 	}
