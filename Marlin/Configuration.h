@@ -177,7 +177,7 @@
 #define CUSTOM_MACHINE_NAME "Printo H3 Midi"
 #endif
 
-#if defined(PRINTO_H3_PLUS) || defined(PRINTO_H3_TOWERPLUS) || defined(PRINTO_H3_BIGGIE)
+#if defined(PRINTO_H3_PLUS) || defined(PRINTO_H3_TOWERPLUS) //|| defined(PRINTO_H3_BIGGIE)
 	#define PLOSS_SUPPORT
 	#define PLOSS_MANUAL_RECOVERY
 #endif
@@ -1367,7 +1367,7 @@
 //
 // M100 Free Memory Watcher
 //
-//#define M100_FREE_MEMORY_WATCHER    // Add M100 (Free Memory Watcher) to debug memory usage
+#define M100_FREE_MEMORY_WATCHER    // Add M100 (Free Memory Watcher) to debug memory usage
 
 //
 // G20/G21 Inch mode support
@@ -1787,7 +1787,7 @@
 // RepRapDiscount FULL GRAPHIC Smart Controller
 // http://reprap.org/wiki/RepRapDiscount_Full_Graphic_Smart_Controller
 //
-//#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
+#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
 
 //
 // ReprapWorld Graphical LCD
@@ -2093,8 +2093,8 @@
   // Nextion
   //
 //#define NEX_UPLOAD
-  #define NEXTION
-  #define NEXTION_DISPLAY
+  //#define NEXTION
+  //#define NEXTION_DISPLAY
   #define NEXTION_SERIAL 2
 	//#define NEXTION_DEBUG
 

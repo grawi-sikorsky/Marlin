@@ -4723,6 +4723,7 @@ void home_all_axes() { gcode_G28(true); }
   // Save 130 bytes with non-duplication of PSTR
   void echo_not_entered() { SERIAL_PROTOCOLLNPGM(" not entered."); }
 
+  #if ENABLED(NEXTION)
   #if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
   void nex_mesh_probing_done()
   {
@@ -4739,6 +4740,7 @@ void home_all_axes() { gcode_G28(true); }
     #endif
       g29_in_progress = false; // dodane po zakonczeniu g29
   }
+  #endif
   #endif
 
   /**
@@ -4845,8 +4847,10 @@ void home_all_axes() { gcode_G28(true); }
           BUZZ(100, 659);
           BUZZ(100, 698);
           
+          #if ENABLED(NEXTION)
           #if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
             nex_mesh_probing_done();
+          #endif
           #endif
 
           home_all_axes();
@@ -15238,6 +15242,7 @@ void manage_inactivity(const bool ignore_stepper_queue/*=false*/) {
   planner.check_axes_activity();
 }
 
+#if ENABLED(NEXTION)
 void check_periodical_actions()
 {
 	static millis_t cycle_1s = 0;
@@ -15257,6 +15262,7 @@ void check_periodical_actions()
 		#endif
 	}
 }
+#endif
 
 /**
  * Standard idle routine keeps the machine alive

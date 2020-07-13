@@ -329,7 +329,9 @@ uint8_t Temperature::soft_pwm_amount[HOTENDS];
     // PID Tuning loop
     while (wait_for_heatup) {
 
+      #if ENABLED(NEXTION)
       check_periodical_actions(); // NEX dodane aby odswiezac nexlcd w trakcie m303
+      #endif
       
       const millis_t ms = millis();
 
@@ -418,7 +420,9 @@ uint8_t Temperature::soft_pwm_amount[HOTENDS];
       if (current > target + MAX_OVERSHOOT_PID_AUTOTUNE) {
         SERIAL_PROTOCOLLNPGM(MSG_PID_TEMP_TOO_HIGH);
         //LCD_MESSAGEPGM(MSG_PID_AUTOTUNE_FAIL); // dodane
+        #if ENABLED (NEXTION)
 				LCD_MESSAGEPGM(MSG_PID_AUTOTUNE_OVERSHOT); // dodane
+        #endif
         break;
       }
 
@@ -467,7 +471,9 @@ uint8_t Temperature::soft_pwm_amount[HOTENDS];
 
       if (cycles > ncycles) {
         SERIAL_PROTOCOLLNPGM(MSG_PID_AUTOTUNE_FINISHED);
+        #if ENABLED(NEXTION)
         LCD_MESSAGEPGM(MSG_PID_AUTOTUNE_DONE); // dodane nex
+        #endif
 
         #if HAS_PID_FOR_BOTH
           const char* estring = GHV("bed", "");

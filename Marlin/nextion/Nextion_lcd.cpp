@@ -1477,7 +1477,7 @@ void sendRandomSplashMessage(){
       }
     }
 #endif
-
+#if ENABLED(NEXTION)
 	void nex_return_after_leveling(bool finish)
 	{
 		//nex_ss_state = eeprom_read_byte((uint8_t*)EEPROM_NEX_SS_STATE); // przywroc stan SS sprzed poziomowania
@@ -1486,6 +1486,7 @@ void sendRandomSplashMessage(){
 			Pprinter.show();
 		}
 	}
+	#endif
 // ==============================
 // END OF BED LEVELING SUPPORT ==
 // ==============================
