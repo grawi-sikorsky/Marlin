@@ -33,7 +33,7 @@
     #define nexSerial Serial3
   #endif
 #else
-  #define nexSerial Serial1
+  //#define nexSerial Serial1
 #endif
 
 #define NEX_RET_CMD_FINISHED                (0x01)
@@ -67,6 +67,7 @@
  */
 #define NEX_EVENT_POP   (0x00)  
 
+#if ENABLED(NEXTION)
 /**
  * Type of callback funciton when an touch event occurs. 
  * 
@@ -500,3 +501,5 @@ void setCurrentBrightness(uint8_t dimValue);
 void sendRefreshAll(void);
 
 #endif /* __NEXTION_H__ */
+
+#endif
