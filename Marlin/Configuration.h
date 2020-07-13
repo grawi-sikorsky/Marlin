@@ -177,7 +177,7 @@
 #define CUSTOM_MACHINE_NAME "Printo H3 Midi"
 #endif
 
-#if defined(PRINTO_H3_PLUS) || defined(PRINTO_H3_TOWERPLUS) //|| defined(PRINTO_H3_BIGGIE)
+#if defined(PRINTO_H3_PLUS) || defined(PRINTO_H3_TOWERPLUS)// || defined(PRINTO_H3_BIGGIE)
 	#define PLOSS_SUPPORT
 	#define PLOSS_MANUAL_RECOVERY
 #endif
