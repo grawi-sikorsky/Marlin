@@ -48,6 +48,7 @@
 	uint8_t 		lcd_sd_status;
 	uint8_t			nex_file_number[6];						// byl int trzeba sprawdzic
 	uint8_t		 	nex_file_row_clicked = 0;
+	uint8_t 		probepoint, probeline; 	// nie ma sensu..
 
   uint16_t    slidermaxval              = 20;
   char        bufferson[70]             = { 0 };
@@ -2082,7 +2083,21 @@ void sendRandomSplashMessage(){
 		{
 			extern float z_values[GRID_MAX_POINTS_X][GRID_MAX_POINTS_Y]; // dane ABL
 
-			ProbeZ.setText(ftostr43sign(FIXFLOAT(z_values[0][0])),"ABL");
+			if(probepoint < 2)
+			{
+				ProbeZ.setText(ftostr43sign(FIXFLOAT(z_values[probepoint][probeline])),"ABL");
+				probepoint++;
+			}
+			if(probepoint > 2)
+			{
+				probepoint = 0;
+				probeline++;
+				ProbeZ.setText(ftostr43sign(FIXFLOAT(z_values[probepoint][probeline])),"ABL");
+			}
+			if(probeline > 2 && probepoint > 2)
+			{
+				
+			}
 			//z_values[0][0];
 		}
   }
