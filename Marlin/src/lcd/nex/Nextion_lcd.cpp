@@ -1200,40 +1200,7 @@ void NextionLCD::connect(){
 
 	if (!NextionON) { SERIAL_ECHOLNPGM("Nextion NOT connected.."); buzzer.tone(220, 700); return; }
 	else {
-	SERIAL_ECHO_START();
-	SERIAL_ECHOPGM("Nextion");
-
-	if (strstr(bufferson, "3224")) {       // Model 2.4" or 2.8" Normal or Enhanced
-		SERIAL_ECHOPGM(" 2.4");
-			#if ENABLED(NEXTION_GFX)
-				gfx.set_position(1, 24, 250, 155);
-			#endif
-		}
-	else if (strstr(bufferson, "4024")) {  // Model 3.2" Normal or Enhanced
-		SERIAL_ECHOPGM(" 3.2");
-			#if ENABLED(NEXTION_GFX)
-				gfx.set_position(1, 24, 250, 155);
-			#endif
-		}
-	else if (strstr(bufferson, "4832")) {  // Model 3.2" Normal or Enhanced
-		SERIAL_ECHOPGM(" 3.5");
-		#if ENABLED(NEXTION_GFX)
-			gfx.set_position(1, 24, 250, 155);
-		#endif
-		}
-	else if (strstr(bufferson, "4827")) {  // Model 4.3" Normal or Enhanced
-		SERIAL_ECHOPGM(" 4.3");
-		#if ENABLED(NEXTION_GFX)
-				gfx.set_position(1, 24, 250, 155);
-		#endif
-		}
-	else if (strstr(bufferson, "8048")) {  // Model 7" Normal or Enhanced
-		SERIAL_ECHOPGM(" 7");
-		#if ENABLED(NEXTION_GFX)
-				gfx.set_position(274, 213, 250, 155);
-		#endif
-		}
-	SERIAL_CHAR('"'); SERIAL_ECHOLNPGM(" connected!");
+		SERIAL_ECHOLNPGM("Nextion connected!");
 	}
 
 	#if ENABLED(MKS_SKR)
