@@ -939,8 +939,12 @@
 
 // The ASCII buffer for serial input
 #define MAX_CMD_SIZE 64 // 96 trzeba uwazac, nie kojarze dluzszej komendy niz 49 znakow ale moze jakas wystepuje: M205 S0.00 T0.00 B20000 X20.00 Y20.00 Z0.60 E5.00
-#define BUFSIZE 9
 
+#if ENABLED(PLOSS_SUPPORT)
+  #define BUFSIZE 9  // dodane: z 4 zamienione na 8, problem z panic // 16?
+#else
+  #define BUFSIZE 7  // dodane: z 4 zamienione na 8, problem z panic // 16?
+#endif
 // Transmission to Host Buffer Size
 // To save 386 bytes of PROGMEM (and TX_BUFFER_SIZE+3 bytes of RAM) set to 0.
 // To buffer a simple "ok" you need 4 bytes.

@@ -43,26 +43,23 @@
               lcd_clicked               = false,
 							nex_m600_heatingup 				= 0;			// flaga czy pokazywac temp glowicy przy rozgrzewaniu
 
-	extern bool nex_filament_runout_sensor_flag;
-
   uint8_t     PageID                    = 0,
               lcd_status_message_level  = 0;
 	uint8_t 		lcd_sd_status;
-
-	extern uint8_t progress_printing; // dodane nex
+	uint8_t			nex_file_number[6];						// byl int trzeba sprawdzic
+	uint8_t		 	nex_file_row_clicked = 0;
 
   uint16_t    slidermaxval              = 20;
   char        bufferson[70]             = { 0 };
   char        lcd_status_message[26]    = WELCOME_MSG;
+	char	filename_printing[40];
+
+	millis_t		screen_timeout_millis;
+
 
 	#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
   	const float manual_feedrate_mm_m[]    = MANUAL_FEEDRATE; // zmienna wylacznie do przepisania definicji MANUAL FEEDRATE a potem przerzucenia do float feedrate_mm_s
 	#endif
-
-	millis_t		screen_timeout_millis;
-	uint8_t			nex_file_number[6];						// byl int trzeba sprawdzic
-	int 	nex_file_row_clicked;
-	char	filename_printing[40];
 
 	#if ENABLED(NEX_SCREENSAVER)
 	millis_t nex_ss;
@@ -71,8 +68,10 @@
 	uint8_t nex_ss_pagebefore;							// saved page before screen saver
 	#endif
 
-	extern float destination[XYZE];// = { 0.0 };
+	extern bool nex_filament_runout_sensor_flag;
 	extern bool g29_in_progress;// = false;
+	extern uint8_t progress_printing; // dodane nex
+	extern float destination[XYZE];// = { 0.0 };
 
 	extern inline void set_current_to_destination() { COPY(current_position, destination); }
 	extern inline void set_destination_to_current() { COPY(destination, current_position); }
@@ -261,17 +260,17 @@
    * NEX komponenty strona: MOVE 6
    *******************************************************************
    */
-  NexObject XYHome      = NexObject(6,   2, "p4");
+  //NexObject XYHome      = NexObject(6,   2, "p4");
   NexObject XYUp        = NexObject(6,   3, "p5");
   NexObject XYRight     = NexObject(6,   4, "p6");
   NexObject XYDown      = NexObject(6,   5, "p7");
   NexObject XYLeft      = NexObject(6,   6, "p8");
-  NexObject ZHome       = NexObject(6,   7, "p9");
+  //NexObject ZHome       = NexObject(6,   7, "p9");
   NexObject ZUp         = NexObject(6,   8, "p10");
   NexObject ZDown       = NexObject(6,   9, "p11");
   NexObject movecmd     = NexObject(6,  11, "vacmd");
   NexObject LedCoord5   = NexObject(6,  12, "t0");
-  NexObject MotorOff    = NexObject(6,  17, "p0");
+  //NexObject MotorOff    = NexObject(6,  17, "p0");
   NexObject Extrude     = NexObject(6,  19, "p12");	
   NexObject Retract     = NexObject(6,  20, "p14");
 	// 
@@ -404,7 +403,7 @@
 	*******************************************************************
 	*/
 	//NexObject SvJerk				= NexObject(17, 4, "m2"); //wejscie w jerk -> przekazuje zmienne float na nuber nextion (brak dziesietnych)
-	NexObject SvSteps				= NexObject(17, 5, "m3");	//wejscie w steps -> przekazuje zmienne float na nuber nextion (brak dziesietnych)
+	//NexObject SvSteps				= NexObject(17, 5, "m3");	//wejscie w steps -> przekazuje zmienne float na nuber nextion (brak dziesietnych)
 	// 
 
 	/**
@@ -433,9 +432,9 @@
 	* NEX komponenty strona:: FLOWPAGE 21
 	*******************************************************************
 	*/
-	NexObject vFlowNex					= NexObject(21, 7, "vflow");
-	NexObject SetFlowBtn				= NexObject(21, 9, "m0");
-	NexObject FlowPageFrom			= NexObject(21, 10, "flowfrom");
+	//NexObject vFlowNex					= NexObject(21, 7, "vflow");
+	//NexObject SetFlowBtn				= NexObject(21, 9, "m0");
+	//NexObject FlowPageFrom			= NexObject(21, 10, "flowfrom");
 	// 
 	// == 3
 
@@ -480,8 +479,8 @@
 		#endif
 
     // Page 5 touch listen
-    &MotorOff, &XYHome, &XYUp, &XYRight, &XYDown, &XYLeft,
-    &ZHome, &ZUp, &ZDown,
+    &XYUp, &XYRight, &XYDown, &XYLeft,
+    &ZUp, &ZDown,
     &Extrude, &Retract,
 
 		&speedsetbtn,
@@ -513,13 +512,13 @@
 		&FanSetBtn,
 
 		//Page 22 service
-		&SvSteps,
+		//&SvSteps,
 
 		// Page 28 babystep
 		&ZbabyUp, &ZbabyDown, &ZbabyBack_Save,
 
 		// Page 31 Flow
-		&SetFlowBtn,
+		//&SetFlowBtn,
 
 		// page 34 screensaver
 		#if ENABLED(NEX_SCREENSAVER)
@@ -1666,6 +1665,7 @@ void sendRandomSplashMessage(){
 		Pprinter.show();
 		buzzer.tone(100, 2300);
 	}
+	/*
 	void setflowPopCallback(void *ptr)
 	{
 		uint8_t flowfrom;
@@ -1685,7 +1685,7 @@ void sendRandomSplashMessage(){
 			Poptions.show();
 		}
 		buzzer.tone(100, 2300);
-	}
+	}*/
 
   void setgcodePopCallback(void *ptr) {
     UNUSED(ptr);
@@ -1937,7 +1937,7 @@ void sendRandomSplashMessage(){
 				Aload.attachPop(setaccelloadbtnPopCallback);
 			#endif
 
-			SvSteps.attachPop(setstepspagePopCallback);
+			//SvSteps.attachPop(setstepspagePopCallback);
 
 			// TEMPERATURA
 			heatupenter.attachPop(sethotPopCallback, &heatupenter); // obsluga przycisku rozgrzej oba
@@ -1947,7 +1947,7 @@ void sendRandomSplashMessage(){
 
 			speedsetbtn.attachPop(setspeedPopCallback); //obsluga przycisku speed set
 
-			SetFlowBtn.attachPop(setflowPopCallback); //obsluga przycisku set flow
+			//SetFlowBtn.attachPop(setflowPopCallback); //obsluga przycisku set flow
 
 			// BABYSTEP
 			ZbabyUp.attachPush(setBabystepUpPopCallback);	// obsluga przycisku babystep up
@@ -1955,17 +1955,17 @@ void sendRandomSplashMessage(){
 			ZbabyBack_Save.attachPop(setBabystepEEPROMPopCallback); // zapis przy wyjsciu 
 			
 			// MOVE PAGE
-      XYHome.attachPop(setmovePopCallback);
+      //XYHome.attachPop(setmovePopCallback);
 			XYUp.attachPush(setmovePopCallback);
       XYRight.attachPush(setmovePopCallback);
       XYDown.attachPush(setmovePopCallback);
       XYLeft.attachPush(setmovePopCallback);
-      ZHome.attachPop(setmovePopCallback);
+      //ZHome.attachPop(setmovePopCallback);
       ZUp.attachPush(setmovePopCallback);
       ZDown.attachPush(setmovePopCallback);
       Extrude.attachPush(setmovePopCallback);
       Retract.attachPush(setmovePopCallback);
-      MotorOff.attachPop(motoroffPopCallback);
+      //MotorOff.attachPop(motoroffPopCallback);
 
 			// GCODE
       Send.attachPop(setgcodePopCallback);
@@ -2081,7 +2081,7 @@ void sendRandomSplashMessage(){
 		{																																// TAK:
 			if (!sd_status)																									// je�li SD_DETECT == false:
 			{
-				SERIAL_ECHOLNPGM("sd:false");
+				//SERIAL_ECHOLNPGM("sd:false");
 				card.initsd();																								// inicjalizacja karty
 				SDstatus = SD_INSERT;
 				SD.setValue(SDstatus, "stat");
@@ -2090,7 +2090,7 @@ void sendRandomSplashMessage(){
 			}
 			else																														// je�li SD_DETECT == true:
 			{
-				SERIAL_ECHOLNPGM("sd:true");
+				//SERIAL_ECHOLNPGM("sd:true");
 				card.release();																								// odmontuj kart� SD
 				SDstatus = SD_NO_INSERT;
 				SD.setValue(SDstatus, "stat");
@@ -2152,7 +2152,7 @@ void sendRandomSplashMessage(){
     static uint8_t  PreviousPage = 0,
                     Previousfeedrate = 0,
                     PreviousfanSpeed = 0,
-										Previousflow = 0,
+										//Previousflow = 0,
                     PreviouspercentDone = 0;
     static float    PreviousdegHeater[1] = { 0.0 },
                     PrevioustargetdegHeater[1] = { 0.0 };
@@ -2239,10 +2239,11 @@ void sendRandomSplashMessage(){
           Previousfeedrate = feedrate_percentage;
         }
 				//FLOW
+				/*
 				if (Previousflow != planner.flow_percentage[0]) {
 					vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
 					Previousflow = planner.flow_percentage[0];
-				}
+				}*/
 				// TEMPERATURA HOTEND
         #if HAS_HEATER_0
           if (PreviousdegHeater[0] != thermalManager.current_temperature[0]) 
@@ -2348,12 +2349,8 @@ void sendRandomSplashMessage(){
 				// pokaz temp glowicy podczas nagrzewania m600 na stronie select
 				if (nex_m600_heatingup == 1)
 				{
-					//char *temp_he;
-					//char *temp_te;
-					char temptemp[14];
+					char temptemp[10];
 
-					//temp_te = itostr3(thermalManager.target_temperature[0]);
-					//temp_he = itostr3(thermalManager.current_temperature[0]);
 					strlcpy(temptemp, itostr3(thermalManager.current_temperature[0]), 4);
 					strcat_P(temptemp, PSTR(" / "));
 					strcat(temptemp, itostr3(thermalManager.target_temperature[0]));
@@ -2370,7 +2367,7 @@ void sendRandomSplashMessage(){
 				coordtoLCD();
 				break;
 			case EPageFlow: // flow page
-				vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
+				//vFlowNex.setValue(planner.flow_percentage[0], "flowpage");
 				break;
 			
 			#if ENABLED(NEX_SCREENSAVER)
