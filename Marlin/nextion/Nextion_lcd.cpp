@@ -1479,11 +1479,25 @@ void sendRandomSplashMessage(){
 #if ENABLED(NEXTION)
 	void nex_return_after_leveling(bool finish)
 	{
+		buzzer.tone(100, 659);
+		buzzer.tone(100, 698);
+
+		#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
 		//nex_ss_state = eeprom_read_byte((uint8_t*)EEPROM_NEX_SS_STATE); // przywroc stan SS sprzed poziomowania
-		if (finish == true)
-		{
-			Pprinter.show();
-		}
+			if (finish == true)
+			{
+				Pprinter.show();
+			}
+		
+		#elif ENABLED(NEXTION_AUTO_BED_LEVEL)
+		  enqueue_and_echo_commands_P(PSTR("M500"));  // dodane aby zapisywało poziomowanie podczas trwania funkcji
+			//enqueue_and_echo_commands_P(PSTR("G28"));  // dodane aby zapisywało poziomowanie podczas trwania funkcji
+			if (finish == true)
+			{
+				Pprinter.show();
+			}
+			home_all_axes();
+		#endif
 	}
 	#endif
 // ==============================
@@ -2060,10 +2074,17 @@ void sendRandomSplashMessage(){
 
       LedCoord5.setText(bufferson,"move");
     }
-    else if (PageID == EPageBedlevel || PageID == EPageBedlevelAuto) // bed level page lub ABL -> ProbeZ: ta sama zmienna zdefiniowana z innym ID.
+    else if (PageID == EPageBedlevel) // bed level page lub ABL -> ProbeZ: ta sama zmienna zdefiniowana z innym ID.
 		{
       ProbeZ.setText(ftostr43sign(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS]))),"bedlevel");
     }
+		else if (PageID == EPageBedlevelAuto)
+		{
+			extern float z_values[GRID_MAX_POINTS_X][GRID_MAX_POINTS_Y]; // dane ABL
+
+			ProbeZ.setText(ftostr43sign(FIXFLOAT(z_values[0][0])),"ABL");
+			//z_values[0][0];
+		}
   }
 
 	// Sprawdza obecnosc karty SD i montuje/odmontowuje karte na ekranie
