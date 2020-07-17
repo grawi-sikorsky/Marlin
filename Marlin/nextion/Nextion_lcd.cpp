@@ -53,7 +53,7 @@
 
   uint16_t    slidermaxval              = 20;
   char        bufferson[70]             = { 0 };
-  char        lcd_status_message[24]    = WELCOME_MSG;
+  char        lcd_status_message[26]    = WELCOME_MSG;
 
 	#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
   	const float manual_feedrate_mm_m[]    = MANUAL_FEEDRATE; // zmienna wylacznie do przepisania definicji MANUAL FEEDRATE a potem przerzucenia do float feedrate_mm_s
@@ -1555,7 +1555,11 @@ void sendRandomSplashMessage(){
 				// PRINTER INFO START
 				Sfirmware.setText_PGM(PSTR(SHORT_BUILD_VERSION), "statscreen");
 				Skompil.setText_PGM(PSTR(STRING_DISTRIBUTION_DATE), "statscreen");
-				Sleveling.setText_PGM(PSTR(MSG_MESH_LEVELING), "statscreen");
+				#if ENABLED(NEXTION_BED_SEMIAUTO_LEVEL)
+					Sleveling.setText_PGM(PSTR(MSG_MESH_LEVELING), "statscreen");
+				#elif ENABLED(NEXTION_AUTO_BED_LEVEL)
+					Sleveling.setText_PGM(PSTR(MSG_MESH_AUTO_LEVELING), "statscreen");
+				#endif
 
 				manage_inactivity();
 
@@ -1885,44 +1889,12 @@ void sendRandomSplashMessage(){
 		#endif
 
     if (!NextionON) {
-	  SERIAL_ECHOPGM("Nextion not connected!");
+	  	SERIAL_ECHOLNPGM("Nextion not connected!");
       return;
     }
     else {
-		SERIAL_ECHO_START();
-	  SERIAL_ECHOPGM("Nextion");
-
-    if (strstr(bufferson, "3224")) {       // Model 2.4" or 2.8" Normal or Enhanced
-			SERIAL_ECHOPGM(" 2.4");
-        #if ENABLED(NEXTION_GFX)
-          gfx.set_position(1, 24, 250, 155);
-        #endif
-      }
-    else if (strstr(bufferson, "4024")) {  // Model 3.2" Normal or Enhanced
-			SERIAL_ECHOPGM(" 3.2");
-       #if ENABLED(NEXTION_GFX)
-          gfx.set_position(1, 24, 250, 155);
-       #endif
-      }
-		else if (strstr(bufferson, "4832")) {  // Model 3.2" Normal or Enhanced
-			SERIAL_ECHOPGM(" 3.5");
-			#if ENABLED(NEXTION_GFX)
-				gfx.set_position(1, 24, 250, 155);
-			#endif
-			}
-    else if (strstr(bufferson, "4827")) {  // Model 4.3" Normal or Enhanced
-			SERIAL_ECHOPGM(" 4.3");
-      #if ENABLED(NEXTION_GFX)
-          gfx.set_position(1, 24, 250, 155);
-      #endif
-      }
-    else if (strstr(bufferson, "8048")) {  // Model 7" Normal or Enhanced
-			SERIAL_ECHOPGM(" 7");
-      #if ENABLED(NEXTION_GFX)
-          gfx.set_position(274, 213, 250, 155);
-      #endif
-      }
-		SERIAL_ECHOLNPGM(" connected!");
+			SERIAL_ECHO_START();
+	  	SERIAL_ECHOLNPGM("Nextion connected!");
 
       #if ENABLED(NEXTION_GFX)
         gfx.color_set(NX_AXIS + X_AXIS, 63488);

@@ -299,6 +299,7 @@
   #define MSG_FILAMENT_CHANGE_OPTION_EXTRUDE		_UxGT("Ekstruduj wiecej")
   #define MSG_FILAMENT_CHANGE_OPTION_RESUME			_UxGT("Wznow drukowanie")
   #define MSG_PRINT_PAUSED										_UxGT("Wydruk wstrzymany")
+  #define MSG_MESH_AUTO_LEVELING              _UxGT("Auto Leveling")
 
   //dodane Printo H3
   #define MSG_PID_AUTOTUNE_START				_UxGT("PID rozpoczeto")

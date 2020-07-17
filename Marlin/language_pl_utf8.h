@@ -930,6 +930,9 @@
 #ifndef MSG_MESH_LEVELING
   #define MSG_MESH_LEVELING                   _UxGT("Mesh Leveling")
 #endif
+#ifndef MSG_MESH_AUTO_LEVELING
+  #define MSG_MESH_AUTO_LEVELING              _UxGT("Auto Leveling")
+#endif
 #ifndef MSG_INFO_STATS_MENU
   #define MSG_INFO_STATS_MENU                 _UxGT("Statystyki")
 #endif

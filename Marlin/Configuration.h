@@ -142,8 +142,9 @@
 //#define PRINTO_H3_PLUS
 //#define PRINTO_H3_TOWER
 //#define PRINTO_H3_TOWERPLUS
-#define PRINTO_H3_BIGGIE
+//#define PRINTO_H3_BIGGIE
 //#define PRINTO_H3_MIDI
+#define PRINTO_H3_MIDI350
 //lcd 3.0
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
@@ -176,6 +177,11 @@
 #define MACHINE_NAME "Printo H3 Midi"
 #define CUSTOM_MACHINE_NAME "Printo H3 Midi"
 #endif
+#ifdef PRINTO_H3_MIDI350
+#define MACHINE_NAME "Printo H3 Midi350"
+#define CUSTOM_MACHINE_NAME "Printo H3 Midi350"
+#define NEXTION_AUTO_BED_LEVEL
+#endif
 
 #if defined(PRINTO_H3_PLUS) || defined(PRINTO_H3_TOWERPLUS)// || defined(PRINTO_H3_BIGGIE)
 	#define PLOSS_SUPPORT
@@ -187,7 +193,7 @@
 #endif
 
 // BED LEVELING NEXTION
-	#define NEXTION_SEMIAUTO_BED_LEVEL  // mesh bed leveling - semi auto
+	//#define NEXTION_SEMIAUTO_BED_LEVEL  // mesh bed leveling - semi auto
   //#define NEXTION_AUTO_BED_LEVEL     // bilinear bed leveling - auto
 
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
@@ -977,6 +983,12 @@
 #if defined(PRINTO_H3_MIDI)
 #define X_BED_SIZE 305
 #define Y_BED_SIZE 310
+#define Z_BED_SIZE 206
+#endif
+
+#if defined(PRINTO_H3_MIDI350)
+#define X_BED_SIZE 355
+#define Y_BED_SIZE 360
 #define Z_BED_SIZE 206
 #endif
 
@@ -1787,7 +1799,7 @@
 // RepRapDiscount FULL GRAPHIC Smart Controller
 // http://reprap.org/wiki/RepRapDiscount_Full_Graphic_Smart_Controller
 //
-#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
+//#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
 
 //
 // ReprapWorld Graphical LCD
@@ -2093,8 +2105,8 @@
   // Nextion
   //
 //#define NEX_UPLOAD
-  //#define NEXTION
-  //#define NEXTION_DISPLAY
+  #define NEXTION
+  #define NEXTION_DISPLAY
   #define NEXTION_SERIAL 2
 	//#define NEXTION_DEBUG
 
