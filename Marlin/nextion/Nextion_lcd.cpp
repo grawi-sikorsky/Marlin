@@ -2099,6 +2099,10 @@ void sendRandomSplashMessage(){
 				probepoint = 0;
 				probeline = 0;
 			}
+			SERIAL_ECHOPGM("prpoint:");
+			SERIAL_ECHOLN(probepoint);
+			SERIAL_ECHOPGM("prline:");
+			SERIAL_ECHOLN(probeline);
 			//z_values[0][0];
 		}
   }

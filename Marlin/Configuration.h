@@ -686,7 +686,7 @@
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4]]]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 260, 260, 15, 80 }
+#define DEFAULT_MAX_FEEDRATE          { 260, 260, 25, 80 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -697,7 +697,7 @@
 
 
 #if ENABLED (NEXTION_AUTO_BED_LEVEL)
-  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 9000 }
+  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 50, 9000 }
 #else
   #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 9000 }
 #endif
@@ -823,7 +823,7 @@
   //#define WAIT_FOR_BED_HEATER     // Wait for bed to heat back up between probes (to improve accuracy)
 #endif
 //#define PROBING_FANS_OFF          // Turn fans off when probing
-#define DELAY_BEFORE_PROBING 600  // (ms) To prevent vibrations from triggering piezo sensors
+#define DELAY_BEFORE_PROBING 700  // (ms) To prevent vibrations from triggering piezo sensors
 
 // A probe that is deployed and stowed with a solenoid pin (SOL1_PIN)
 //#define SOLENOID_PROBE
@@ -874,7 +874,7 @@
 // The number of probes to perform at each point.
 //   Set to 2 for a fast/slow probe, using the second probe result.
 //   Set to 3 or more for slow probes, averaging the results.
-#define MULTIPLE_PROBING 3
+#define MULTIPLE_PROBING 2
 
 /**
  * Z probes require clearance when deploying, stowing, and moving between
@@ -1121,7 +1121,7 @@
   // Gradually reduce leveling correction until a set height is reached,
   // at which point movement will be level to the machine's XY plane.
   // The height can be set with M420 Z<height>
-  //#define ENABLE_LEVELING_FADE_HEIGHT
+  #define ENABLE_LEVELING_FADE_HEIGHT
 
   // For Cartesian machines, instead of dividing moves on mesh boundaries,
   // split up moves into short segments like a Delta. This follows the
@@ -1283,10 +1283,10 @@
 #endif
 
 // Homing speeds (mm/m)
-#define HOMING_FEEDRATE_XY (80*60)
+#define HOMING_FEEDRATE_XY (90*60)
 
 #if ENABLED (NEXTION_AUTO_BED_LEVEL)
-  #define HOMING_FEEDRATE_Z  (30*60)
+  #define HOMING_FEEDRATE_Z  (35*60)
 #else
   #define HOMING_FEEDRATE_Z  (20*60)
 #endif
