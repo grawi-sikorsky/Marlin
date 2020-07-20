@@ -2110,7 +2110,6 @@ void sendRandomSplashMessage(){
 			strcat(bufferson, ", Left: ");
 		strcat(bufferson, buffer1);
 		LcdTimeElapsed.setText(bufferson,"stat");
-		//PreviouspercentDone = progress_printing;
 	}
 
 	// Sprawdza obecnosc karty SD i montuje/odmontowuje karte na ekranie
