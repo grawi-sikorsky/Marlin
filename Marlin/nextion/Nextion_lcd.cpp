@@ -48,12 +48,11 @@
 	uint8_t 		lcd_sd_status;
 	uint8_t			nex_file_number[6];						// byl int trzeba sprawdzic
 	uint8_t		 	nex_file_row_clicked = 0;
-	uint8_t 		probepoint, probeline; 	// nie ma sensu..
 
   uint16_t    slidermaxval              = 20;
   char        bufferson[70]             = { 0 };
-  char        lcd_status_message[26]    = WELCOME_MSG;
-	char	filename_printing[40];
+  char        lcd_status_message[28]    = WELCOME_MSG;
+	char				filename_printing[40];
 
 	millis_t		screen_timeout_millis;
 
@@ -2081,31 +2080,38 @@ void sendRandomSplashMessage(){
     }
 		else if (PageID == EPageBedlevelAuto)
 		{
-			extern float z_values[GRID_MAX_POINTS_X][GRID_MAX_POINTS_Y]; // dane ABL
-
-			if(probepoint < 2)
-			{
-				ProbeZ.setText(ftostr43sign(FIXFLOAT(z_values[probepoint][probeline])),"ABL");
-				probepoint++;
-			}
-			if(probepoint > 2)
-			{
-				probepoint = 0;
-				probeline++;
-				ProbeZ.setText(ftostr43sign(FIXFLOAT(z_values[probepoint][probeline])),"ABL");
-			}
-			if(probeline > 2 && probepoint > 2)
-			{
-				probepoint = 0;
-				probeline = 0;
-			}
-			SERIAL_ECHOPGM("prpoint:");
-			SERIAL_ECHOLN(probepoint);
-			SERIAL_ECHOPGM("prline:");
-			SERIAL_ECHOLN(probeline);
-			//z_values[0][0];
+			ProbeZ.setText(ftostr43sign(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS]))),"ABL");
 		}
   }
+
+	// odswieza procent druku, progress bar, oraz czas trwania i pozostaly
+	static void ref_stat_printprogress()
+	{
+		// wpierw procenty i progress bar
+		ZERO(bufferson);
+		strcat(bufferson, itostr3(progress_printing));		// progress printing mozna chyba w calym pliku zamienic na card.percentDone();
+		strcat(bufferson, " %");
+		percentdone.setText(bufferson, "stat");						// procenty
+		progressbar.setValue(progress_printing, "stat"); 	// progressbar
+
+		// nastepnie czas trwania druku i pozostaly
+		ZERO(bufferson);
+		char buffer1[10];
+		uint8_t digit;
+		duration_t Time = print_job_timer.duration();
+		digit = Time.toDigital(buffer1, true);
+		strcat(bufferson, "Start: ");
+		strcat(bufferson, buffer1);
+		Time = (print_job_timer.duration() * (100 - progress_printing)) / (progress_printing + 0.1);
+		digit += Time.toDigital(buffer1, true);
+		if (digit > 14)
+			strcat(bufferson, ", Left: ");
+		else
+			strcat(bufferson, ", Left: ");
+		strcat(bufferson, buffer1);
+		LcdTimeElapsed.setText(bufferson,"stat");
+		//PreviouspercentDone = progress_printing;
+	}
 
 	// Sprawdza obecnosc karty SD i montuje/odmontowuje karte na ekranie
 	// IS_SD_INSERTED ma odwrocona logike:
@@ -2246,7 +2252,7 @@ void sendRandomSplashMessage(){
     switch(PageID)
 		{
       case EPageStatus: // status screen
-				nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
+				nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount //
         if (PreviousPage != EPageStatus) // jednorazowo przy wejsciu w strone STAT
 				{
 					lcd_setstatus(lcd_status_message);
@@ -2258,13 +2264,9 @@ void sendRandomSplashMessage(){
             #endif
           #endif
 
-					ZERO(bufferson);
-					strcat(bufferson, itostr3(progress_printing));		// progress printing mozna chyba w calym pliku zamienic na card.percentDone();
-					strcat(bufferson, " %");
-					percentdone.setText(bufferson, "stat");						// procenty
-					progressbar.setValue(progress_printing, "stat"); 	// progressbar
 					if(SDstatus == SD_PRINTING || SDstatus == SD_PAUSE)
 					{
+						ref_stat_printprogress(); // odswieza progres bar, procent i czas trwania
 						NexFilename.setText(filename_printing);					// nazwa pliku
 					}
 				}
@@ -2312,32 +2314,10 @@ void sendRandomSplashMessage(){
  
         coordtoLCD();
 				
-				if (PreviouspercentDone != progress_printing) {
-					progressbar.setValue(progress_printing,"stat");	// Progress bar
-
-					// Estimate End Time
-					ZERO(bufferson);
-					char buffer1[10];
-					uint8_t digit;
-					duration_t Time = print_job_timer.duration();
-					digit = Time.toDigital(buffer1, true);
-					strcat(bufferson, "S");
-					strcat(bufferson, buffer1);
-					Time = (print_job_timer.duration() * (100 - progress_printing)) / (progress_printing + 0.1);
-					digit += Time.toDigital(buffer1, true);
-					if (digit > 14)
-						strcat(bufferson, "E");
-					else
-						strcat(bufferson, " E");
-					strcat(bufferson, buffer1);
-					LcdTimeElapsed.setText(bufferson,"stat");
+				if (PreviouspercentDone != progress_printing) 
+				{
+					ref_stat_printprogress();
 					PreviouspercentDone = progress_printing;
-
-					// procenty t4
-					ZERO(bufferson);
-					strcat(bufferson, itostr3(progress_printing));
-					strcat(bufferson, " %");
-					percentdone.setText(bufferson, "stat");
 				}
 
 				nex_update_sd_status();

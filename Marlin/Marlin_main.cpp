@@ -15253,9 +15253,6 @@ void check_periodical_actions()
 
 		#if ENABLED(NEXTION)
 			nextion_draw_update();
-      // nex debug g29
-      SERIAL_ECHOPGM("plan.lvlact:");
-      SERIAL_ECHOLN(planner.leveling_active);
 
 		#if ENABLED(NEXTION_DEBUG)
 				SERIAL_ECHOPGM("busystate:");
