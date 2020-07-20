@@ -1497,7 +1497,7 @@ void sendRandomSplashMessage(){
 			{
 				Pprinter.show();
 			}
-			home_all_axes();
+			//home_all_axes();
 		#endif
 	}
 	#endif
@@ -2096,7 +2096,8 @@ void sendRandomSplashMessage(){
 			}
 			if(probeline > 2 && probepoint > 2)
 			{
-				
+				probepoint = 0;
+				probeline = 0;
 			}
 			//z_values[0][0];
 		}
