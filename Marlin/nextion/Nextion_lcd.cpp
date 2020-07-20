@@ -1497,7 +1497,7 @@ void sendRandomSplashMessage(){
 			{
 				Pprinter.show();
 			}
-			//home_all_axes();
+			home_all_axes();
 		#endif
 	}
 	#endif
