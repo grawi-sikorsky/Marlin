@@ -2198,7 +2198,7 @@ void sendRandomSplashMessage(){
     static uint8_t  PreviousPage = 0,
                     Previousfeedrate = 0,
                     PreviousfanSpeed = 0,
-										//Previousflow = 0,
+										iterTimeLeft = 0,
                     PreviouspercentDone = 0;
     static float    PreviousdegHeater[1] = { 0.0 },
                     PrevioustargetdegHeater[1] = { 0.0 };
@@ -2252,7 +2252,9 @@ void sendRandomSplashMessage(){
 		{
       case EPageStatus: // status screen
 				nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount //
-        if (PreviousPage != EPageStatus) // jednorazowo przy wejsciu w strone STAT
+				
+				// odswiezane jednorazowo przy wejsciu w strone STAT
+        if (PreviousPage != EPageStatus) 
 				{
 					lcd_setstatus(lcd_status_message);
           #if ENABLED(NEXTION_GFX)
@@ -2267,6 +2269,24 @@ void sendRandomSplashMessage(){
 					{
 						ref_stat_printprogress(); // odswieza progres bar, procent i czas trwania
 						NexFilename.setText(filename_printing);					// nazwa pliku
+					}
+				}
+
+				// odswiezane stale
+				if(SDstatus == SD_PRINTING || SDstatus == SD_PAUSE)
+				{
+					if (PreviouspercentDone != progress_printing) 
+					{
+						ref_stat_printprogress();
+						PreviouspercentDone = progress_printing;
+					}
+					// odswiezanie time left itp raz na kilka odswiezen ekranu
+					iterTimeLeft++;
+					
+					if(iterTimeLeft > 2)
+					{
+						ref_stat_printprogress();
+						iterTimeLeft = 0;
 					}
 				}
 
@@ -2312,12 +2332,6 @@ void sendRandomSplashMessage(){
 				#endif
  
         coordtoLCD();
-				
-				if (PreviouspercentDone != progress_printing) 
-				{
-					ref_stat_printprogress();
-					PreviouspercentDone = progress_printing;
-				}
 
 				nex_update_sd_status();
 
