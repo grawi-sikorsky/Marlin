@@ -7321,7 +7321,7 @@ inline void gcode_M17() {
 
     #else
 
-      do {
+      do { // caly do while byc moze do przekopiowania az do resume_print
         if (purge_length > 0) {
           // "Wait for filament purge"
           #if ENABLED(ULTIPANEL)|| ENABLED(NEXTION_DISPLAY)
