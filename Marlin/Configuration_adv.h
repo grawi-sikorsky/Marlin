@@ -1052,6 +1052,8 @@
 
   #if ENABLED(PRINTO_H3_BIGGIE) || ENABLED(PRINTO_H3_MIDI)
     #define FILAMENT_CHANGE_UNLOAD_LENGTH      880  // (mm) The length of filament for a complete unload.
+  #elif ENABLED(PRINTO_H3_MIDI350)
+    #define FILAMENT_CHANGE_UNLOAD_LENGTH      930  // (mm) The length of filament for a complete unload.
   #else
     #define FILAMENT_CHANGE_UNLOAD_LENGTH      680  // (mm) The length of filament for a complete unload.
   #endif
@@ -1066,6 +1068,8 @@
 
   #if ENABLED(PRINTO_H3_BIGGIE) || ENABLED(PRINTO_H3_MIDI)
     #define FILAMENT_CHANGE_FAST_LOAD_LENGTH   750  // (mm) Load length of filament, from extruder gear to nozzle.
+  #elif ENABLED(PRINTO_H3_MIDI350)
+    #define FILAMENT_CHANGE_FAST_LOAD_LENGTH   800  // (mm) Load length of filament, from extruder gear to nozzle.
   #else
     #define FILAMENT_CHANGE_FAST_LOAD_LENGTH   650  // (mm) Load length of filament, from extruder gear to nozzle.
   #endif
