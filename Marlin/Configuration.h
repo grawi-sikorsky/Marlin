@@ -823,7 +823,7 @@
   //#define WAIT_FOR_BED_HEATER     // Wait for bed to heat back up between probes (to improve accuracy)
 #endif
 //#define PROBING_FANS_OFF          // Turn fans off when probing
-#define DELAY_BEFORE_PROBING 700  // (ms) To prevent vibrations from triggering piezo sensors
+#define DELAY_BEFORE_PROBING 900  // (ms) To prevent vibrations from triggering piezo sensors
 
 // A probe that is deployed and stowed with a solenoid pin (SOL1_PIN)
 //#define SOLENOID_PROBE
@@ -860,7 +860,7 @@
 #define Z_PROBE_OFFSET_FROM_EXTRUDER 0   // Z offset: -below +above  [the nozzle]
 
 // Certain types of probes need to stay away from edges
-#define MIN_PROBE_EDGE 10
+#define MIN_PROBE_EDGE 40
 
 // X and Y axis travel speed (mm/m) between probes
 #define XY_PROBE_SPEED 8000
@@ -987,8 +987,8 @@
 #endif
 
 #if defined(PRINTO_H3_MIDI350)
-#define X_BED_SIZE 355
-#define Y_BED_SIZE 360
+#define X_BED_SIZE 360
+#define Y_BED_SIZE 365
 #define Z_BED_SIZE 206
 #endif
 
