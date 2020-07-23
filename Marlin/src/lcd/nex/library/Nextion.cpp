@@ -816,6 +816,9 @@
 
 	strncpy(buffer, temp.c_str(), 70);
 
+  SERIAL_ECHO("comoktojest: "); // dodane
+  SERIAL_ECHOLN(buffer); // dodane
+
 	if (strstr(buffer, "comok")) return true;
 
 	return false;

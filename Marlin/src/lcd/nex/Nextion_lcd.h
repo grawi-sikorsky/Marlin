@@ -43,7 +43,7 @@ class NextionLCD
 {
   public:
     //Zmienne
-    char lcd_status_message[48] = "T";
+    char      lcd_status_message[48] = "T";
     bool      NextionON                 = false,
               show_Wave                 = true,
               lcdDrawUpdate             = false,
