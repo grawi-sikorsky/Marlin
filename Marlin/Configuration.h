@@ -697,7 +697,7 @@
 
 
 #if ENABLED (NEXTION_AUTO_BED_LEVEL)
-  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 50, 9000 }
+  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 30, 9000 }
 #else
   #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 9000 }
 #endif
@@ -709,9 +709,9 @@
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
-#define DEFAULT_ACCELERATION          1200    // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_ACCELERATION          1000    // X, Y, Z and E acceleration for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   1200    // X, Y, Z acceleration for travel (non printing) moves
+#define DEFAULT_TRAVEL_ACCELERATION   1800    // X, Y, Z acceleration for travel (non printing) moves
 
 /**
  * Default Jerk (mm/s)
@@ -723,13 +723,13 @@
  */
 #define DEFAULT_XJERK                 14.0
 #define DEFAULT_YJERK                 14.0
-#define DEFAULT_ZJERK                  0.6
+#define DEFAULT_ZJERK                  0.4
 #define DEFAULT_EJERK                  5.0
 
 #if ENABLED (NEXTION_AUTO_BED_LEVEL)
   //#define DEFAULT_ZJERK                  0.4
 #else
-  #define DEFAULT_ZJERK                  0.6
+  #define DEFAULT_ZJERK                  0.4
 #endif
 
 /**
