@@ -1204,7 +1204,7 @@ void NextionLCD::connect(){
 	}
 
 	#if ENABLED(MKS_SKR)
-	nexlcd.sendRandomSplashMessage(); 		// Funkcja ma wysylac randomowa liczbe dla nextiona ktory na jej podstawie wyswietli mesydz
+		nexlcd.sendRandomSplashMessage(); 		// Funkcja ma wysylac randomowa liczbe dla nextiona ktory na jej podstawie wyswietli mesydz
 	#endif
 }
 
