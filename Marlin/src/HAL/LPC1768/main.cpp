@@ -119,14 +119,14 @@ void HAL_init() {
 
   USB_Init();                               // USB Initialization
   USB_Connect(FALSE);                       // USB clear connection
-  delay(1000);                              // Give OS time to notice
+  delay(500);                              // Give OS time to notice
   USB_Connect(TRUE);
 
   #if DISABLED(NO_SD_HOST_DRIVE)
     MSC_SD_Init(0);                         // Enable USB SD card access
   #endif
 
-  const millis_t usb_timeout = millis() + 2000;
+  const millis_t usb_timeout = millis() + 1000;
   while (!USB_Configuration && PENDING(millis(), usb_timeout)) {
     delay(50);
     HAL_idletask();

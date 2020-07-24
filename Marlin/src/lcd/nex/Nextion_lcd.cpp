@@ -1080,13 +1080,29 @@
 
 		if (strcmp(bufferson,"M600") == 0)
 		{
-			//KATT nex_enqueue_filament_change();
+			// nex_enqueue_filament_change();
 			buzzer.tone(100, 2300);
 		}
 		else if (strcmp(bufferson, "M78 S78") == 0)
 		{
 			queue.inject_P(bufferson);
 			buzzer.tone(100, 2300);
+		}
+		else if(strcmp(bufferson, "G29 S1") == 0) // musimy wylapac komende z nextiona zanim trafi do parsera
+		{																					// inaczej trzeba bedzie miec osobne wsady do NEXa z auto i semi levelingiem
+			#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
+				queue.inject_P(bufferson);
+				Pprobe.show();		// pokaz ekran semiauto leveling
+			#endif
+			
+			#if ENABLED(NEXTION_AUTO_BED_LEVEL)
+				queue.inject_P("G28");		// bazowanie przed poziomowaniem
+				queue.inject_P("G29");		// poziomowanie auto
+				//enqueue_and_echo_command("G28");	// bazowanie przed poziomowaniem
+				//enqueue_and_echo_command("G29");	// poziomowanie auto
+				Palevel.show();										// pokaz ekran auto leveling
+				// to do: g28 after auto leveling
+			#endif
 		}
 		else
 		{ 
@@ -1429,7 +1445,7 @@ void NextionLCD::init(){
 	buzzer.tone(100, 3100);			
 	//delay(1000);
 
-	delay(3500);
+	delay(3000);
 	PagePrinter.show();
 }
 // =======================
