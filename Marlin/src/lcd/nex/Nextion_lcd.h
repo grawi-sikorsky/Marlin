@@ -55,7 +55,6 @@ class NextionLCD
     uint16_t nex_ss_timeout;								// screensaver timeout
     uint8_t nex_ss_pagebefore;							// saved page before screen saver
 	
-
     //Główne metody ekranu
     void check_periodical_actions();  //Aktualizacja LCD z mniejsza czestotliwosca - 0.4s -> nextion_draw_update();
     void nextion_draw_update();       //Odswieza aktualny ekran -> switch

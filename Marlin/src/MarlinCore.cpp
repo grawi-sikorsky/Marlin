@@ -877,19 +877,22 @@ void setup() {
     #endif
   #endif
 
+  SETUP_RUN(HAL_init());
+
   #if NUM_SERIAL > 0
     MYSERIAL0.begin(BAUDRATE);
     uint32_t serial_connect_timeout = millis() + 1000UL;
     while (!MYSERIAL0 && PENDING(millis(), serial_connect_timeout)) { /*nada*/ }
+    SERIAL_ECHOLN("serial0 connect?");
     #if HAS_MULTI_SERIAL
       MYSERIAL1.begin(BAUDRATE);
       serial_connect_timeout = millis() + 1000UL;
-      while (!MYSERIAL1 && PENDING(millis(), serial_connect_timeout)) { /*nada*/ }
+      while (!MYSERIAL1 && PENDING(millis(), serial_connect_timeout)) { /*nada*/ }    
+      SERIAL_ECHOLN("serial1 connect?");
     #endif
     SERIAL_ECHO_MSG("start");
   #endif
 
-  SETUP_RUN(HAL_init());
 
   #if HAS_L64XX
     SETUP_RUN(L64xxManager.init());  // Set up SPI, init drivers

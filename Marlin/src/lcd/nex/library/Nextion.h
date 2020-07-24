@@ -33,7 +33,7 @@
   #if NEXTION_SERIAL == 1
     #define nexSerial Serial1
   #elif NEXTION_SERIAL == 2
-    #define nexSerial MSerial1  //MSerial//Serial
+    #define nexSerial MSerial  //MSerial//Serial
     //#define nexSerial Serial2 //MSerial//Serial // MKS GEN
     //#define nexSerial Serial  //MSerial//Serial // MKS SKR
   #elif NEXTION_SERIAL == 3
