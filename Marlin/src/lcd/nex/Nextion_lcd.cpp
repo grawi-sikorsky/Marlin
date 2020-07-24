@@ -1529,6 +1529,35 @@ void NextionLCD::init(){
     }
   }
 
+	// odswieza procent druku, progress bar, oraz czas trwania i pozostaly
+	// uzywane na ekranie stat
+	static void ref_stat_printprogress()
+	{
+		// wpierw procenty i progress bar
+		ZERO(bufferson);
+		strcat(bufferson, ui8tostr3rj(card.percentDone()));		// progress printing mozna chyba w calym pliku zamienic na card.percentDone();
+		strcat(bufferson, " %");
+		percentdone.setText(bufferson, "stat");						// procenty
+		progressbar.setValue(card.percentDone(), "stat"); 	// progressbar
+
+		// nastepnie czas trwania druku i pozostaly
+		ZERO(bufferson);
+		char buffer1[10];
+		uint8_t digit;
+		duration_t Time = print_job_timer.duration();
+		digit = Time.toDigital(buffer1, true);
+		strcat(bufferson, "Start: ");
+		strcat(bufferson, buffer1);
+		Time = (print_job_timer.duration() * (100 - card.percentDone())) / (card.percentDone() + 0.1);
+		digit += Time.toDigital(buffer1, true);
+		if (digit > 14)
+			strcat(bufferson, ", Left: ");
+		else
+			strcat(bufferson, ", Left: ");
+		strcat(bufferson, buffer1);
+		LcdTimeElapsed.setText(bufferson,"stat");
+	}
+
 	// Sprawdza obecnosc karty SD i montuje/odmontowuje karte na ekranie
 	// IS_SD_INSERTED ma odwrocona logike:
 	// 1 - brak karty
@@ -1624,6 +1653,7 @@ void NextionLCD::init(){
     static uint8_t  	PreviousPage = 0,					// strona nex
                     	PreviousfanSpeed = 0,			// dotychczasowa predkosc wentylatora
 											Previousflow = 0,					// dotychczasowy flow
+											iterTimeLeft = 0,					// licznik - odswieza time left co ktorys raz.
                     	PreviouspercentDone = 0;	// dotychczasowy postep %
 		static uint16_t 	Previousfeedrate = 0;			// dotychczasowa predkosc druku
 
@@ -1691,16 +1721,31 @@ void NextionLCD::init(){
             #endif
           #endif
 
-					ZERO(bufferson);
-					strcat(bufferson, ui8tostr3rj(card.percentDone()));
-					strcat(bufferson, " %");
-					percentdone.setText(bufferson, "stat");						// procenty
-					progressbar.setValue(card.percentDone(), "stat"); 	// progressbar
 					if(SDstatus == SD_PRINTING || SDstatus == SD_PAUSE)
 					{
+						ref_stat_printprogress(); // odswieza progres bar, procent i czas trwania
 						NexFilename.setText(filename_printing);					// nazwa pliku
 					}
 				} // jednorazowo przy wejsciu end
+
+
+				// odswiezane stale
+				if(SDstatus == SD_PRINTING || SDstatus == SD_PAUSE)
+				{
+					if (PreviouspercentDone != card.percentDone()) 
+					{
+						ref_stat_printprogress();
+						PreviouspercentDone = card.percentDone();
+					}
+					// odswiezanie time left itp raz na kilka odswiezen ekranu
+					iterTimeLeft++;
+					
+					if(iterTimeLeft > 2)
+					{
+						ref_stat_printprogress();
+						iterTimeLeft = 0;
+					}
+				}
 
 				//Wentylator
         if (PreviousfanSpeed != thermalManager.fan_speed[0]) {
@@ -1742,35 +1787,6 @@ void NextionLCD::init(){
 				#endif
  
         coordtoLCD();
-				
-				// JESLI NASTAPILA ZMIANA PROCENOW:
-				if (PreviouspercentDone != card.percentDone()) {
-					progressbar.setValue(card.percentDone(),"stat");		// Progress bar
-
-					// Estimate End Time
-					ZERO(bufferson);
-					char buffer1[10];
-					uint8_t digit;
-					duration_t Time = print_job_timer.duration();
-					digit = Time.toDigital(buffer1, true);
-					strcat(bufferson, "Trwa ");
-					strcat(bufferson, buffer1);
-					Time = (print_job_timer.duration() * (100 - card.percentDone())) / (card.percentDone() + 0.1);
-					digit += Time.toDigital(buffer1, true);
-					if (digit > 14)
-						strcat(bufferson, " Pozostalo ");
-					else
-						strcat(bufferson, " Pozostalo ");
-					strcat(bufferson, buffer1);
-					LcdTimeElapsed.setText(bufferson, "stat");
-					PreviouspercentDone = card.percentDone();
-
-					// procenty t4
-					ZERO(bufferson); 
-					strcat(bufferson, i8tostr3rj(card.percentDone()));
-					strcat(bufferson, " %");
-					percentdone.setText(bufferson, "stat");
-				}
 
 				nex_update_sd_status();
 
