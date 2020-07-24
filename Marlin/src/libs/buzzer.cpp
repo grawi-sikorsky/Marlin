@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 
@@ -67,7 +67,8 @@ void Buzzer::tick() {
         //ExtUI::onPlayTone(state.tone.frequency, state.tone.duration);
         ::tone(BEEPER_PIN, state.tone.frequency, state.tone.duration); // dodane nextion
         CRITICAL_SECTION_END();
-      #elif ENABLED(SPEAKER)
+      #endif
+      #if ENABLED(SPEAKER) && (DISABLED(EXTENSIBLE_UI) || ENABLED(EXTUI_LOCAL_BEEPER))
         CRITICAL_SECTION_START();
         ::tone(BEEPER_PIN, state.tone.frequency, state.tone.duration);
         CRITICAL_SECTION_END();
