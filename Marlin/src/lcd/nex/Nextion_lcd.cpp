@@ -1415,7 +1415,7 @@ void NextionLCD::init(){
 	if(!NextionON)
 	{
 	}
-
+	
 	nexlcd.setup_callbacks();
 
 	#if ENABLED(FSENSOR_STATE)

@@ -425,9 +425,9 @@ namespace Language_pl {
   PROGMEM Language_Str MSG_INFO_PRINTER_MENU               = _UxGT("Info drukarki");
   PROGMEM Language_Str MSG_3POINT_LEVELING                 = _UxGT("Poziomowanie 3-punktowe");
   PROGMEM Language_Str MSG_LINEAR_LEVELING                 = _UxGT("Poziomowanie liniowe");
-  PROGMEM Language_Str MSG_BILINEAR_LEVELING               = _UxGT("Poziomowanie biliniowe");
+  PROGMEM Language_Str MSG_BILINEAR_LEVELING               = _UxGT("Auto level");
   PROGMEM Language_Str MSG_UBL_LEVELING                    = _UxGT("Unified Bed Leveling");
-  PROGMEM Language_Str MSG_MESH_LEVELING                   = _UxGT("Poziomowanie siatką");
+  PROGMEM Language_Str MSG_MESH_LEVELING                   = _UxGT("MBL");
   PROGMEM Language_Str MSG_INFO_STATS_MENU                 = _UxGT("Statystyki");
   PROGMEM Language_Str MSG_INFO_BOARD_MENU                 = _UxGT("Info płyty");
   PROGMEM Language_Str MSG_INFO_THERMISTOR_MENU            = _UxGT("Termistory");
