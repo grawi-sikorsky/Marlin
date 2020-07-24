@@ -118,7 +118,7 @@
 #if ENABLED(MKS_GEN)
   #define SERIAL_PORT 0
 #elif ENABLED(MKS_SKR)
-  #define SERIAL_PORT 0
+  #define SERIAL_PORT -1
 #endif
 // FOR PRINTOH3 MKS GEN = 0
 // FOR PRINTOH3 MKS SKR = -1
@@ -127,7 +127,7 @@
  * Select a secondary serial port on the board to use for communication with the host.
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#define SERIAL_PORT_2 -1
+//#define SERIAL_PORT_2 0
 
 /**
  * This setting determines the communication speed of the printer.

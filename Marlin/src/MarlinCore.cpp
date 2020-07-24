@@ -908,22 +908,22 @@ void setup() {
     #endif
   #endif
 
-  SETUP_RUN(HAL_init());
 
   #if NUM_SERIAL > 0
     MYSERIAL0.begin(BAUDRATE);
     uint32_t serial_connect_timeout = millis() + 1000UL;
     while (!MYSERIAL0 && PENDING(millis(), serial_connect_timeout)) { /*nada*/ }
-    SERIAL_ECHOLN("serial0 connect?");
+
     #if HAS_MULTI_SERIAL
       MYSERIAL1.begin(BAUDRATE);
       serial_connect_timeout = millis() + 1000UL;
-      while (!MYSERIAL1 && PENDING(millis(), serial_connect_timeout)) { /*nada*/ }    
-      SERIAL_ECHOLN("serial1 connect?");
+      while (!MYSERIAL1 && PENDING(millis(), serial_connect_timeout)) { /*nada*/ }   
+
     #endif
     SERIAL_ECHO_MSG("start");
-  #endif
+  #endif  
 
+  SETUP_RUN(HAL_init());
 
   #if HAS_L64XX
     SETUP_RUN(L64xxManager.init());  // Set up SPI, init drivers
@@ -1012,7 +1012,7 @@ void setup() {
     DWIN_Frame_SetDir(1); // Orientation 90°
     DWIN_UpdateLCD();     // Show bootscreen (first image)
   #else
-    SETUP_RUN(ui.init());
+    //SETUP_RUN(ui.init());
     #if HAS_SPI_LCD && ENABLED(SHOW_BOOTSCREEN)
       SETUP_RUN(ui.show_bootscreen());
     #endif
@@ -1221,6 +1221,7 @@ void setup() {
   marlin_state = MF_RUNNING;
 
   SETUP_LOG("setup() completed.");
+  SETUP_RUN(ui.init());
 }
 
 /**
