@@ -1216,7 +1216,7 @@
         #endif
 					case 5: // ustaw czujnik filamentu
 						nex_filament_runout_sensor_flag = 0;
-						persistentStore.write_data(EEPROM_NEX_FILAMENT_SENSOR, 0);
+						persistentStore.write_data(EEPROM_NEX_FILAMENT_SENSOR, (uint8_t)0);
 						PageSetup.show();
 						break;
         default:
@@ -1253,24 +1253,51 @@ void NextionLCD::connect(){
 	#endif
 }
 
-#if ENABLED(MKS_SKR)
-void NextionLCD::setRandomSeed()
-{
-  int r = 0;
-  for( int i=2; i<=64; i++)
-  {
-    r += analogRead(i);
-  }
-  randomSeed(r);
-}
-#endif
 
-// Random Splash Message
+// ===========================
+// == Random Splash Message ==
+// ===========================
 #if ENABLED(MKS_SKR)
+	void NextionLCD::setRandomSeed()
+	{
+		int r = 0;
+		for( int i=2; i<=64; i++)
+		{
+			r += analogRead(i);
+		}
+		randomSeed(r);
+	}
 
 void NextionLCD::sendRandomSplashMessage(){
 	int32_t randtemp = random(1,21);
 
+	switch(randtemp)
+	{
+		case 1: splashText.setText(MSG_SPLASH_1, STARTPAGE); break;
+		case 2: splashText.setText(MSG_SPLASH_2, STARTPAGE); break;
+		case 3: splashText.setText(MSG_SPLASH_3, STARTPAGE); break;
+		case 4: splashText.setText(MSG_SPLASH_4, STARTPAGE); break;
+		case 5: splashText.setText(MSG_SPLASH_5, STARTPAGE); break;
+		case 6: splashText.setText(MSG_SPLASH_6, STARTPAGE); break;
+		case 7: splashText.setText(MSG_SPLASH_7, STARTPAGE); break;
+		case 8: splashText.setText(MSG_SPLASH_8, STARTPAGE); break;
+		case 9: splashText.setText(MSG_SPLASH_9, STARTPAGE); break;
+		case 10: splashText.setText(MSG_SPLASH_10, STARTPAGE); break;
+		case 11: splashText.setText(MSG_SPLASH_11, STARTPAGE); break;
+		case 12: splashText.setText(MSG_SPLASH_12, STARTPAGE); break;
+		case 13: splashText.setText(MSG_SPLASH_13, STARTPAGE); break;
+		case 14: splashText.setText(MSG_SPLASH_14, STARTPAGE); break;
+		case 15: splashText.setText(MSG_SPLASH_15, STARTPAGE); break;
+		case 16: splashText.setText(MSG_SPLASH_16, STARTPAGE); break;
+		case 17: splashText.setText(MSG_SPLASH_17, STARTPAGE); break;
+		case 18: splashText.setText(MSG_SPLASH_18, STARTPAGE); break;
+		case 19: splashText.setText(MSG_SPLASH_19, STARTPAGE); break;
+		case 20: splashText.setText(MSG_SPLASH_20, STARTPAGE); break;
+		case 21: splashText.setText(MSG_SPLASH_21, STARTPAGE); break;
+		case 22: splashText.setText(MSG_SPLASH_22, STARTPAGE); break;
+	}
+
+/*
 	if(randtemp == 1)
 	{
 		splashText.setText("Let's print!","start");
@@ -1354,13 +1381,15 @@ void NextionLCD::sendRandomSplashMessage(){
 	else if(randtemp == 21)
 	{
 		splashText.setText("Stroke my belts and gears.. mrrrrr..","start");
-	}
+	}*/
 }
 #endif
 
-// SETUP CALLBACKS
+// =======================
+// == SETUP CALLBACKS		==
+// =======================
 void NextionLCD::setup_callbacks(){
-		//
+	//
 	// NEX USTAWIENIE PRZYCISKOW
 	//
 	// SDSUPPORT
@@ -1397,16 +1426,10 @@ void NextionLCD::setup_callbacks(){
 
 	// TEMPERATURA
 	heatupenter.attachPop(handle_heatingPopCallback, &heatupenter); // obsluga przycisku rozgrzej oba
-	//hotendenter.attachPop	(handle_heatingPopCallback, &hotendenter); //obsluga przycisku rozgrzej hotend
-	//heatbedenter.attachPop(handle_heatingPopCallback, &heatbedenter); //obsluga przycisku rozgrzej bed
 	chillenter.attachPop(handle_heatingPopCallback, &chillenter); //obsluga przycisku chlodzenie
 
-	
-
 	FanSetBtn.attachPop(handle_fanPage_PopCallback); //obsluga przycisku fan set
-
 	speedsetbtn.attachPop(setspeedPopCallback); //obsluga przycisku speed set
-
 	SetFlowBtn.attachPop(setflowPopCallback); //obsluga przycisku set flow
 
 	// BABYSTEP
@@ -1437,7 +1460,10 @@ void NextionLCD::setup_callbacks(){
 	// SELECT PAGE
 	LcdSend.attachPop(sendPopCallback);
 }
-// LCD INIT
+
+// =======================
+// == LCD INIT					==
+// =======================
 void NextionLCD::init(){
 
 	nexlcd.connect();
@@ -1591,6 +1617,7 @@ void NextionLCD::init(){
 	// IS_SD_INSERTED ma odwrocona logike:
 	// 1 - brak karty
 	// 0 - karta wlozona
+	/*
 	void NextionLCD::nex_check_sdcard_present()
 	{
 		#if ENABLED(SDSUPPORT) && PIN_EXISTS(SD_DETECT)
@@ -1619,7 +1646,6 @@ void NextionLCD::init(){
 			} // CALY IF SPRAWDZA STAN SD_DETECT I JEGO ZMIANE: SD jest->init / SD niet->release
 		#endif
 	}
-
 	void NextionLCD::nex_update_sd_status()
 	{
 		#if ENABLED(SDSUPPORT)
@@ -1642,7 +1668,7 @@ void NextionLCD::init(){
 				SD.setValue(SDstatus,"stat");
 			}
 		#endif // HAS_SD_SUPPORT
-	}
+	}*/
 
 // =======================
 // == LCD UPDATE				==
@@ -1677,7 +1703,7 @@ void NextionLCD::init(){
 // ===========================
 // == LCD PERIODICAL UPDATE	==
 // ===========================
-// ODSWIEZANE 0.4s ()
+// ODSWIEZANE 0.2s ()
   void NextionLCD::nextion_draw_update() {
     static uint8_t  	PreviousPage = 0,					// strona nex
                     	PreviousfanSpeed = 0,			// dotychczasowa predkosc wentylatora
@@ -1899,7 +1925,6 @@ void NextionLCD::init(){
 			LcdStatus.setText(nexlcd.lcd_status_message, "stat");
 		}
 	}
-
 
   void NextionLCD::lcd_yesno(const uint8_t val, const char* msg1, const char* msg2, const char* msg3) {
     Vyes.setValue(val, "yesno");
