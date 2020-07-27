@@ -896,6 +896,10 @@ G29_TYPE GcodeSuite::G29() {
     DWIN_CompletedLeveling();
   #endif
 
+  #if ENABLED(EXTENSIBLE_UI)
+    ExtUI::onMeshProbingDone();
+  #endif
+
   report_current_position();
 
   G29_RETURN(isnan(measured_z));

@@ -1332,7 +1332,7 @@
  * Normally G28 leaves leveling disabled on completion. Enable
  * this option to have G28 restore the prior leveling state.
  */
-//#define RESTORE_LEVELING_AFTER_G28
+#define RESTORE_LEVELING_AFTER_G28
 
 /**
  * Enable detailed logging of G28, G29, M48, etc.
@@ -1603,13 +1603,13 @@
 
 // Preheat Constants
 #define PREHEAT_1_LABEL       "PLA"
-#define PREHEAT_1_TEMP_HOTEND 180
-#define PREHEAT_1_TEMP_BED     70
+#define PREHEAT_1_TEMP_HOTEND 225
+#define PREHEAT_1_TEMP_BED     54
 #define PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
 
 #define PREHEAT_2_LABEL       "ABS"
-#define PREHEAT_2_TEMP_HOTEND 240
-#define PREHEAT_2_TEMP_BED    110
+#define PREHEAT_2_TEMP_HOTEND 250
+#define PREHEAT_2_TEMP_BED    90
 #define PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
 
 /**
@@ -1627,12 +1627,12 @@
 
 #if ENABLED(NOZZLE_PARK_FEATURE)
   // Specify a park position as { X, Y, Z_raise }
-  #define NOZZLE_PARK_POINT { (X_MIN_POS + 10), (Y_MAX_POS - 10), 20 }
+  #define NOZZLE_PARK_POINT { (X_MAX_POS - 20), (Y_MAX_POS - 10), 20 }
   //#define NOZZLE_PARK_X_ONLY          // X move only is required to park
   //#define NOZZLE_PARK_Y_ONLY          // Y move only is required to park
   #define NOZZLE_PARK_Z_RAISE_MIN   2   // (mm) Always raise Z by at least this distance
   #define NOZZLE_PARK_XY_FEEDRATE 100   // (mm/s) X and Y axes feedrate (also used for delta Z axis)
-  #define NOZZLE_PARK_Z_FEEDRATE    5   // (mm/s) Z axis feedrate (not used for delta printers)
+  #define NOZZLE_PARK_Z_FEEDRATE   20   // (mm/s) Z axis feedrate (not used for delta printers)
 #endif
 
 /**
@@ -2428,6 +2428,9 @@
 // Allow servo angle to be edited and saved to EEPROM
 //#define EDITABLE_SERVO_ANGLES
 
+
+
+
 /**
  * 
  * ************************************************************************************************************************************
@@ -2437,12 +2440,7 @@
  * 
  */
 
-
-
-
 //#define PRINTOH3_SPEAKER_SOUNDS //sd in out beeper sounds and more..
-
-//#define DEBUG_VLCS
 
   #define EEPROM_PANIC_POWER_FAIL		4088								// 1 - POWER LOSS INDICATOR
   #define EEPROM_PANIC_POWER_FAIL_COUNT	(EEPROM_PANIC_POWER_FAIL-2)			// 2 - POWER LOSS COUNTER
@@ -2460,16 +2458,13 @@
   #define EEPROM_SD_FILE_DIR_DEPTH		(EEPROM_SD_FILENAME-1)				// 1 - zagniezdzenie pliku
   #define EEPROM_SD_DIRS				(EEPROM_SD_FILE_DIR_DEPTH-80)		// 8x10 @_@
   #define EEPROM_PANIC_BABYSTEP_Z		(EEPROM_SD_DIRS-4)					// 4 - long 4 bajty
-	
 	#define EEPROM_NEX_FILAMENT_SENSOR (EEPROM_PANIC_BABYSTEP_Z-1) // 1bajt bool
-
-
-//3 Obama SD Care - reakcja po wyjęciu karty SD
 
   //
   // Nextion
   //
-//#define NEX_UPLOAD
+
+  //#define NEX_UPLOAD
   #define NEXTION_DISPLAY
   #define NEXTION_SERIAL 2
   //#define NEXTION_CONNECT_DEBUG
@@ -2477,6 +2472,7 @@
   // For GFX preview visualization enable NEXTION GFX
   //#define NEXTION_GFX
 	//#define NEX_UPLOAD // dodane na chwile
+
   // Define name firmware file for Nextion on SD
   #define NEXTION_FIRMWARE_FILE "printoh3nex35.tft"
 
@@ -2491,8 +2487,6 @@
   #endif
   //#define NEXTION_STEP_SETTINGS
 
-// FSENSOR ONOFF
+  // FSENSOR ONOFF
 	//#define FSENSOR_STATE
 	#define FSENSOR_USER_STATE
-//G28 after print stop
-	#define STOP_PRINT_G28

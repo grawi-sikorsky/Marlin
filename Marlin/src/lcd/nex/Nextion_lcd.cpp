@@ -869,9 +869,9 @@
 				set_destination_to_current();
 
         if (ptr == &ProbeUp){
-          destination[Z_AXIS] += (MESH_EDIT_Z_STEP); SERIAL_ECHOLN("probeup"); }
+          destination[Z_AXIS] += (MESH_EDIT_Z_STEP); }
         else{
-          destination[Z_AXIS] -= (MESH_EDIT_Z_STEP); SERIAL_ECHOLN("probedown"); }
+          destination[Z_AXIS] -= (MESH_EDIT_Z_STEP); }
 
         NOLESS(destination[Z_AXIS], -(LCD_PROBE_Z_RANGE) * 0.5);
         NOMORE(destination[Z_AXIS], (LCD_PROBE_Z_RANGE) * 0.5);
@@ -886,7 +886,6 @@
       }
       
 			else if (ptr == &ProbeSend) {
-				SERIAL_ECHOLNPGM("probesend:");
         #if HAS_LEVELING && ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
 				//if (g29_in_progress == true) {
 					queue.inject_P("G29 S2");
@@ -2068,7 +2067,14 @@ void NextionLCD::init(){
 		void onMeshProbingDone(){
 			settings.save();
 			buzzer.tone(1000,1000);
-			nexlcd.return_after_leveling(true);
+			buzzer.tone(100, 659);
+			buzzer.tone(100, 698);
+
+			#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
+			#elif ENABLED(NEXTION_AUTO_BED_LEVEL)
+			#endif
+
+			PagePrinter.show();
 		}
 
 		// Szkieletowe z example - do wypelnienia
@@ -2081,7 +2087,6 @@ void NextionLCD::init(){
 		void onPrintTimerStopped() {}
 		void onFilamentRunout(const extruder_t extruder) {}
 		void onUserConfirmRequired(const char * const msg) {}
-		void onFactoryReset() {}
 
 		void onStoreSettings(char *buff) {
 			// Called when saving to EEPROM (i.e. M500). If the ExtUI needs
@@ -2106,11 +2111,20 @@ void NextionLCD::init(){
 		void onConfigurationStoreWritten(bool success) {
 			// Called after the entire EEPROM has been written,
 			// whether successful or not.
+			BUZZ(70, 2300); // dodane beeper git
+			BUZZ(70, 2900); // dodane beeper git
 		}
 
 		void onConfigurationStoreRead(bool success) {
 			// Called after the entire EEPROM has been read,
 			// whether successful or not.
+			BUZZ(70, 2300); // dodane beeper git
+			BUZZ(70, 2900); // dodane beeper git
+		}
+
+		void onFactoryReset(){
+			BUZZ(70, 2900); // dodane beeper git	
+			BUZZ(70, 2300); // dodane beeper git
 		}
 
 		#if ENABLED(POWER_LOSS_RECOVERY)
