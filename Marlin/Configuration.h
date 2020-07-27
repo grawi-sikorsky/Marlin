@@ -67,12 +67,12 @@
 // For a SCARA printer start with the configuration files in
 // config/examples/SCARA and customize for your machine.
 //
-
 // @section info
 
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "(Printo3d.pl, Jakub Sikora)" // Who made the changes.
 #define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
+
 
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
@@ -82,17 +82,17 @@
 //#define PRINTO_H3_PLUS
 //#define PRINTO_H3_TOWER
 //#define PRINTO_H3_TOWERPLUS
-//#define PRINTO_H3_BIGGIE
 #define PRINTO_H3_MIDI
 //#define PRINTO_H3_MIDI350
+//#define PRINTO_H3_BIGGIE
 
-//lcd 3.0
+// Wybor sterownika:
+//#define MKS_GEN
+#define MKS_SKR
+
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
 // ============================================
-
-//#define MKS_GEN
-#define MKS_SKR
 
 #if defined(PRINTO_H3_PLUS) || defined(PRINTO_H3_TOWERPLUS)// || defined(PRINTO_H3_BIGGIE)
 	#define PLOSS_SUPPORT
@@ -143,6 +143,7 @@
   #define SERIAL_PORT 0
 #elif ENABLED(MKS_SKR)
   #define SERIAL_PORT -1
+  // serial port 2 jest ustawiony na nextiona, nie musi byc nizej definiowany
 #endif
 // FOR PRINTOH3 MKS GEN = 0
 // FOR PRINTOH3 MKS SKR = -1
@@ -867,7 +868,7 @@
  *   https://blog.kyneticcnc.com/2018/10/computing-junction-deviation-for-marlin.html
  */
 #if DISABLED(CLASSIC_JERK)
-  #define JUNCTION_DEVIATION_MM 0.013 // (mm) Distance from real junction edge
+  #define JUNCTION_DEVIATION_MM 0.015 // (mm) Distance from real junction edge
   #define JD_HANDLE_SMALL_SEGMENTS    // Use curvature estimation instead of just the junction angle
                                       // for small segments (< 1mm) with large junction angles (> 135°).
 #endif
@@ -1106,7 +1107,7 @@
 #endif
 //#define PROBING_FANS_OFF          // Turn fans off when probing
 //#define PROBING_STEPPERS_OFF      // Turn steppers off (unless needed to hold position) when probing
-//#define DELAY_BEFORE_PROBING 200  // (ms) To prevent vibrations from triggering piezo sensors
+#define DELAY_BEFORE_PROBING 900  // (ms) To prevent vibrations from triggering piezo sensors
 
 // For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
 // :{ 0:'Low', 1:'High' }
@@ -1179,12 +1180,6 @@
 #define Z_BED_SIZE 406
 #endif
 
-#if defined(PRINTO_H3_BIGGIE)
-#define X_BED_SIZE 305
-#define Y_BED_SIZE 310
-#define Z_BED_SIZE 520
-#endif
-
 #if defined(PRINTO_H3_MIDI)
 #define X_BED_SIZE 305
 #define Y_BED_SIZE 310
@@ -1195,6 +1190,12 @@
 #define X_BED_SIZE 360
 #define Y_BED_SIZE 365
 #define Z_BED_SIZE 206
+#endif
+
+#if defined(PRINTO_H3_BIGGIE)
+#define X_BED_SIZE 305
+#define Y_BED_SIZE 310
+#define Z_BED_SIZE 520
 #endif
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
