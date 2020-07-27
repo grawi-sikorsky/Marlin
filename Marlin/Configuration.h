@@ -1317,8 +1317,8 @@
   #ifdef NEXTION_SEMIAUTO_BED_LEVEL
     #define MESH_BED_LEVELING
     #define PROBE_MANUALLY 
-    #define LCD_Z_STEP 0.04
-    #define MANUAL_PROBE_START_Z 0    //  pozycja startowa kazdego punktu Z podczas probkowania
+    #define MANUAL_PROBE_START_Z 0    // pozycja startowa kazdego punktu Z podczas probkowania
+    #define LCD_BED_LEVELING          // marlin dla Z_STEP i Probe Range
   #endif
 
   // auto
@@ -1371,7 +1371,12 @@
 #if EITHER(AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_BILINEAR)
 
   // Set the number of grid points per dimension.
-  #define GRID_MAX_POINTS_X 3
+  #if ENABLED(PRINTO_H3_MIDI) || ENABLED(PRINTO_H3_MIDI350) || ENABLED(PRINTO_H3_BIGGIE)
+    #define GRID_MAX_POINTS_X 3    // Don't use more than 7 points per axis, implementation limited.
+  #else
+    #define GRID_MAX_POINTS_X 2    // Don't use more than 7 points per axis, implementation limited.
+  #endif
+
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   // Probe along the Y axis, advancing X after each column
@@ -1387,7 +1392,7 @@
     // Experimental Subdivision of the grid by Catmull-Rom method.
     // Synthesizes intermediate points to produce a more detailed mesh.
     //
-    //#define ABL_BILINEAR_SUBDIVISION
+    #define ABL_BILINEAR_SUBDIVISION
     #if ENABLED(ABL_BILINEAR_SUBDIVISION)
       // Number of subdivisions between probe points
       #define BILINEAR_SUBDIVISIONS 3
@@ -1437,12 +1442,9 @@
  * Add a bed leveling sub-menu for ABL or MBL.
  * Include a guided procedure if manual probing is enabled.
  */
-#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
-  #define LCD_BED_LEVELING
-#endif
 
 #if ENABLED(LCD_BED_LEVELING)
-  #define MESH_EDIT_Z_STEP  0.04 // (mm) Step size while manually probing Z axis.
+  #define MESH_EDIT_Z_STEP  0.04   // (mm) Step size while manually probing Z axis.
   #define LCD_PROBE_Z_RANGE 16     // (mm) Z Range centered on Z_MIN_POS for LCD Z adjustment
   //#define MESH_EDIT_MENU        // Add a menu to edit mesh points
 #endif
