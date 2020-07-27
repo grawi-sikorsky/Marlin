@@ -1028,12 +1028,10 @@
 
 		void NextionLCD::setaccelsavebtnPopCallback(void *ptr){
 			settings.save();
-			SERIAL_ECHOPGM("zapisane");
 		}
 
 		void NextionLCD::setaccelloadbtnPopCallback(void *ptr){
 			settings.load();
-			SERIAL_ECHOPGM("zaladowane");
 		}
 	#endif
 
@@ -1068,7 +1066,10 @@
 	}
 
 	void NextionLCD::setBabystepEEPROMPopCallback(void *ptr){
-		//KATT eeprom_update_dword((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);
+		persistentStore.access_start();
+		persistentStore.write_data(EEPROM_PANIC_BABYSTEP_Z, _babystep_z_shift);
+		persistentStore.access_finish();
+		// eeprom_update_dword((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);
 	}
 
 	void NextionLCD::setspeedPopCallback(void *ptr) {
@@ -1195,7 +1196,7 @@
           break;
 				case 5: // ustaw czujnik filamentu
 					nex_filament_runout_sensor_flag = 1;
-					//KATT PersistentStore.write_data(0x0F0F0F, (uint8_t*)EEPROM_NEX_FILAMENT_SENSOR);
+					persistentStore.write_data(EEPROM_NEX_FILAMENT_SENSOR, 1);
 					PageSetup.show();
 					break;
         default: break;
@@ -1215,7 +1216,7 @@
         #endif
 					case 5: // ustaw czujnik filamentu
 						nex_filament_runout_sensor_flag = 0;
-						//KATT eeprom_update_byte((uint8_t*)EEPROM_NEX_FILAMENT_SENSOR, 0);
+						persistentStore.write_data(EEPROM_NEX_FILAMENT_SENSOR, 0);
 						PageSetup.show();
 						break;
         default:
