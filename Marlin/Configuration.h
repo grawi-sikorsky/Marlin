@@ -77,13 +77,37 @@
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
 // ============================================
-#define PRINTO_H3
+
+//#define PRINTO_H3
 //#define PRINTO_H3_PLUS
 //#define PRINTO_H3_TOWER
 //#define PRINTO_H3_TOWERPLUS
+//#define PRINTO_H3_BIGGIE
+#define PRINTO_H3_MIDI
+//#define PRINTO_H3_MIDI350
+
+//lcd 3.0
+// ============================================
+// WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
+// ============================================
 
 //#define MKS_GEN
 #define MKS_SKR
+
+#if defined(PRINTO_H3_PLUS) || defined(PRINTO_H3_TOWERPLUS)// || defined(PRINTO_H3_BIGGIE)
+	#define PLOSS_SUPPORT
+	#define PLOSS_MANUAL_RECOVERY
+#endif
+#if defined(PRINTO_H3) || defined(PRINTO_H3_TOWER)
+	//#define PLOSS_SUPPORT
+	//#define PLOSS_MANUAL_RECOVERY
+#endif
+
+// BED LEVELING NEXTION
+	#define NEXTION_SEMIAUTO_BED_LEVEL  // mesh bed leveling - semi auto
+  //#define NEXTION_AUTO_BED_LEVEL     // bilinear bed leveling - auto
+
+
 
 /**
  * *** VENDORS PLEASE READ ***
@@ -1264,7 +1288,22 @@
 //#define AUTO_BED_LEVELING_LINEAR
 //#define AUTO_BED_LEVELING_BILINEAR
 //#define AUTO_BED_LEVELING_UBL
-#define MESH_BED_LEVELING
+//#define MESH_BED_LEVELING
+
+
+  // semi auto
+  #ifdef NEXTION_SEMIAUTO_BED_LEVEL
+    #define MESH_BED_LEVELING
+    #define PROBE_MANUALLY 
+    #define LCD_Z_STEP 0.04
+  #endif
+
+  // auto
+  #ifdef NEXTION_AUTO_BED_LEVEL 
+    #define AUTO_BED_LEVELING_BILINEAR
+    #define FIX_MOUNTED_PROBE  
+  #endif
+
 
 /**
  * Normally G28 leaves leveling disabled on completion. Enable
@@ -1357,8 +1396,14 @@
   //=================================== Mesh ==================================
   //===========================================================================
 
-  #define MESH_INSET 30          // Set Mesh bounds as an inset region of the bed
-  #define GRID_MAX_POINTS_X 2    // Don't use more than 7 points per axis, implementation limited.
+  #define MESH_INSET 40          // Set Mesh bounds as an inset region of the bed
+
+  #if ENABLED(PRINTO_H3_MIDI) || ENABLED(PRINTO_H3_MIDI350) || ENABLED(PRINTO_H3_BIGGIE)
+    #define GRID_MAX_POINTS_X 3    // Don't use more than 7 points per axis, implementation limited.
+  #else
+    #define GRID_MAX_POINTS_X 2    // Don't use more than 7 points per axis, implementation limited.
+  #endif
+  
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   //#define MESH_G28_REST_ORIGIN // After homing all axes ('G28' or 'G28 XYZ') rest Z at Z_MIN_POS

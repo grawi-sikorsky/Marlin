@@ -42,23 +42,7 @@
  * here we define this default string as the date where the latest release
  * version was tagged.
  */
-#define STRING_DISTRIBUTION_DATE "2020-07-24"
-
-/**
- * Definiuje nazwe drukarki (wybor w configuration.h)
- */
-#ifdef PRINTO_H3
-	#define CUSTOM_MACHINE_NAME "Printo H3"
-#endif
-#ifdef PRINTO_H3_PLUS
-	#define CUSTOM_MACHINE_NAME "Printo H3+"
-#endif
-#ifdef PRINTO_H3_TOWER
-	#define CUSTOM_MACHINE_NAME "Printo H3 Tower"
-#endif
-#ifdef PRINTO_H3_TOWERPLUS
-	#define CUSTOM_MACHINE_NAME "Printo H3+ Tower"
-#endif
+#define STRING_DISTRIBUTION_DATE "2020-07-27"
 
 /**
  * Definiuje nazwe drukarki (wybor w configuration.h)
@@ -79,9 +63,11 @@
 	#define CUSTOM_MACHINE_NAME "Printo H3 Ex"
 #endif
 #ifdef PRINTO_H3_MIDI
-#define CUSTOM_MACHINE_NAME "Printo H3 Midi"
+	#define CUSTOM_MACHINE_NAME "Printo H3 Midi"
 #endif
-
+#ifdef PRINTO_H3_MIDI350
+	#define CUSTOM_MACHINE_NAME "Printo H3 Midi350"
+#endif
 
 /**
  * The SOURCE_CODE_URL is the location where users will find the Marlin Source
