@@ -869,9 +869,9 @@
 				set_destination_to_current();
 
         if (ptr == &ProbeUp){
-          destination[Z_AXIS] += (LCD_Z_STEP); SERIAL_ECHOLN("probeup"); }
+          destination[Z_AXIS] += (MESH_EDIT_Z_STEP); SERIAL_ECHOLN("probeup"); }
         else{
-          destination[Z_AXIS] -= (LCD_Z_STEP); SERIAL_ECHOLN("probedown"); }
+          destination[Z_AXIS] -= (MESH_EDIT_Z_STEP); SERIAL_ECHOLN("probedown"); }
 
         NOLESS(destination[Z_AXIS], -(LCD_PROBE_Z_RANGE) * 0.5);
         NOMORE(destination[Z_AXIS], (LCD_PROBE_Z_RANGE) * 0.5);
