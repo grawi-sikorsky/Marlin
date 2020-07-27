@@ -762,12 +762,12 @@ void idle(TERN_(ADVANCED_PAUSE_FEATURE, bool no_stepper_sleep/*=false*/)) {
   // Direct Stepping
   TERN_(DIRECT_STEPPING, page_manager.write_responses());
 
-  #if ENABLED(NEXTION)
+  #if ENABLED(NEXTION_DISPLAY)
     nexlcd.check_periodical_actions(); //dodane dla nextion
   #endif
   //ui.update();
 
-  //TERN_(NEXTION,nexlcd.check_periodical_actions());  // nowosc dodane nex
+  //TERN_(NEXTION_DISPLAY,nexlcd.check_periodical_actions());  // nowosc dodane nex
 
   #if ENABLED(TFT_LVGL_UI)
     LV_TASK_HANDLER();
@@ -1242,7 +1242,7 @@ void loop() {
   do {
     idle();
     
-    #if ENABLED(NEXTION)
+    #if ENABLED(NEXTION_DISPLAY)
       nexlcd.check_periodical_actions(); //dodane dla nextion PRINTO H3
     #endif
 

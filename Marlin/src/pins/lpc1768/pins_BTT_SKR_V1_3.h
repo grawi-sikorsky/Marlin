@@ -32,7 +32,7 @@
 #define E0_DIAG_PIN                        P1_28  // X+
 #define E1_DIAG_PIN                        P1_26  // Y+
 
-#if ENABLED(NEXTION)
+#if ENABLED(NEXTION_DISPLAY)
       #define RX1    P1_18
       #define TX1    P1_19
 #endif

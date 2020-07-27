@@ -35,7 +35,7 @@ GCodeQueue queue;
 #include "../module/temperature.h"
 #include "../MarlinCore.h"
 
-#if ENABLED(NEXTION)
+#if ENABLED(NEXTION_DISPLAY)
   #include "../../src/lcd/nex/Nextion_lcd.h"
 #endif
 

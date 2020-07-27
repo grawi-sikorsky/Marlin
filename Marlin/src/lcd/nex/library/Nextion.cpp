@@ -34,7 +34,7 @@
   #include <stdlib.h>
 #endif
 
-#if ENABLED(NEXTION)
+#if ENABLED(NEXTION_DISPLAY)
 
   #include "Nextion.h"
 
@@ -975,4 +975,4 @@
     sendCommand("ref 0");
   }
 
-#endif // NEXTION
+#endif // NEXTION_DISPLAY

@@ -386,7 +386,7 @@
   #define EXTENSIBLE_UI
 #endif
 
-#ifdef NEXTION
+#ifdef NEXTION_DISPLAY
   //#define IS_EXTUI
   //#define EXTENSIBLE_UI
   //#define 

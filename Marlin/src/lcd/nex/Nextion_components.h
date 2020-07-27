@@ -7,7 +7,7 @@
 #include "../../lcd/extui/ui_api.h"
 #pragma once
 
-#if ENABLED(NEXTION)
+#if ENABLED(NEXTION_DISPLAY)
   #include "Nextion_lcd.h"
   #include "Nextion_gfx.h"
   #include "library/Nextion.h"
@@ -211,13 +211,22 @@
    * NEX komponenty strona: Probe BEDLEVEL 12
    *******************************************************************
    */
+	#if ENABLED (NEXTION_SEMIAUTO_BED_LEVEL)
   NexObject ProbeUp     = NexObject(12, 1,  "p0");
   NexObject ProbeSend   = NexObject(12, 2,  "p1");
   NexObject ProbeDown   = NexObject(12, 3,  "p2");
   //NexObject ProbeMsg    = NexObject(14, 4,  "t0");
   NexObject ProbeZ      = NexObject(12, 5,  "t1");
-	// 
-	// == 4
+	#endif
+  /**
+   *******************************************************************
+   * NEX komponenty strona: Probe AUTOBEDLEVEL 35
+   *******************************************************************
+   */
+	#if ENABLED (NEXTION_AUTO_BED_LEVEL)
+	  NexObject ProbeZ      = NexObject(EPageBedlevelAuto, 2,  "t1");
+		//NexObject Points      = NexObject(EPageBedlevelAuto, 5,  "t1");
+	#endif
 
 	/**
 	*******************************************************************

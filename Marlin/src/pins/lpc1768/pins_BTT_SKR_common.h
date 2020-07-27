@@ -92,7 +92,7 @@
 //
 // LCD / Controller
 //
-#if HAS_SPI_LCD || ENABLED(NEXTION)
+#if HAS_SPI_LCD || ENABLED(NEXTION_DISPLAY)
   #define BEEPER_PIN       P1_30   // (37) not 5V tolerant
 #endif
 

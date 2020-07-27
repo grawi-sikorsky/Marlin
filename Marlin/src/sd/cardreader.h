@@ -179,7 +179,7 @@ public:
     }
   #endif
 
-  #if ENABLED(NEXTION)
+  #if ENABLED(NEXTION_DISPLAY)
     void getfilename(uint16_t nr, const char* const match=NULL);
     uint16_t getnrfilenames();
   #endif

@@ -1167,9 +1167,35 @@
 
 // @section machine
 
-// The size of the print bed
+#if defined(PRINTO_H3) || defined(PRINTO_H3_PLUS)
 #define X_BED_SIZE 205
 #define Y_BED_SIZE 210
+#define Z_BED_SIZE 206
+#endif
+
+#if defined(PRINTO_H3_TOWER) || defined(PRINTO_H3_TOWERPLUS)
+#define X_BED_SIZE 205
+#define Y_BED_SIZE 210
+#define Z_BED_SIZE 406
+#endif
+
+#if defined(PRINTO_H3_BIGGIE)
+#define X_BED_SIZE 305
+#define Y_BED_SIZE 310
+#define Z_BED_SIZE 520
+#endif
+
+#if defined(PRINTO_H3_MIDI)
+#define X_BED_SIZE 305
+#define Y_BED_SIZE 310
+#define Z_BED_SIZE 206
+#endif
+
+#if defined(PRINTO_H3_MIDI350)
+#define X_BED_SIZE 360
+#define Y_BED_SIZE 365
+#define Z_BED_SIZE 206
+#endif
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #define X_MIN_POS 0
@@ -1177,13 +1203,8 @@
 #define Z_MIN_POS 0
 #define X_MAX_POS X_BED_SIZE
 #define Y_MAX_POS Y_BED_SIZE
+#define Z_MAX_POS Z_BED_SIZE
 
-#if defined(PRINTO_H3) || defined(PRINTO_H3_PLUS)
-#define Z_MAX_POS 206
-#endif
-#if defined(PRINTO_H3_TOWER) || defined(PRINTO_H3_TOWERPLUS)
-#define Z_MAX_POS 406
-#endif
 
 
 /**
@@ -1296,6 +1317,7 @@
     #define MESH_BED_LEVELING
     #define PROBE_MANUALLY 
     #define LCD_Z_STEP 0.04
+    #define MANUAL_PROBE_START_Z 0    //  pozycja startowa kazdego punktu Z podczas probkowania
   #endif
 
   // auto
@@ -1403,7 +1425,7 @@
   #else
     #define GRID_MAX_POINTS_X 2    // Don't use more than 7 points per axis, implementation limited.
   #endif
-  
+
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   //#define MESH_G28_REST_ORIGIN // After homing all axes ('G28' or 'G28 XYZ') rest Z at Z_MIN_POS
@@ -1414,7 +1436,9 @@
  * Add a bed leveling sub-menu for ABL or MBL.
  * Include a guided procedure if manual probing is enabled.
  */
-//#define LCD_BED_LEVELING
+#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
+  #define LCD_BED_LEVELING
+#endif
 
 #if ENABLED(LCD_BED_LEVELING)
   #define MESH_EDIT_Z_STEP  0.04 // (mm) Step size while manually probing Z axis.
@@ -2443,11 +2467,9 @@
   // Nextion
   //
 //#define NEX_UPLOAD
-  #define NEXTION
   #define NEXTION_DISPLAY
   #define NEXTION_SERIAL 2
   //#define NEXTION_CONNECT_DEBUG
-	//#define NEXTION_DEBUG
 
   // For GFX preview visualization enable NEXTION GFX
   //#define NEXTION_GFX
@@ -2465,12 +2487,6 @@
 	  #define NEXTION_JERK_SETTINGS
   #endif
   //#define NEXTION_STEP_SETTINGS
-
-// BED LEVELING NEXTION
-	#define NEXTION_BED_LEVEL
-	#define LCD_Z_STEP 0.04
-  #define LCD_PROBE_Z_RANGE 16
-	#define PROBE_MANUALLY
 
 // FSENSOR ONOFF
 	//#define FSENSOR_STATE

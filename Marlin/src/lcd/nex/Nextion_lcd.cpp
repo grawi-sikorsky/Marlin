@@ -25,7 +25,7 @@
 	int _babystep_z_shift = 0;
 #endif
 
-#if ENABLED(NEXTION)
+#if ENABLED(NEXTION_DISPLAY)
   #include "Nextion_lcd.h"
 	#include "Nextion_components.h"
   #include "Nextion_gfx.h"
@@ -117,6 +117,9 @@
 			persistentStore.writedata((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);	// zeruj babystepping w eeprom
 		#endif
 
+		SDstatus = SD_INSERT;
+		SD.setValue(SDstatus,"stat");				// 
+
 		percentdone.setText("0", "stat");		// zeruj procenty
 		progressbar.setValue(0, "stat");			// zeruj progress bar
 		ui.set_status_P(GET_TEXT(MSG_PRINT_ABORTED), -1);	// status bar info
@@ -135,6 +138,9 @@
         	queue.inject_P(PSTR("M125"));
         #endif
 				ui.set_status_P(GET_TEXT(MSG_PRINT_PAUSED), 1);
+
+				SDstatus = SD_PAUSE;
+				SD.setValue(SDstatus,"stat");// ustaw nex sdval na pause
       }
       else {																					//resume
 				#if ENABLED(PARK_HEAD_ON_PAUSE)
@@ -144,6 +150,9 @@
 				print_job_timer.start();
 				#endif
 				ui.set_status_P(GET_TEXT(MSG_RESUME_PRINT), 1);
+
+				SDstatus = SD_PRINTING;
+				SD.setValue(SDstatus,"stat");
       }
     }
   }
@@ -319,6 +328,9 @@
 				_babystep_z_shift = 0;																												// zeruj babystep po uruchomieniu wydruku
 				//KATT eeprom_update_dword((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);	// zeruj babystepping w eeprom
 			#endif // jezeli VLCS wlaczone
+
+			SDstatus = SD_PRINTING;
+			SD.setValue(SDstatus,"stat"); // ustaw nex sdval na printing
 
       card.openAndPrintFile(filename);
 
@@ -850,16 +862,16 @@
 	/**
 	 * 	BED LEVELING SUPPORT
 	 */
-	#if ENABLED(NEXTION_BED_LEVEL)
+	#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
     void NextionLCD::ProbelPopCallBack(void *ptr){
       if (ptr == &ProbeUp || ptr == &ProbeDown) {
 
 				set_destination_to_current();
 
-        if (ptr == &ProbeUp)
-          destination[Z_AXIS] += (LCD_Z_STEP);
-        else
-          destination[Z_AXIS] -= (LCD_Z_STEP);
+        if (ptr == &ProbeUp){
+          destination[Z_AXIS] += (LCD_Z_STEP); SERIAL_ECHOLN("probeup"); }
+        else{
+          destination[Z_AXIS] -= (LCD_Z_STEP); SERIAL_ECHOLN("probedown"); }
 
         NOLESS(destination[Z_AXIS], -(LCD_PROBE_Z_RANGE) * 0.5);
         NOMORE(destination[Z_AXIS], (LCD_PROBE_Z_RANGE) * 0.5);
@@ -875,7 +887,7 @@
       
 			else if (ptr == &ProbeSend) {
 				SERIAL_ECHOLNPGM("probesend:");
-        #if HAS_LEVELING && ENABLED(NEXTION_BED_LEVEL)
+        #if HAS_LEVELING && ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
 				//if (g29_in_progress == true) {
 					queue.inject_P("G29 S2");
 				//}
@@ -883,13 +895,30 @@
 					wait_for_user = false;
       }
     }
+	#endif
 
+	#if ENABLED(NEXTION_DISPLAY)
 	void NextionLCD::return_after_leveling(bool finish)
 	{
-		if (finish == true)
-		{
-			PagePrinter.show();
-		}
+		buzzer.tone(100, 659);
+		buzzer.tone(100, 698);
+
+		#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
+		//nex_ss_state = eeprom_read_byte((uint8_t*)EEPROM_NEX_SS_STATE); // przywroc stan SS sprzed poziomowania
+			if (finish == true)
+			{
+				PagePrinter.show();
+			}
+		
+		#elif ENABLED(NEXTION_AUTO_BED_LEVEL)
+		  enqueue_and_echo_commands_P(PSTR("M500"));  // dodane aby zapisywało poziomowanie podczas trwania funkcji
+			//enqueue_and_echo_commands_P(PSTR("G28"));  // dodane aby zapisywało poziomowanie podczas trwania funkcji
+			if (finish == true)
+			{
+				Pprinter.show();
+			}
+			home_all_axes();
+		#endif
 	}
 
 	#endif
@@ -1343,7 +1372,7 @@ void NextionLCD::setup_callbacks(){
 	#endif
 
 	// BED LEVEL
-	#if ENABLED(NEXTION_BED_LEVEL)
+	#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
 		ProbeUp.attachPush(ProbelPopCallBack, &ProbeUp);
 		ProbeSend.attachPop(ProbelPopCallBack, &ProbeSend);
 		ProbeDown.attachPush(ProbelPopCallBack, &ProbeDown);
@@ -1667,7 +1696,7 @@ void NextionLCD::init(){
     PageID = Nextion_PageID();																		// sprawdz strone
 		if(PageID == 100 || PageID == 101)	PageID = PreviousPage;		// jesli na serialu lipa (przyczyna?) to loop do nastepnej proby
 
-		nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
+		//nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
 
 		// timeout screen saver
 		#if ENABLED(NEX_SCREENSAVER)
@@ -1788,7 +1817,7 @@ void NextionLCD::init(){
  
         coordtoLCD();
 
-				nex_update_sd_status();
+				//nex_update_sd_status();
 
 				#if HAS_SD_RESTART
           if (restart.count && restart.job_phase == RESTART_IDLE) {
@@ -1813,13 +1842,13 @@ void NextionLCD::init(){
 				break;
 			#endif
 			case EPageHeating:
-				nex_update_sd_status();
+				//nex_update_sd_status();
 				break;
 			case EPageMaintain:
-				nex_update_sd_status();
+				//nex_update_sd_status();
 				break;
 			case EPageSetup:
-				nex_update_sd_status();
+				//nex_update_sd_status();
 				break;
       case EPageMove: // move page
         coordtoLCD();
@@ -1883,7 +1912,7 @@ void NextionLCD::init(){
 	void NextionLCD::kill_screen_msg(const char* lcd_msg, PGM_P const component)
 	{
 		PageKill.show();
-		Kmsg.setText_PGM(lcd_msg,"killpage");
+		Kmsg.setText_PGM(lcd_msg,"kill");
 	}
 
 	// dodana obsluga babystep
@@ -2006,32 +2035,30 @@ void NextionLCD::init(){
 
 		// SD CARD OBSLUGA
 		void onMediaInserted() {
-			//SDstatus = SD_INSERT; // przekaz flage do strony status
-			//SD.setValue(SDstatus, "stat");
+			SDstatus = SD_INSERT; 						// przekaz flage do strony stat
+			SD.setValue(SDstatus, "stat");		// nex SDval
 			SERIAL_ECHOLN("onMediaInsert..");
-			//ui.set_status_P(GET_TEXT(MSG_MEDIA_INSERTED));
 
 			PageID = Nextion_PageID();
 			if (PageID == EPageSD)
 			{
-				//nexlcd.setpageSD();	// ustaw strone i
+				nexlcd.setpageSD();							// ustaw strone i
 			}
 		};
 
 		void onMediaRemoved() { 
-			//SDstatus = SD_NO_INSERT; // przekaz flage do strony status
-			//SD.setValue(SDstatus, "stat");
+			SDstatus = SD_NO_INSERT; 					// przekaz flage do strony status
+			SD.setValue(SDstatus, "stat");		// nex SDval
 			SERIAL_ECHOLN("onMediaRemoved..");
-			//ui.set_status_P(GET_TEXT(MSG_MEDIA_REMOVED));
 
 			PageID = Nextion_PageID();
 			if (PageID == EPageSD)
 			{
-				//nexlcd.setpageSD();	// ustaw strone i 
+				nexlcd.setpageSD();							// ustaw strone i 
 			}
 		};
 
-		void onMediaError(){};		
+		void onMediaError(){SERIAL_ECHOLN("onMediaERROR..");};
 
 		// STATUS BAR
 		void onStatusChanged(const char * const msg) {

@@ -29,7 +29,7 @@
  * For Stallguard homing to max swap the min / max pins so
  * the MAX physical connectors can be used for other things.
  */
-#if ENABLED(NEXTION)
+#if ENABLED(NEXTION_DISPLAY)
       #define RX1    P1_18
       #define TX1    P1_19
 #endif

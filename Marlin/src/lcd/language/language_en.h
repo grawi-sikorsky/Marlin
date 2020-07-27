@@ -631,7 +631,7 @@ namespace Language_en {
   PROGMEM Language_Str MSG_BACKLASH_CORRECTION             = _UxGT("Correction");
   PROGMEM Language_Str MSG_BACKLASH_SMOOTHING              = _UxGT("Smoothing");
 
-    #if ENABLED(NEXTION)
+    #if ENABLED(NEXTION_DISPLAY)
       PROGMEM Language_Str MSG_NEX_FILAMENT_CHANGE_HEADER				= _UxGT("Wymiana filamentu");
       PROGMEM Language_Str MSG_NEX_FILAMENT_CHANGE_OPTION_HEADER	= _UxGT("Wybierz opcje");
       PROGMEM Language_Str MSG_FILAMENT_CHANGE_INIT_1         = _UxGT("Trwa rozpoczynanie");

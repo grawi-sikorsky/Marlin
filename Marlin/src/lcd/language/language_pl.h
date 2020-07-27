@@ -527,7 +527,7 @@ namespace Language_pl {
     PROGMEM Language_Str MSG_FILAMENT_CHANGE_CONT_PURGE    = _UxGT(MSG_2_LINE("Kliknij by zakończyć", "oczyszczanie filamentu"));
     PROGMEM Language_Str MSG_FILAMENT_CHANGE_RESUME        = _UxGT(MSG_2_LINE("Czekam na", "wznowienie wydruku..."));
 
-  #elif ENABLED(NEXTION)
+  #elif ENABLED(NEXTION_DISPLAY)
       PROGMEM Language_Str MSG_NEX_FILAMENT_CHANGE_HEADER				= _UxGT("Wymiana filamentu");
       PROGMEM Language_Str MSG_NEX_FILAMENT_CHANGE_OPTION_HEADER	= _UxGT("Wybierz opcje");
       PROGMEM Language_Str MSG_FILAMENT_CHANGE_INIT_1         = _UxGT("Trwa rozpoczynanie");

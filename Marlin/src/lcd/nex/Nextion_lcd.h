@@ -37,7 +37,7 @@
   std::string cmd;// = String("");
 #endif
 
-#if ENABLED(NEXTION)
+#if ENABLED(NEXTION_DISPLAY)
 
 class NextionLCD 
 {
@@ -185,6 +185,6 @@ extern NextionLCD nexlcd;
 
 extern float feedrate_mm_s; 
 
-#endif // ENABLED(NEXTION)
+#endif // ENABLED(NEXTION_DISPLAY)
 
 #endif /* _NEXTION_LCD_H_ */
