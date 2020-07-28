@@ -1470,9 +1470,9 @@ void NextionLCD::init(){
     }
     else if (PageID == EPageMove) {
       if (all_axes_homed) {
-        valuetemp = ftostr4sign(LOGICAL_X_POSITION(current_position[X_AXIS]));
-        strcat(bufferson, "X");
-        strcat(bufferson, valuetemp);
+				valuetemp = ftostr4sign(LOGICAL_X_POSITION(current_position[X_AXIS]));
+				strcat(bufferson, "X");
+				strcat(bufferson, valuetemp);
       }
       else
         strcat(bufferson, "?");
@@ -1493,11 +1493,22 @@ void NextionLCD::init(){
       else
         strcat(bufferson, " ?");
 
-      LedCoord5.setText(bufferson,"move");
+			// aby w move menu nie spamowalo po serialu:
+			if(current_position[X_AXIS] != temppos[X_AXIS] || current_position[Y_AXIS] != temppos[Y_AXIS] || current_position[Z_AXIS] != temppos[Z_AXIS] )
+			{
+      	LedCoord5.setText(bufferson,"move");
+				temppos[X_AXIS] = current_position[X_AXIS];
+				temppos[Y_AXIS] = current_position[Y_AXIS];
+				temppos[Z_AXIS] = current_position[Z_AXIS];
+			}
     }
     else if (PageID == EPageBedlevel) {
       ProbeZ.setText(ftostr43sign(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS]))),"bedlevel");
     }
+		else if (PageID == EPageBedlevelAuto)
+		{
+			ProbeZ.setText(ftostr43sign(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS]))),"ABL");
+		}
   }
 
 	// odswieza procent druku, progress bar, oraz czas trwania i pozostaly
@@ -1527,6 +1538,8 @@ void NextionLCD::init(){
 			strcat(bufferson, ", Left: ");
 		strcat(bufferson, buffer1);
 		LcdTimeElapsed.setText(bufferson,"stat");
+
+		// todo: pasowaloby zeby nie spamowalo gdy pozostaly czas jest taki sam...
 	}
 
 	// Sprawdza obecnosc karty SD i montuje/odmontowuje karte na ekranie
@@ -1707,11 +1720,12 @@ void NextionLCD::init(){
 					{
 						ref_stat_printprogress();
 						PreviouspercentDone = card.percentDone();
+						iterTimeLeft = 0;
 					}
 					// odswiezanie time left itp raz na kilka odswiezen ekranu
 					iterTimeLeft++;
 					
-					if(iterTimeLeft > 2)
+					if(iterTimeLeft > 10)
 					{
 						ref_stat_printprogress();
 						iterTimeLeft = 0;
