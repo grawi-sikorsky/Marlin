@@ -339,8 +339,9 @@
     &LcdSend,
 
     // Page 14 touch listen
-    &ProbeUp, &ProbeDown, &ProbeSend,
-
+    #if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
+      &ProbeUp, &ProbeDown, &ProbeSend,
+    #endif
 		// Page 15 tacz listen
 		&heatupenter, &chillenter,
 

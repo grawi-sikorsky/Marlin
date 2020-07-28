@@ -910,13 +910,13 @@
 			}
 		
 		#elif ENABLED(NEXTION_AUTO_BED_LEVEL)
-		  enqueue_and_echo_commands_P(PSTR("M500"));  // dodane aby zapisywało poziomowanie podczas trwania funkcji
+		  //enqueue_and_echo_commands_P(PSTR("M500"));  // dodane aby zapisywało poziomowanie podczas trwania funkcji
 			//enqueue_and_echo_commands_P(PSTR("G28"));  // dodane aby zapisywało poziomowanie podczas trwania funkcji
 			if (finish == true)
 			{
-				Pprinter.show();
+				PagePrinter.show();
 			}
-			home_all_axes();
+			//home_all_axes();
 		#endif
 	}
 
@@ -1132,10 +1132,7 @@
 			#if ENABLED(NEXTION_AUTO_BED_LEVEL)
 				queue.inject_P("G28");		// bazowanie przed poziomowaniem
 				queue.inject_P("G29");		// poziomowanie auto
-				//enqueue_and_echo_command("G28");	// bazowanie przed poziomowaniem
-				//enqueue_and_echo_command("G29");	// poziomowanie auto
 				Palevel.show();										// pokaz ekran auto leveling
-				// to do: g28 after auto leveling
 			#endif
 		}
 		else
@@ -1301,92 +1298,6 @@ void NextionLCD::sendRandomSplashMessage(){
 		case 21: splashText.setText(MSG_SPLASH_21, STARTPAGE); break;
 		case 22: splashText.setText(MSG_SPLASH_22, STARTPAGE); break;
 	}
-
-/*
-	if(randtemp == 1)
-	{
-		splashText.setText("Let's print!","start");
-	}
-	else if(randtemp == 2)
-	{
-		splashText.setText("Did you print something today?","start");
-	}
-	else if(randtemp == 3)
-	{
-		splashText.setText("Clean your 3D printer, it has feelings too..","start");
-	}
-	else if(randtemp == 4)
-	{
-		splashText.setText("Don't try this.. I know you want to..","start");
-	}
-	else if(randtemp == 5)
-	{
-		splashText.setText("How are you?","start");
-	}
-	else if(randtemp == 6)
-	{
-		splashText.setText("Good day!","start");
-	}
-	else if(randtemp == 7)
-	{
-		splashText.setText("Dont print waste.. It's waste.","start");
-	}
-	else if(randtemp == 8)
-	{
-		splashText.setText("Be hero in your home, print some spare parts!","start");
-	}
-	else if(randtemp == 9)
-	{
-		splashText.setText("Good filament is 50% of succesfull print.","start");
-	}
-	else if(randtemp == 10)
-	{
-		splashText.setText("Yeah, cupholder is a good idea..","start");
-	}
-	else if(randtemp == 11)
-	{
-		splashText.setText("If you didnt print today, i'll tell my dad.","start");
-	}
-	else if(randtemp == 12)
-	{
-		splashText.setText("It's not my fault.. :<","start");
-	}
-	else if(randtemp == 13)
-	{
-		splashText.setText("Hey! You created gcode, not me!","start");
-	}
-	else if(randtemp == 14)
-	{
-		splashText.setText("Uaaaaaghh... Did I sleep?","start");
-	}
-	else if(randtemp == 15)
-	{
-		splashText.setText("YOU'RE BACK!","start");
-	}
-	else if(randtemp == 16)
-	{
-		splashText.setText("Dont push me, I print at my own pace.","start");
-	}
-	else if(randtemp == 17)
-	{
-		splashText.setText("Why are you waking me up?","start");
-	}
-	else if(randtemp == 18)
-	{
-		splashText.setText("Nope.","start");
-	}
-	else if(randtemp == 19)
-	{
-		splashText.setText("Seriously.. Do i have to?","start");
-	}
-	else if(randtemp == 20)
-	{
-		splashText.setText("I'm  watching you..","start");
-	}
-	else if(randtemp == 21)
-	{
-		splashText.setText("Stroke my belts and gears.. mrrrrr..","start");
-	}*/
 }
 #endif
 
