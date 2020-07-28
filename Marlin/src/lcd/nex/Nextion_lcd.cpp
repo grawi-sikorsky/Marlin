@@ -1059,6 +1059,12 @@
 
 	void NextionLCD::setBabystepUpPopCallback(void *ptr){
 		nexlcd.nextion_babystep_z(false);
+		int data = 0;
+		data = _babystep_z_shift;
+		persistentStore.write_data(EEPROM_PANIC_BABYSTEP_Z, (uint8_t*)&data, sizeof(data));
+
+		int data_read = 0;
+		persistentStore.read_data(EEPROM_PANIC_BABYSTEP_Z, (uint8_t*)&data_read, sizeof(data_read));
 	}
 
 	void NextionLCD::setBabystepDownPopCallback(void *ptr){
@@ -1067,9 +1073,8 @@
 
 	void NextionLCD::setBabystepEEPROMPopCallback(void *ptr){
 		persistentStore.access_start();
-		persistentStore.write_data(EEPROM_PANIC_BABYSTEP_Z, _babystep_z_shift);
-		persistentStore.access_finish();
-		// eeprom_update_dword((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);
+		persistentStore.write_data(EEPROM_PANIC_BABYSTEP_Z, (uint8_t*)&_babystep_z_shift, sizeof(_babystep_z_shift));
+		persistentStore.access_finish();		
 	}
 
 	void NextionLCD::setspeedPopCallback(void *ptr) {
@@ -2092,7 +2097,6 @@ void NextionLCD::init(){
 
 		void onMeshProbingDone(){
 			settings.save();
-			buzzer.tone(1000,1000);
 			buzzer.tone(100, 659);
 			buzzer.tone(100, 698);
 

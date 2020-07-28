@@ -28,7 +28,7 @@
 /**
  * Marlin release version identifier
  */
-#define SHORT_BUILD_VERSION "2.0.1a"
+#define SHORT_BUILD_VERSION "2.0.1b"
 #define NAZWA_DRUKARKI "PrintO H3"
 #define COREXY_SPLASH "CoreXY Mechanics"
 /**
@@ -42,7 +42,7 @@
  * here we define this default string as the date where the latest release
  * version was tagged.
  */
-#define STRING_DISTRIBUTION_DATE "2020-07-27"
+#define STRING_DISTRIBUTION_DATE "2020-07-28"
 
 /**
  * Definiuje nazwe drukarki (wybor w configuration.h)
