@@ -711,7 +711,7 @@
  */
 #define DEFAULT_ACCELERATION          1000    // X, Y, Z and E acceleration for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   1800    // X, Y, Z acceleration for travel (non printing) moves
+#define DEFAULT_TRAVEL_ACCELERATION   1200    // X, Y, Z acceleration for travel (non printing) moves
 
 /**
  * Default Jerk (mm/s)
@@ -723,7 +723,7 @@
  */
 #define DEFAULT_XJERK                 14.0
 #define DEFAULT_YJERK                 14.0
-#define DEFAULT_ZJERK                  0.4
+#define DEFAULT_ZJERK                  0.3
 #define DEFAULT_EJERK                  5.0
 
 #if ENABLED (NEXTION_AUTO_BED_LEVEL)
@@ -823,7 +823,7 @@
   //#define WAIT_FOR_BED_HEATER     // Wait for bed to heat back up between probes (to improve accuracy)
 #endif
 //#define PROBING_FANS_OFF          // Turn fans off when probing
-#define DELAY_BEFORE_PROBING 900  // (ms) To prevent vibrations from triggering piezo sensors
+#define DELAY_BEFORE_PROBING 1000  // (ms) To prevent vibrations from triggering piezo sensors
 
 // A probe that is deployed and stowed with a solenoid pin (SOL1_PIN)
 //#define SOLENOID_PROBE
@@ -1286,7 +1286,7 @@
 #define HOMING_FEEDRATE_XY (90*60)
 
 #if ENABLED (NEXTION_AUTO_BED_LEVEL)
-  #define HOMING_FEEDRATE_Z  (35*60)
+  #define HOMING_FEEDRATE_Z  (30*60)
 #else
   #define HOMING_FEEDRATE_Z  (20*60)
 #endif
