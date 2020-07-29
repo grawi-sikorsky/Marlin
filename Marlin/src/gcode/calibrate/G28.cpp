@@ -461,7 +461,7 @@ void GcodeSuite::G28() {
 
   report_current_position();
   #if ENABLED (NEXTION_DISPLAY)     // dodane nextion H3
-    set_bed_leveling_enabled(true); // Zaxis is homing at Z-max pos, so after homing bed level should be true because it adds needed offset to Z position.
+    //set_bed_leveling_enabled(true); // Zaxis is homing at Z-max pos, so after homing bed level should be true because it adds needed offset to Z position.
   #endif
 
   if (ENABLED(NANODLP_Z_SYNC) && (doZ || ENABLED(NANODLP_ALL_AXIS)))
