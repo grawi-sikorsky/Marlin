@@ -2283,7 +2283,7 @@ void sendRandomSplashMessage(){
 					// odswiezanie time left itp raz na kilka odswiezen ekranu
 					iterTimeLeft++;
 					
-					if(iterTimeLeft > 2)
+					if(iterTimeLeft > 6)
 					{
 						ref_stat_printprogress();
 						iterTimeLeft = 0;
