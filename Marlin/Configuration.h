@@ -686,7 +686,7 @@
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4]]]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 260, 260, 25, 80 }
+#define DEFAULT_MAX_FEEDRATE          { 260, 260, 15, 80 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -697,7 +697,7 @@
 
 
 #if ENABLED (NEXTION_AUTO_BED_LEVEL)
-  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 30, 9000 }
+  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 15, 9000 }
 #else
   #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 9000 }
 #endif
@@ -709,7 +709,7 @@
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
-#define DEFAULT_ACCELERATION          1000    // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_ACCELERATION          800    // X, Y, Z and E acceleration for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
 #define DEFAULT_TRAVEL_ACCELERATION   1200    // X, Y, Z acceleration for travel (non printing) moves
 
@@ -1115,7 +1115,7 @@
  * Turn on with the command 'M111 S32'.
  * NOTE: Requires a lot of PROGMEM!
  */
-#define DEBUG_LEVELING_FEATURE
+//#define DEBUG_LEVELING_FEATURE
 
 #if ENABLED(MESH_BED_LEVELING) || ENABLED(AUTO_BED_LEVELING_BILINEAR) || ENABLED(AUTO_BED_LEVELING_UBL)
   // Gradually reduce leveling correction until a set height is reached,
@@ -1286,7 +1286,7 @@
 #define HOMING_FEEDRATE_XY (90*60)
 
 #if ENABLED (NEXTION_AUTO_BED_LEVEL)
-  #define HOMING_FEEDRATE_Z  (30*60)
+  #define HOMING_FEEDRATE_Z  (15*60)
 #else
   #define HOMING_FEEDRATE_Z  (20*60)
 #endif
