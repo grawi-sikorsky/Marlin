@@ -1130,8 +1130,9 @@
 			#endif
 			
 			#if ENABLED(NEXTION_AUTO_BED_LEVEL)
-				queue.inject_P("G28");		// bazowanie przed poziomowaniem
-				queue.inject_P("G29");		// poziomowanie auto
+				queue.enqueue_now_P("G28");	// bazowanie przed poziomowaniem
+				queue.enqueue_now_P("G29"); // poziomowanie auto
+
 				Palevel.show();										// pokaz ekran auto leveling
 			#endif
 		}
