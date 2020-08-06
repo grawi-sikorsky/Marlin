@@ -139,6 +139,7 @@
 // ============================================
 #define MAXPOL
 #define MAX_OUTPUT_PIN 11
+#define MAX_INPUT_PIN 3
 
 #define PRINTO_H3
 //#define PRINTO_H3_PLUS
@@ -588,11 +589,11 @@
 #define ENDSTOPPULLUPS
 #if DISABLED(ENDSTOPPULLUPS)
   // Disable ENDSTOPPULLUPS to set pullups individually
-  //#define ENDSTOPPULLUP_XMAX
+  #define ENDSTOPPULLUP_XMAX
   //#define ENDSTOPPULLUP_YMAX
-  //#define ENDSTOPPULLUP_ZMAX
-  //#define ENDSTOPPULLUP_XMIN
-  //#define ENDSTOPPULLUP_YMIN
+  #define ENDSTOPPULLUP_ZMAX
+  //#define ENDSTOPPULLUP_XMIN  // maxpol interrupt
+  #define ENDSTOPPULLUP_YMIN
   #define ENDSTOPPULLUP_ZMIN
   #define ENDSTOPPULLUP_ZMIN_PROBE
 #endif

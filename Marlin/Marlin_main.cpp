@@ -396,6 +396,11 @@ char dir_names[3][9]; // dodane
 	#endif
 #endif // PLOSS
 
+#if ENABLED(MAXPOL)
+  void max_primer_finish();
+  void setup_max_input_interrupt();
+  void max_interrupt_call();
+#endif
 
 /**
  * Cartesian Current Position
@@ -11099,7 +11104,14 @@ inline void gcode_M812() {
 	}
 }
 #endif
+// MAXPOL
 
+#if ENABLED(MAXPOL)
+  inline void gcode_M550()
+  {
+    max_primer_finish();
+  }
+#endif
 /**
  * M500: Store settings in EEPROM
  */
@@ -13355,9 +13367,10 @@ void process_parsed_command() {
           gcode_M812();
           break;
       #endif // PLOSS_SUPPORT
-
-      #if ENABLED(MAXPOL)  // MAXPOL
-        //case 550: gcode__M550(); break; // funkcja wywolywana w maxpol_primer.gcode do sygnalizacji konca pliku.
+      
+      // MAXPOL
+      #if ENABLED(MAXPOL)
+        case 550: gcode_M550(); break; // funkcja wywolywana w maxpol_primer.gcode do sygnalizacji konca pliku.
       #endif
 
       #if ENABLED(SDSUPPORT)
@@ -15253,7 +15266,7 @@ void check_periodical_actions()
 	const millis_t now = millis();
 	
 	if (ELAPSED(now, cycle_1s)) {
-		cycle_1s = now + 1200UL; // zmianka z 1000UL
+		cycle_1s = now + 500UL; // zmianka z 1000UL
 
 		#if ENABLED(NEXTION)
 			nextion_draw_update();
@@ -15793,36 +15806,68 @@ ISR(INT5_vect) {
 #endif // PLOSS_SUPPORT
 
 #if ENABLED(MAXPOL)
+  bool MaxinProcedure = false;
+
   void max_primer_procedure()
   {
-    enqueue_and_echo_commands_P("M23 maxpol_primer.gco");   // wybierz plik z SD maxpol_primer.gco
-    enqueue_and_echo_commands_P("M24");                     // start wydruku z pliku
+    MaxinProcedure = true;
+
+    SERIAL_ECHOLNPGM("MaxPol: starting procedure");       // debug
+    if(card.cardOK)
+    {
+      card.openFile("primer.gco", true);
+      card.startFileprint();
+    }
+    else
+    {
+      SERIAL_ECHOLNPGM("MaxPol: CardSD problem, return.");       // debug
+      MaxinProcedure = false;
+    }
   }
 
+  // funkcja wywowylana w GCODE M550 na koncu pliku maxpol_primer.gco
   void max_primer_finish()
   {
-    digitalWrite(MAX_OUTPUT_PIN, HIGH);
-    EIMSK |= (1 << 5); // po wykonaniu procedury wlacz ponownie przerwanie
+    SERIAL_ECHOLNPGM("MaxPol: procedure finish M550");
+
+    digitalWrite(MAX_OUTPUT_PIN, HIGH);     // ustaw pin na HIGH aby ramie robota zgarnelo element
+    SERIAL_ECHOLNPGM("MaxPol: Output set HIGH -> delay");
+    safe_delay(500);
+    digitalWrite(MAX_OUTPUT_PIN, LOW);      // ustaw pin na LOW
+    SERIAL_ECHOLNPGM("MaxPol: Output set LOW");
+
+    setup_max_input_interrupt();            // ustaw ponownie przerwanie po wykonaniu procedury
   }
 
+  // ustawia przerwanie dla pinu 3
   void setup_max_input_interrupt()
   {
-    DDRE &= ~(1 << 5); //input pin
-    PORTE &= ~(1 << 5); //wylacz wewn. pull-up
-
-    EICRB &= ~(1 << ISC50);    //INT5 //sensing falling edge
-    EICRB |= (1 << ISC51);
-
-    //wlacz przerwanie INT5 
-    EIMSK |= (1 << 5);
+    MaxinProcedure = false;
+    SET_INPUT_PULLUP(MAX_INPUT_PIN);
+    attachInterrupt(digitalPinToInterrupt(MAX_INPUT_PIN), max_interrupt_call, FALLING);
+    SERIAL_ECHOLNPGM("MaxPol: input interrupt attached");
   }
-
-  ISR(INT5_vect) {
+  
+  // obsluga przerwania
+  void max_interrupt_call()
+  {
+    EIMSK &= ~(1 << 4); //wylacz przerwanie aby funkcja wlaczyla sie tylko raz
+    //detachInterrupt(digitalPinToInterrupt(MAX_INPUT_PIN));  // wylacz przerwanie
+    SERIAL_ECHOLNPGM("MaxPol: input interrupt detached");   // debug
+    SERIAL_ECHOPGM("MaxPol: MaxinProcedure: ");
+    SERIAL_ECHOLN(MaxinProcedure);
+    if(MaxinProcedure == false)  // tylko raz
+    {
+      max_primer_procedure();   // procedura primera start
+    }
+  }
+/*
+  ISR(INT5_vect) { 
     EIMSK &= ~(1 << 4); //wylacz przerwanie aby funkcja wlaczyla sie tylko raz
     SERIAL_ECHOLNPGM("Pin interrupt, max procedure");
 
-    max_primer_procedure(); //debug
-  }
+    max_primer_procedure(); //debug 
+  }*/
 
 #endif
 
@@ -15846,6 +15891,9 @@ ISR(INT5_vect) {
  *    • status LEDs
  */
 void setup() {
+  #if ENABLED(MAXPOL)
+    setup_max_input_interrupt();
+  #endif
 
   // dodane nex ploss
 	#ifdef PLOSS_SUPPORT 

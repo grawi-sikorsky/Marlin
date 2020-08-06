@@ -328,7 +328,7 @@ void CardReader::stopSDPrint(
   #if SD_RESORT
     if (re_sort) presort();
   #endif
-  enqueue_and_echo_command("G28"); // dodane nex
+  //enqueue_and_echo_command("G28"); // dodane nex
 }
 
 void CardReader::openLogFile(char * const path) {
