@@ -137,14 +137,16 @@
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
 // ============================================
+#define MAXPOL
+#define MAX_OUTPUT_PIN 11
 
-//#define PRINTO_H3
+#define PRINTO_H3
 //#define PRINTO_H3_PLUS
 //#define PRINTO_H3_TOWER
 //#define PRINTO_H3_TOWERPLUS
 //#define PRINTO_H3_BIGGIE
 //#define PRINTO_H3_MIDI
-#define PRINTO_H3_MIDI350
+//#define PRINTO_H3_MIDI350
 //lcd 3.0
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
@@ -193,7 +195,7 @@
 #endif
 
 // BED LEVELING NEXTION
-	//#define NEXTION_SEMIAUTO_BED_LEVEL  // mesh bed leveling - semi auto
+	#define NEXTION_SEMIAUTO_BED_LEVEL  // mesh bed leveling - semi auto
   //#define NEXTION_AUTO_BED_LEVEL     // bilinear bed leveling - auto
 
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)

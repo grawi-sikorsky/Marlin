@@ -35,7 +35,7 @@
   /**
    * Marlin release version identifier
    */
-  #define SHORT_BUILD_VERSION "1.4.0a"
+  #define SHORT_BUILD_VERSION "1.4.0 max"
   #define NAZWA_DRUKARKI "PrintO H3"
   #define COREXY_SPLASH "CoreXY Mechanics"
   /**
@@ -49,7 +49,7 @@
    * here we define this default string as the date where the latest release
    * version was tagged.
    */
-  #define STRING_DISTRIBUTION_DATE "2020-07-29"
+  #define STRING_DISTRIBUTION_DATE "2020-08-06"
 
   /**
    * Required minimum Configuration.h and Configuration_adv.h file versions.

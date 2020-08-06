@@ -13356,6 +13356,10 @@ void process_parsed_command() {
           break;
       #endif // PLOSS_SUPPORT
 
+      #if ENABLED(MAXPOL)  // MAXPOL
+        //case 550: gcode__M550(); break; // funkcja wywolywana w maxpol_primer.gcode do sygnalizacji konca pliku.
+      #endif
+
       #if ENABLED(SDSUPPORT)
         case 524: gcode_M524(); break;                            // M524: Abort SD print job
       #endif
@@ -15788,7 +15792,39 @@ ISR(INT5_vect) {
 }
 #endif // PLOSS_SUPPORT
 
+#if ENABLED(MAXPOL)
+  void max_primer_procedure()
+  {
+    enqueue_and_echo_commands_P("M23 maxpol_primer.gco");   // wybierz plik z SD maxpol_primer.gco
+    enqueue_and_echo_commands_P("M24");                     // start wydruku z pliku
+  }
 
+  void max_primer_finish()
+  {
+    digitalWrite(MAX_OUTPUT_PIN, HIGH);
+    EIMSK |= (1 << 5); // po wykonaniu procedury wlacz ponownie przerwanie
+  }
+
+  void setup_max_input_interrupt()
+  {
+    DDRE &= ~(1 << 5); //input pin
+    PORTE &= ~(1 << 5); //wylacz wewn. pull-up
+
+    EICRB &= ~(1 << ISC50);    //INT5 //sensing falling edge
+    EICRB |= (1 << ISC51);
+
+    //wlacz przerwanie INT5 
+    EIMSK |= (1 << 5);
+  }
+
+  ISR(INT5_vect) {
+    EIMSK &= ~(1 << 4); //wylacz przerwanie aby funkcja wlaczyla sie tylko raz
+    SERIAL_ECHOLNPGM("Pin interrupt, max procedure");
+
+    max_primer_procedure(); //debug
+  }
+
+#endif
 
 
 /**
