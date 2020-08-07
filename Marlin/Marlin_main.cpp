@@ -15842,6 +15842,9 @@ ISR(INT5_vect) {
   // ustawia przerwanie dla pinu 3
   void setup_max_input_interrupt()
   {
+    SET_OUTPUT(MAX_OUTPUT_PIN);
+    digitalWrite(MAX_OUTPUT_PIN, HIGH);
+    
     MaxinProcedure = false;
     SET_INPUT_PULLUP(MAX_INPUT_PIN);
     attachInterrupt(digitalPinToInterrupt(MAX_INPUT_PIN), max_interrupt_call, FALLING);
