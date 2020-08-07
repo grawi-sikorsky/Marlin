@@ -138,7 +138,7 @@
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
 // ============================================
 #define MAXPOL
-#define MAX_OUTPUT_PIN 11
+#define MAX_OUTPUT_PIN 18
 #define MAX_INPUT_PIN 3
 
 #define PRINTO_H3
@@ -580,13 +580,13 @@
 // extra connectors. Leave undefined any used for non-endstop and non-probe purposes.
 //#define USE_XMIN_PLUG
 #define USE_YMIN_PLUG
-#define USE_ZMIN_PLUG
+//#define USE_ZMIN_PLUG
 #define USE_XMAX_PLUG
 //#define USE_YMAX_PLUG
 #define USE_ZMAX_PLUG
 
 // Enable pullup for all endstops to prevent a floating state
-#define ENDSTOPPULLUPS
+//#define ENDSTOPPULLUPS
 #if DISABLED(ENDSTOPPULLUPS)
   // Disable ENDSTOPPULLUPS to set pullups individually
   #define ENDSTOPPULLUP_XMAX
@@ -594,7 +594,7 @@
   #define ENDSTOPPULLUP_ZMAX
   //#define ENDSTOPPULLUP_XMIN  // maxpol interrupt
   #define ENDSTOPPULLUP_YMIN
-  #define ENDSTOPPULLUP_ZMIN
+  //#define ENDSTOPPULLUP_ZMIN
   #define ENDSTOPPULLUP_ZMIN_PROBE
 #endif
 

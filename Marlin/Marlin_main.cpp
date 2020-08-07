@@ -15830,11 +15830,11 @@ ISR(INT5_vect) {
   {
     SERIAL_ECHOLNPGM("MaxPol: procedure finish M550");
 
-    digitalWrite(MAX_OUTPUT_PIN, HIGH);     // ustaw pin na HIGH aby ramie robota zgarnelo element
-    SERIAL_ECHOLNPGM("MaxPol: Output set HIGH -> delay");
-    safe_delay(500);
-    digitalWrite(MAX_OUTPUT_PIN, LOW);      // ustaw pin na LOW
-    SERIAL_ECHOLNPGM("MaxPol: Output set LOW");
+    digitalWrite(MAX_OUTPUT_PIN, LOW);     // ustaw pin na HIGH aby ramie robota zgarnelo element
+    SERIAL_ECHOLNPGM("MaxPol: Output set LOW -> delay");
+    safe_delay(2000);
+    digitalWrite(MAX_OUTPUT_PIN, HIGH);      // ustaw pin na LOW
+    SERIAL_ECHOLNPGM("MaxPol: Output set HIGH");
 
     setup_max_input_interrupt();            // ustaw ponownie przerwanie po wykonaniu procedury
   }
