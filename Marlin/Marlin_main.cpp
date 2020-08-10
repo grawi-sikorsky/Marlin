@@ -15864,6 +15864,7 @@ ISR(INT5_vect) {
       max_primer_procedure();   // procedura primera start
     }
   }
+
 /*
   ISR(INT5_vect) { 
     EIMSK &= ~(1 << 4); //wylacz przerwanie aby funkcja wlaczyla sie tylko raz
@@ -16174,6 +16175,10 @@ void setup() {
 	#endif
 	}
 	#endif // PLOSS_SUPPORT
+
+  #if ENABLED(MAXPOL)
+    home_all_axes();
+  #endif
 }
 
 /**
