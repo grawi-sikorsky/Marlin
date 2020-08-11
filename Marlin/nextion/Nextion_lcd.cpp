@@ -136,6 +136,10 @@
 		#endif
 	#endif
 
+	#if ENABLED(MAXPOL) && ENABLED(MESH_BED_LEVELING)
+  	#include "mesh_bed_leveling.h"
+	#endif
+
   /**
    *******************************************************************
    * NEX lista stron uzytych
@@ -246,10 +250,10 @@
 	* NEX komponenty strona: HEATUP 3
 	*******************************************************************
 	*/
-	NexObject heatupenter		= NexObject(3, 6, "m3");
-	NexObject temphe				= NexObject(3, 7, "temphe");
-	NexObject tempbe				= NexObject(3, 8, "tempbe");
-	NexObject chillenter		= NexObject(3, 12, "m5");
+	//NexObject heatupenter		= NexObject(3, 6, "m3");
+	//NexObject temphe				= NexObject(3, 7, "temphe");
+	//NexObject tempbe				= NexObject(3, 8, "tempbe");
+	//NexObject chillenter		= NexObject(3, 12, "m5");
 	// 
 	// == 6
 	// == 98
@@ -292,8 +296,8 @@
 	* NEX komponenty strona:: FAN SPEED 8
 	*******************************************************************
 	*/
-	NexObject FanSpeedNex			= NexObject(8, 7, "vfan");
-	NexObject FanSetBtn				= NexObject(8, 9, "m1");
+	//NexObject FanSpeedNex			= NexObject(8, 7, "vfan");
+	//NexObject FanSetBtn				= NexObject(8, 9, "m1");
 	// 
 	// == 3
 
@@ -506,10 +510,10 @@
 		#endif
 
 		// Page 15 tacz listen
-		&heatupenter, &chillenter,
+		//&heatupenter, &chillenter,
 
 		// Page 18 tacz listen
-		&FanSetBtn,
+		//&FanSetBtn,
 
 		//Page 22 service
 		//&SvSteps,
@@ -1508,11 +1512,11 @@ void sendRandomSplashMessage(){
   void sethotPopCallback(void *ptr) {
     UNUSED(ptr);
 
-		uint16_t	temp_hotend = temphe.getValue(), //dodane
-							temp_bed = tempbe.getValue();    //dodane
+		//uint16_t	temp_hotend = temphe.getValue(), //dodane
+		//					temp_bed = tempbe.getValue();    //dodane
 
-		thermalManager.setTargetHotend(temp_hotend, 0);
-		thermalManager.setTargetBed(temp_bed);
+		//thermalManager.setTargetHotend(temp_hotend, 0);
+		//thermalManager.setTargetBed(temp_bed);
 
     Pprinter.show();
 		buzzer.tone(100,2300);
@@ -1522,12 +1526,13 @@ void sendRandomSplashMessage(){
 		uint8_t vfanbuff;
 		UNUSED(ptr);
 		ZERO(bufferson);
-		vfanbuff = FanSpeedNex.getValue("fanspeedpage");
+		//vfanbuff = FanSpeedNex.getValue("fanspeedpage");
 		fanSpeeds[0] = vfanbuff;
 
 		Pprinter.show();
 		buzzer.tone(100, 2300);
 	}
+
 	#if ENABLED(NEX_STAT_PAGE)
 		void setsetupstatPopCallback(void *ptr)
 		{
@@ -1954,10 +1959,10 @@ void sendRandomSplashMessage(){
 			//SvSteps.attachPop(setstepspagePopCallback);
 
 			// TEMPERATURA
-			heatupenter.attachPop(sethotPopCallback, &heatupenter); // obsluga przycisku rozgrzej oba
-			chillenter.attachPop(sethotPopCallback, &chillenter); //obs�uga przycisku chlodzenie
+			//heatupenter.attachPop(sethotPopCallback, &heatupenter); // obsluga przycisku rozgrzej oba
+			//chillenter.attachPop(sethotPopCallback, &chillenter); //obs�uga przycisku chlodzenie
 
-			FanSetBtn.attachPop(setfanandgoPopCallback); //obsluga przycisku fan set
+			//FanSetBtn.attachPop(setfanandgoPopCallback); //obsluga przycisku fan set
 
 			speedsetbtn.attachPop(setspeedPopCallback); //obsluga przycisku speed set
 
@@ -2197,7 +2202,7 @@ void sendRandomSplashMessage(){
 
     static uint8_t  PreviousPage = 0,
                     Previousfeedrate = 0,
-                    PreviousfanSpeed = 0,
+                    //PreviousfanSpeed = 0,
 										iterTimeLeft = 0,
                     PreviouspercentDone = 0;
     static float    PreviousdegHeater[1] = { 0.0 },
@@ -2290,11 +2295,13 @@ void sendRandomSplashMessage(){
 					}
 				}
 
+			#if DISABLED(MAXPOL)
 				//FAN
          if (PreviousfanSpeed != fanSpeeds[0]) {
 					PrinterFanspeed.setValue(((float)(fanSpeeds[0]) / 255) * 100,"stat");
           PreviousfanSpeed = fanSpeeds[0];
          }
+			#endif
 				//FR
         if (Previousfeedrate != feedrate_percentage) {
           VSpeed.setValue(feedrate_percentage,"stat");
@@ -2307,6 +2314,8 @@ void sendRandomSplashMessage(){
 					Previousflow = planner.flow_percentage[0];
 				}*/
 				// TEMPERATURA HOTEND
+			#if DISABLED(MAXPOL)
+
         #if HAS_HEATER_0
           if (PreviousdegHeater[0] != thermalManager.current_temperature[0]) 
 					{
@@ -2330,7 +2339,7 @@ void sendRandomSplashMessage(){
 						targetdegtoLCD(1, PrevioustargetdegHeater[1]);
 					}
 				#endif
- 
+ 			#endif
         coordtoLCD();
 
 				nex_update_sd_status();
@@ -2376,7 +2385,7 @@ void sendRandomSplashMessage(){
 			case EPageFilament:	// filament page
 				// odswiez temp glowicy na ekranie filament [przyciski]
 					//nex_ss = millis(); // ustaw SS timeout
-					degtoLCD(0, thermalManager.current_temperature[0]);
+					//degtoLCD(0, thermalManager.current_temperature[0]);
 				break;
 			case EPageSelect: // select page
 				//nex_ss = millis(); // ustaw SS timeout
@@ -2468,8 +2477,10 @@ void sendRandomSplashMessage(){
 	// dodana obsluga babystep
 	#if ENABLED(BABYSTEPPING)
 		void nextion_babystep_z(bool dir) {
-				const int16_t babystep_increment = 8;
+			float z_offset_inc = 0.04f;
+			const	int16_t babystep_increment = 8;
 
+			#if DISABLED(MAXPOL)
 				if (dir == true)
 				{
 					thermalManager.babystep_axis(Z_AXIS, babystep_increment);
@@ -2481,6 +2492,22 @@ void sendRandomSplashMessage(){
 					thermalManager.babystep_axis(Z_AXIS, -babystep_increment);
 					_babystep_z_shift -= babystep_increment;
 					SERIAL_ECHOLNPGM("therm baby down");
+				}
+			#endif
+
+				if (dir == true)
+				{
+					//mbl.z_offset += z_offset_inc;
+					//_babystep_z_shift += z_offset_inc;
+					SERIAL_ECHOPGM("ZOFFSET: ");
+					SERIAL_ECHOLN(mbl.z_offset);
+				}
+				else if (dir == false)
+				{
+					//mbl.z_offset -= z_offset_inc;
+					//_babystep_z_shift -= z_offset_inc;
+					SERIAL_ECHOPGM("ZOFFSET: ");
+					SERIAL_ECHOLN(mbl.z_offset);
 				}
 		}
 	#endif

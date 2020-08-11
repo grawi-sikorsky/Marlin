@@ -15812,7 +15812,7 @@ ISR(INT5_vect) {
   {
     MaxinProcedure = true;
 
-    SERIAL_ECHOLNPGM("MaxPol: starting procedure");       // debug
+    SERIAL_ECHOLNPGM("M: starting procedure");       // debug
     if(card.cardOK)
     {
       card.openFile("primer.gco", true);
@@ -15820,7 +15820,7 @@ ISR(INT5_vect) {
     }
     else
     {
-      SERIAL_ECHOLNPGM("MaxPol: CardSD problem, return.");       // debug
+      SERIAL_ECHOLNPGM("M: CardSD problem, return.");       // debug
       MaxinProcedure = false;
     }
   }
@@ -15828,13 +15828,13 @@ ISR(INT5_vect) {
   // funkcja wywowylana w GCODE M550 na koncu pliku maxpol_primer.gco
   void max_primer_finish()
   {
-    SERIAL_ECHOLNPGM("MaxPol: procedure finish M550");
+    SERIAL_ECHOLNPGM("M: procedure finish M550");
 
     digitalWrite(MAX_OUTPUT_PIN, LOW);     // ustaw pin na HIGH aby ramie robota zgarnelo element
-    SERIAL_ECHOLNPGM("MaxPol: Output set LOW -> delay");
+    SERIAL_ECHOLNPGM("M: Output LOW -> delay 2s");
     safe_delay(2000);
     digitalWrite(MAX_OUTPUT_PIN, HIGH);      // ustaw pin na LOW
-    SERIAL_ECHOLNPGM("MaxPol: Output set HIGH");
+    SERIAL_ECHOLNPGM("M: Output HIGH");
 
     setup_max_input_interrupt();            // ustaw ponownie przerwanie po wykonaniu procedury
   }
@@ -15848,7 +15848,7 @@ ISR(INT5_vect) {
     MaxinProcedure = false;
     SET_INPUT_PULLUP(MAX_INPUT_PIN);
     attachInterrupt(digitalPinToInterrupt(MAX_INPUT_PIN), max_interrupt_call, FALLING);
-    SERIAL_ECHOLNPGM("MaxPol: input interrupt attached");
+    SERIAL_ECHOLNPGM("M: input interrupt attached");
   }
   
   // obsluga przerwania
@@ -15856,9 +15856,10 @@ ISR(INT5_vect) {
   {
     EIMSK &= ~(1 << 4); //wylacz przerwanie aby funkcja wlaczyla sie tylko raz
     //detachInterrupt(digitalPinToInterrupt(MAX_INPUT_PIN));  // wylacz przerwanie
-    SERIAL_ECHOLNPGM("MaxPol: input interrupt detached");   // debug
-    SERIAL_ECHOPGM("MaxPol: MaxinProcedure: ");
-    SERIAL_ECHOLN(MaxinProcedure);
+
+    //SERIAL_ECHOLNPGM("M: INT detached");   // debug
+    //SERIAL_ECHOPGM("M: MaxinProc: ");
+    //SERIAL_ECHOLN(MaxinProcedure);
     if(MaxinProcedure == false)  // tylko raz
     {
       max_primer_procedure();   // procedura primera start
