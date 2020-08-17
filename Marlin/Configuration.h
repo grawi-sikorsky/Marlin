@@ -138,13 +138,13 @@
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
 // ============================================
 
-#define PRINTO_H3
+//#define PRINTO_H3
 //#define PRINTO_H3_PLUS
 //#define PRINTO_H3_TOWER
 //#define PRINTO_H3_TOWERPLUS
 //#define PRINTO_H3_BIGGIE
 //#define PRINTO_H3_MIDI
-//#define PRINTO_H3_MIDI350
+#define PRINTO_H3_MIDI350
 //lcd 3.0
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
