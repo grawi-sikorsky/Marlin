@@ -524,8 +524,8 @@
  *
  * *** IT IS HIGHLY RECOMMENDED TO LEAVE THIS OPTION ENABLED! ***
  */
-#define PREVENT_COLD_EXTRUSION
-#define EXTRUDE_MINTEMP 170
+//#define PREVENT_COLD_EXTRUSION
+//#define EXTRUDE_MINTEMP 170
 
 /**
  * Prevent a single extrusion longer than EXTRUDE_MAXLENGTH.
@@ -724,15 +724,15 @@
  * When changing speed and direction, if the difference is less than the
  * value set here, it may happen instantaneously.
  */
-#define DEFAULT_XJERK                 14.0
-#define DEFAULT_YJERK                 14.0
+#define DEFAULT_XJERK                 10.0
+#define DEFAULT_YJERK                 10.0
 #define DEFAULT_ZJERK                  0.3
 #define DEFAULT_EJERK                  5.0
 
 #if ENABLED (NEXTION_AUTO_BED_LEVEL)
   //#define DEFAULT_ZJERK                  0.4
 #else
-  #define DEFAULT_ZJERK                  0.4
+  //#define DEFAULT_ZJERK                  0.4
 #endif
 
 /**
