@@ -689,7 +689,7 @@
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4]]]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 260, 260, 15, 80 }
+#define DEFAULT_MAX_FEEDRATE          { 260, 260, 25, 80 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -712,7 +712,7 @@
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
-#define DEFAULT_ACCELERATION          800    // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_ACCELERATION          1200    // X, Y, Z and E acceleration for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
 #define DEFAULT_TRAVEL_ACCELERATION   1200    // X, Y, Z acceleration for travel (non printing) moves
 
@@ -726,7 +726,7 @@
  */
 #define DEFAULT_XJERK                 10.0
 #define DEFAULT_YJERK                 10.0
-#define DEFAULT_ZJERK                  0.3
+#define DEFAULT_ZJERK                  0.4
 #define DEFAULT_EJERK                  5.0
 
 #if ENABLED (NEXTION_AUTO_BED_LEVEL)
@@ -968,7 +968,8 @@
 #if defined(PRINTO_H3) || defined(PRINTO_H3_PLUS)
 #define X_BED_SIZE 205
 #define Y_BED_SIZE 210
-#define Z_BED_SIZE 206
+//#define Z_BED_SIZE 206
+#define Z_BED_SIZE 150
 #endif
 
 #if defined(PRINTO_H3_TOWER) || defined(PRINTO_H3_TOWERPLUS)
@@ -1239,7 +1240,7 @@
 
 #if ENABLED(LCD_BED_LEVELING)
   #define MBL_Z_STEP 0.04    // Step size while manually probing Z axis.
-  #define LCD_PROBE_Z_RANGE 16 // Z Range centered on Z_MIN_POS for LCD Z adjustment
+  #define LCD_PROBE_Z_RANGE 20 // Z Range centered on Z_MIN_POS for LCD Z adjustment
 #endif
 
 // Add a menu item to move between bed corners for manual bed adjustment

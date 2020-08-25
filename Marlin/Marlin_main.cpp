@@ -1203,8 +1203,6 @@ inline void get_serial_commands() {
 
     if (commands_in_queue == 0) stop_buffering = false;
 
-	  uint16_t sd_count_value = 0; // dodane nex
-
     uint16_t sd_count = 0;
     bool card_eof = card.eof();
     while (commands_in_queue < BUFSIZE && !card_eof && !stop_buffering) {
@@ -1222,7 +1220,7 @@ inline void get_serial_commands() {
           if (card.sdprinting)
             sd_count = 0; // If a sub-file was printing, continue from call point
           else {
-            SERIAL_PROTOCOLLNPGM(MSG_FILE_PRINTED);
+            //SERIAL_PROTOCOLLNPGM(MSG_FILE_PRINTED);
             #if ENABLED(PRINTER_EVENT_LEDS)
               LCD_MESSAGEPGM(MSG_INFO_COMPLETED_PRINTS);
               leds.set_green();
@@ -1253,8 +1251,8 @@ inline void get_serial_commands() {
         // Skip empty lines and comments
         if (!sd_count) { thermalManager.manage_heater(); continue; }
 
-        sd_count_value = (card.get_sdpos() + 1) - sdpos_atomic; // dodane
-		    sdpos_atomic = card.get_sdpos() + 1; // dodane
+        //sd_count_value = (card.get_sdpos() + 1) - sdpos_atomic; // dodane
+		    //sdpos_atomic = card.get_sdpos() + 1; // dodane
 
         command_queue[cmd_queue_index_w][sd_count] = '\0'; // terminate string
         sd_count = 0; // clear sd line buffer
