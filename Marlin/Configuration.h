@@ -689,7 +689,7 @@
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4]]]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 260, 260, 25, 80 }
+#define DEFAULT_MAX_FEEDRATE          { 260, 260, 40, 80 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -1203,7 +1203,7 @@
   //=================================== Mesh ==================================
   //===========================================================================
 
-  #define MESH_INSET 40          // Set Mesh bounds as an inset region of the bed
+  #define MESH_INSET 20          // Set Mesh bounds as an inset region of the bed
 
   #if ENABLED(PRINTO_H3_MIDI) || ENABLED(PRINTO_H3_BIGGIE)
     #define GRID_MAX_POINTS_X 3    // Don't use more than 7 points per axis, implementation limited.
@@ -1292,7 +1292,7 @@
 #if ENABLED (NEXTION_AUTO_BED_LEVEL)
   #define HOMING_FEEDRATE_Z  (15*60)
 #else
-  #define HOMING_FEEDRATE_Z  (20*60)
+  #define HOMING_FEEDRATE_Z  (40*60)
 #endif
 
 

@@ -1730,6 +1730,7 @@ void sendRandomSplashMessage(){
 		else if(strcmp(bufferson, "G29 S1") == 0) // musimy wylapac komende z nextiona zanim trafi do parsera
 		{																					// inaczej trzeba bedzie miec osobne wsady do NEXa z auto i semi levelingiem
 			#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
+				enqueue_and_echo_command("M206 X0 Y0 Z0");	// dla bezpieczenstwa usuwamy offset. Gdyby byl ustawiony w max na np. -30 mm to dojdzie do kolizji przy podjezdzie stolika w gore
 				enqueue_and_echo_command(bufferson);
 				Pprobe.show();		// pokaz ekran semiauto leveling
 			#endif
