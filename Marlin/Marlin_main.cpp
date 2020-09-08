@@ -15808,6 +15808,9 @@ ISR(INT5_vect) {
 
   void max_primer_procedure()
   {
+    SET_OUTPUT(MAX_OUTPUT_PIN);             // rozpoczynajac procedure wyjscie HIGH musi byc zmienione na LOW
+    digitalWrite(MAX_OUTPUT_PIN, HIGH);     // na wyjsciu LOW
+
     MaxinProcedure = true;
 
     SERIAL_ECHOLNPGM("M: starting procedure");       // debug
@@ -15828,11 +15831,11 @@ ISR(INT5_vect) {
   {
     SERIAL_ECHOLNPGM("M: procedure finish M550");
 
-    digitalWrite(MAX_OUTPUT_PIN, LOW);     // ustaw pin na HIGH aby ramie robota zgarnelo element
-    SERIAL_ECHOLNPGM("M: Output LOW -> delay 2s");
-    safe_delay(2000);
-    digitalWrite(MAX_OUTPUT_PIN, HIGH);      // ustaw pin na LOW
-    SERIAL_ECHOLNPGM("M: Output HIGH");
+    digitalWrite(MAX_OUTPUT_PIN, LOW);      // ustaw pin na HIGH aby ramie robota zgarnelo element
+    SERIAL_ECHOLNPGM("M: Output LOW -> ");  // stan HIGH na wyjsciu musi być tak dlugo az pojawi sie nastepna procedura
+    //safe_delay(2000);
+    //digitalWrite(MAX_OUTPUT_PIN, HIGH);      // ustaw pin na LOW
+    //SERIAL_ECHOLNPGM("M: Output HIGH");
 
     setup_max_input_interrupt();            // ustaw ponownie przerwanie po wykonaniu procedury
   }
@@ -15840,8 +15843,8 @@ ISR(INT5_vect) {
   // ustawia przerwanie dla pinu 3
   void setup_max_input_interrupt()
   {
-    SET_OUTPUT(MAX_OUTPUT_PIN);
-    digitalWrite(MAX_OUTPUT_PIN, HIGH);
+    //SET_OUTPUT(MAX_OUTPUT_PIN);
+    //digitalWrite(MAX_OUTPUT_PIN, HIGH);
     
     MaxinProcedure = false;
     SET_INPUT_PULLUP(MAX_INPUT_PIN);
@@ -15896,6 +15899,8 @@ ISR(INT5_vect) {
 void setup() {
   #if ENABLED(MAXPOL)
     setup_max_input_interrupt();
+    SET_OUTPUT(MAX_OUTPUT_PIN);             // Na dzien dobry robot musi byc nieaktywny czyli na wyjsciu LOW
+    digitalWrite(MAX_OUTPUT_PIN, HIGH);     // na wyjsciu LOW
   #endif
 
   // dodane nex ploss
