@@ -689,7 +689,7 @@
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4]]]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 260, 260, 40, 80 }
+#define DEFAULT_MAX_FEEDRATE          { 260, 260, 45, 80 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -702,7 +702,7 @@
 #if ENABLED (NEXTION_AUTO_BED_LEVEL)
   #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 15, 9000 }
 #else
-  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 9000 }
+  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 30, 9000 }
 #endif
 /**
  * Default Acceleration (change/s) change = mm/s
@@ -1292,7 +1292,7 @@
 #if ENABLED (NEXTION_AUTO_BED_LEVEL)
   #define HOMING_FEEDRATE_Z  (15*60)
 #else
-  #define HOMING_FEEDRATE_Z  (40*60)
+  #define HOMING_FEEDRATE_Z  (45*60)
 #endif
 
 
