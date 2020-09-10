@@ -26,6 +26,7 @@
  * Conditionals that need to be set before Configuration_adv.h or pins.h
  */
 
+// Kinematics
 #if ENABLED(MORGAN_SCARA)
   #define IS_SCARA 1
   #define IS_KINEMATIC 1
@@ -35,10 +36,26 @@
   #define IS_CARTESIAN 1
 #endif
 
+// MKS_LCD12864 is a variant of MKS_MINI_12864
 #if ENABLED(MKS_LCD12864)
   #define MKS_MINI_12864
 #endif
 
+/**
+ * General Flags that may be set below by specific LCDs
+ *
+ *  DOGLCD                : Run a Graphical LCD through U8GLib (with MarlinUI)
+ *  IS_ULTIPANEL          : Define LCD_PINS_D5/6/7 for direct-connected "Ultipanel" LCDs
+ *  IS_ULTRA_LCD          : Ultra LCD, not necessarily Ultipanel. Used most often with NEWPANEL.
+ *  IS_RRD_SC             : Common RRD Smart Controller digital interface pins
+ *  IS_RRD_FG_SC          : Common RRD Full Graphical Smart Controller digital interface pins
+ *  U8GLIB_ST7920         : Most common DOGM display SPI interface, supporting a "lightweight" display mode.
+ *  U8GLIB_SH1106         : SH1106 OLED with I2C interface via U8GLib
+ *  IS_U8GLIB_SSD1306     : SSD1306 OLED with I2C interface via U8GLib
+ *  U8GLIB_SSD1309        : SSD1309 OLED with I2C interface via U8GLib
+ *  U8GLIB_ST7565_64128N  : ST7565 128x64 LCD with SPI interface via U8GLib
+ *  U8GLIB_LM6059_AF      : LM6059 with Hardware SPI via U8GLib
+ */
 #if EITHER(MKS_MINI_12864, ENDER2_STOCKDISPLAY)
 
   #define MINIPANEL
@@ -46,6 +63,11 @@
 #elif ENABLED(CARTESIO_UI)
 
   #define DOGLCD
+  #define IS_ULTIPANEL
+
+#elif EITHER(DWIN_MARLINUI_PORTRAIT, DWIN_MARLINUI_LANDSCAPE)
+
+  #define IS_DWIN_MARLINUI 1
   #define IS_ULTIPANEL
 
 #elif ENABLED(ZONESTAR_LCD)
@@ -62,6 +84,19 @@
   #define ENCODER_STEPS_PER_MENU_ITEM 1
   #define ENCODER_FEEDRATE_DEADZONE 2
 
+#elif ENABLED(ZONESTAR_12864LCD)
+  #define DOGLCD
+  #define IS_RRD_SC
+  #define U8GLIB_ST7920
+
+#elif ENABLED(ZONESTAR_12864OLED)
+  #define IS_RRD_SC
+  #define U8GLIB_SH1106
+
+#elif ENABLED(ZONESTAR_12864OLED_SSD1306)
+  #define IS_RRD_SC
+  #define IS_U8GLIB_SSD1306
+
 #elif ENABLED(RADDS_DISPLAY)
   #define IS_ULTIPANEL
   #define ENCODER_PULSES_PER_STEP 2
@@ -72,7 +107,6 @@
 
 #elif ANY(miniVIKI, VIKI2, ELB_FULL_GRAPHIC_CONTROLLER, AZSMZ_12864)
 
-  #define IS_ULTRA_LCD
   #define DOGLCD
   #define IS_ULTIPANEL
 
@@ -221,9 +255,9 @@
 
 // 128x64 I2C OLED LCDs - SSD1306/SSD1309/SH1106
 #if ANY(U8GLIB_SSD1306, U8GLIB_SSD1309, U8GLIB_SH1106)
-  #define HAS_SSD1306_OLED_I2C 1
+  #define HAS_U8GLIB_I2C_OLED 1
 #endif
-#if HAS_SSD1306_OLED_I2C
+#if HAS_U8GLIB_I2C_OLED
   #define IS_ULTRA_LCD
   #define DOGLCD
 #endif
@@ -255,18 +289,44 @@
   #define IS_ULTIPANEL
 #endif
 
-// LVGL UI, SPI or FSMC
+// FSMC/SPI TFT Panels (LVGL)
 #if EITHER(TFT_LVGL_UI_SPI, TFT_LVGL_UI_FSMC)
   #define HAS_TFT_LVGL_UI 1
 #endif
 
 // FSMC/SPI TFT Panels
-#if ENABLED(FSMC_GRAPHICAL_TFT)
+#if EITHER(FSMC_GRAPHICAL_TFT, SPI_GRAPHICAL_TFT)
+  #define TFT_SCALED_DOGLCD 1
+#endif
+
+#if TFT_SCALED_DOGLCD
   #define DOGLCD
   #define IS_ULTIPANEL
   #define DELAYED_BACKLIGHT_INIT
 #elif ENABLED(TFT_LVGL_UI_SPI)
   #define DELAYED_BACKLIGHT_INIT
+#endif
+
+// FSMC/SPI TFT Panels using standard HAL/tft/tft_(fsmc|spi).h
+#if ANY(TFT_320x240, TFT_480x320, TFT_LVGL_UI_FSMC, FSMC_GRAPHICAL_TFT)
+  #define HAS_FSMC_TFT 1
+#elif ANY(TFT_320x240_SPI, TFT_480x320_SPI, TFT_LVGL_UI_SPI, SPI_GRAPHICAL_TFT)
+  #define HAS_SPI_TFT 1
+#endif
+
+// Color UI
+#if ANY(TFT_320x240, TFT_480x320, TFT_320x240_SPI, TFT_480x320_SPI)
+  #define HAS_GRAPHICAL_TFT 1
+  #define IS_ULTIPANEL
+#endif
+
+// Fewer lines with touch buttons on-screen
+#if EITHER(TFT_320x240, TFT_320x240_SPI)
+  #define HAS_UI_320x240 1
+  #define LCD_HEIGHT TERN(TOUCH_SCREEN, 6, 7)
+#elif EITHER(TFT_480x320, TFT_480x320_SPI)
+  #define HAS_UI_480x320 1
+  #define LCD_HEIGHT TERN(TOUCH_SCREEN, 6, 7)
 #endif
 
 /**
@@ -325,7 +385,7 @@
 #endif
 
 #ifndef STD_ENCODER_PULSES_PER_STEP
-  #if ENABLED(TOUCH_BUTTONS)
+  #if ENABLED(TOUCH_SCREEN)
     #define STD_ENCODER_PULSES_PER_STEP 2
   #else
     #define STD_ENCODER_PULSES_PER_STEP 5
@@ -363,7 +423,6 @@
   #define IS_ULTRA_LCD
   #define NEWPANEL
 #endif
-
 #if ENABLED(IS_ULTRA_LCD)
   #define ULTRA_LCD
 #endif
@@ -385,8 +444,8 @@
   #define HAS_DGUS_LCD 1
 #endif
 
-// Extensible UI serial touch screens. (See src/lcd/extensible_ui)
-#if ANY(HAS_DGUS_LCD, MALYAN_LCD, TOUCH_UI_FTDI_EVE, NEXTION_DISPLAY)
+// Extensible UI serial touch screens. (See src/lcd/extui)
+#if ANY(HAS_DGUS_LCD, MALYAN_LCD, TOUCH_UI_FTDI_EVE, ANYCUBIC_LCD_I3MEGA, ANYCUBIC_LCD_CHIRON, NEXTION_DISPLAY)
   #define IS_EXTUI
   #define EXTENSIBLE_UI
 #endif
@@ -400,22 +459,15 @@
 // Aliases for LCD features
 #if EITHER(ULTRA_LCD, EXTENSIBLE_UI)
   #define HAS_DISPLAY 1
-  #if ENABLED(ULTRA_LCD)
-    #define HAS_SPI_LCD 1
-    #if ENABLED(DOGLCD)
-      #define HAS_GRAPHICAL_LCD 1
-    #else
-      #define HAS_CHARACTER_LCD 1
-    #endif
-  #endif
 #endif
 
-#if ENABLED(SR_LCD_3W_NL)
-  // Feature checks for SR_LCD_3W_NL
-#elif EITHER(LCD_I2C_TYPE_MCP23017, LCD_I2C_TYPE_MCP23008)
-  #define USES_LIQUIDTWI2
-#elif ANY(HAS_CHARACTER_LCD, LCD_I2C_TYPE_PCF8575, LCD_I2C_TYPE_PCA8574, SR_LCD_2W_NL, LCM1602)
-  #define USES_LIQUIDCRYSTAL
+#if ENABLED(ULTRA_LCD)
+  #define HAS_SPI_LCD 1
+  #if ENABLED(DOGLCD)
+    #define HAS_GRAPHICAL_LCD 1
+  #elif DISABLED(HAS_GRAPHICAL_TFT)
+    #define HAS_CHARACTER_LCD 1
+  #endif
 #endif
 
 #if ENABLED(ULTIPANEL) && DISABLED(NO_LCD_MENUS)
@@ -486,7 +538,7 @@
   #undef DISABLE_INACTIVE_EXTRUDER
 #endif
 
-// Prusa MK2 Multiplexer and MMU 2.0 force SINGLENOZZLE
+// Průša MK2 Multiplexer and MMU 2.0 force SINGLENOZZLE
 #if EITHER(MK2_MULTIPLEXER, PRUSA_MMU2)
   #define SINGLENOZZLE
 #endif
@@ -753,11 +805,4 @@
  */
 #ifndef EXTRUDE_MINTEMP
   #define EXTRUDE_MINTEMP 170
-#endif
-
-/**
- * To check if we need the folder src/features/leds
- */
-#if ANY(TEMP_STAT_LEDS, HAS_COLOR_LEDS, HAS_CASE_LIGHT, PRINTER_EVENT_LEDS, LED_BACKLIGHT_TIMEOUT, PCA9632_BUZZER, LED_CONTROL_MENU, NEOPIXEL_LED)
-  #define HAS_LED_FEATURE 1
 #endif
