@@ -867,34 +867,6 @@ void CardReader::cdroot() {
   TERN_(SDCARD_SORT_ALPHA, presort());
 }
 
-/**
- * Get the name of a file in the current directory by index
- */
-/*
-// dodane nex
-void CardReader::getfilename(uint16_t nr, const char * const match) { //=/=NULL
-  #if ENABLED(SDSORT_CACHE_NAMES)
-    if (match != NULL) {
-      while (nr < sort_count) {
-        if (strcasecmp(match, sortshort[nr]) == 0) break;
-        nr++;
-      }
-    }
-    if (nr < sort_count) {
-      strcpy(filename, sortshort[nr]);
-      strcpy(longFilename, sortnames[nr]);
-      filenameIsDir = TEST(isDir[nr>>3], nr & 0x07);
-      return;
-    }
-  #endif // SDSORT_CACHE_NAMES
-  SdFile *curDir;
-  curDir = &workDir;
-  lsAction = LS_GetFilename;
-  nrFiles = nr;
-  curDir->rewind();
-  lsDive("", *curDir, match);
-}*/
-
 #if ENABLED(SDCARD_SORT_ALPHA)
 
   /**

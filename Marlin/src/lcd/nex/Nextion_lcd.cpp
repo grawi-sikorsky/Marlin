@@ -335,7 +335,6 @@
 
       card.openAndPrintFile(filename);
 
-			//card.getfilename(nex_file_number[nex_file_row_clicked]);
 			card.selectFileByIndex(nex_file_number[nex_file_row_clicked]);
 			strncpy(filename_printing, card.longFilename, 40); // card.longFilename
 
@@ -982,7 +981,13 @@
 			// PRINTER INFO START
 			Sfirmware.setText_PGM(PSTR(SHORT_BUILD_VERSION), "statscreen");
 			Skompil.setText_PGM(PSTR(STRING_DISTRIBUTION_DATE), "statscreen");
-			Sleveling.setText_PGM(GET_TEXT(MSG_MESH_LEVELING), "statscreen");
+
+			#if ENABLED(NEXTION_BED_SEMIAUTO_LEVEL)
+				Sleveling.setText_PGM(GET_TEXT(MSG_MESH_LEVELING), "statscreen");
+			#elif ENABLED(NEXTION_AUTO_BED_LEVEL)
+				Sleveling.setText_PGM(GET_TEXT(MSG_BILINEAR_LEVELING), "statscreen");
+			#endif
+
 			#if ENABLED(PLOSS_SUPPORT)
 						Svlcs.setText_PGM(GET_TEXT(MSG_YES), "statscreen");
 			#else
