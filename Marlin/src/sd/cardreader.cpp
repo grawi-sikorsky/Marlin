@@ -889,12 +889,12 @@ void CardReader::getfilename(uint16_t nr, const char * const match) { //=/=NULL
   #endif // SDSORT_CACHE_NAMES
   SdFile *curDir;
   curDir = &workDir;
-  //lsAction = LS_GetFilename;
+  lsAction = LS_GetFilename;
   nrFiles = nr;
   curDir->rewind();
   lsDive("", *curDir, match);
-}
-*/
+}*/
+
 #if ENABLED(SDCARD_SORT_ALPHA)
 
   /**

@@ -12,7 +12,8 @@
 #if ENABLED(NEXTION_DISPLAY)
 	#include "../../module/stepper.h"
 	#include "../../feature/bedlevel/mbl/mesh_bed_leveling.h"
-	#include "../../module/configuration_store.h"
+	#include "../../module/planner.h"
+	#include "../../module/settings.h"
 	#include "../../lcd/ultralcd.h"
 #endif
 
@@ -335,6 +336,7 @@
       card.openAndPrintFile(filename);
 
 			//card.getfilename(nex_file_number[nex_file_row_clicked]);
+			card.selectFileByIndex(nex_file_number[nex_file_row_clicked]);
 			strncpy(filename_printing, card.longFilename, 40); // card.longFilename
 
       PagePrinter.show();
