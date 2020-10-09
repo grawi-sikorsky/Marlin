@@ -724,8 +724,8 @@
  * When changing speed and direction, if the difference is less than the
  * value set here, it may happen instantaneously.
  */
-#define DEFAULT_XJERK                 10.0
-#define DEFAULT_YJERK                 10.0
+#define DEFAULT_XJERK                 20.0
+#define DEFAULT_YJERK                 20.0
 #define DEFAULT_ZJERK                  0.4
 #define DEFAULT_EJERK                  5.0
 
@@ -1287,7 +1287,7 @@
 #endif
 
 // Homing speeds (mm/m)
-#define HOMING_FEEDRATE_XY (90*60)
+#define HOMING_FEEDRATE_XY (125*60)
 
 #if ENABLED (NEXTION_AUTO_BED_LEVEL)
   #define HOMING_FEEDRATE_Z  (15*60)
