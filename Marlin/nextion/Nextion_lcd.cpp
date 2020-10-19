@@ -2207,8 +2207,7 @@ void sendRandomSplashMessage(){
 		
     PageID = Nextion_PageID();
 		if(PageID == 100 || PageID == 101)	PageID = PreviousPage;		// jesli na serialu lipa (przyczyna?) to loop do nastepnej proby
-
-		//nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
+		// ^ to byl problem odswiezajacego sie ektranu SD...
 
 		// timeout screen saver
 		#if ENABLED(NEX_SCREENSAVER)
