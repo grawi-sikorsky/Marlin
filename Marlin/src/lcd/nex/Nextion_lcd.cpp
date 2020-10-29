@@ -603,8 +603,6 @@
 
     void NextionLCD::lcd_advanced_pause_resume_print() {
       pause_menu_response = PAUSE_RESPONSE_RESUME_PRINT;
-			ui.return_to_status();
-      PagePrinter.show();
     }
 
     void NextionLCD::lcd_advanced_pause_extrude_more() {
@@ -613,9 +611,9 @@
 
     void NextionLCD::lcd_advanced_pause_option_menu() {
       START_MENU();
-      STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_OPTION_HEADER));
-      MENU_ITEM(function, GET_TEXT(MSG_FILAMENT_CHANGE_OPTION_RESUME), nexlcd.lcd_advanced_pause_resume_print);
-      MENU_ITEM(function, GET_TEXT(MSG_FILAMENT_CHANGE_OPTION_PURGE), nexlcd.lcd_advanced_pause_extrude_more);
+				STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_OPTION_HEADER));
+				MENU_ITEM(function, GET_TEXT(MSG_FILAMENT_CHANGE_OPTION_RESUME), nexlcd.lcd_advanced_pause_resume_print);
+				MENU_ITEM(function, GET_TEXT(MSG_FILAMENT_CHANGE_OPTION_PURGE), nexlcd.lcd_advanced_pause_extrude_more);
       END_MENU();
     }
 
@@ -629,15 +627,16 @@
 
     void NextionLCD::lcd_advanced_pause_unload_message() {
       START_SCREEN();
-		STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
-		STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_UNLOAD_1));
-		STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_UNLOAD_2));
+				STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
+				STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_UNLOAD_1));
+				STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_UNLOAD_2));
       END_SCREEN();
     }
 
     void NextionLCD::lcd_advanced_pause_wait_for_nozzles_to_heat() {
+			SERIAL_ECHO("m600heating:"); SERIAL_ECHOLN(nexlcd.nex_m600_heatingup);
       START_SCREEN();
-		STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
+				STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_HEATING_1));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_HEATING_2));
       END_SCREEN();
@@ -645,7 +644,7 @@
 
     void NextionLCD::lcd_advanced_pause_heat_nozzle() {
       START_SCREEN();
-		STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
+				STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_HEAT_1));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_HEAT_2));
       END_SCREEN();
@@ -653,7 +652,7 @@
 
     void NextionLCD::lcd_advanced_pause_insert_message() {
       START_SCREEN();
-		STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
+				STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_INSERT_1));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_INSERT_2));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_INSERT_3));
@@ -662,7 +661,7 @@
 
     void NextionLCD::lcd_advanced_pause_load_message() {
       START_SCREEN();
-		STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
+				STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_LOAD_1));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_LOAD_2));
       END_SCREEN();
@@ -678,7 +677,7 @@
 
     void NextionLCD::lcd_advanced_pause_resume_message() {
       START_SCREEN();
-		//STATIC_ITEM(MSG_NEX_FILAMENT_CHANGE_HEADER); jw.
+			//STATIC_ITEM(MSG_NEX_FILAMENT_CHANGE_HEADER); jw.
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_RESUME_1));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_RESUME_2));
       END_SCREEN();
@@ -692,7 +691,7 @@
       //UNUSED(extruder);
       static PauseMessage old_message;
       //advanced_pause_mode = mode;
-
+			SERIAL_ECHOLN(nex_m600_heatingup);
       if (old_message != message) {
 				nex_m600_heatingup = 0;//zmiana jesli wyjdzie poza heatingup ????
 				    
@@ -725,7 +724,6 @@
 						SERIAL_ECHOLN("PURGE:??");
             break;
           case PAUSE_MESSAGE_RESUME:
-						//nex_m600_heatingup = 1;
 						nexlcd.lcd_advanced_pause_resume_message();
            	SERIAL_ECHOLN("RESUME:??");
             break;
@@ -734,7 +732,8 @@
             break;
           case PAUSE_MESSAGE_HEATING:
            	SERIAL_ECHOLN("HEATING:??");
-						 nexlcd.lcd_advanced_pause_wait_for_nozzles_to_heat();
+						nexlcd.nex_m600_heatingup = 1;
+						nexlcd.lcd_advanced_pause_wait_for_nozzles_to_heat();
             break;
           case PAUSE_MESSAGE_OPTION:
 						SERIAL_ECHOLN("OPTION:??");
@@ -742,7 +741,9 @@
             nexlcd.lcd_advanced_pause_option_menu();
             break;
           case PAUSE_MESSAGE_STATUS:
-						
+						ui.reset_status();
+						ui.return_to_status();
+						PagePrinter.show();
            	SERIAL_ECHOLN("STATUS:??");
             break;
           default:
@@ -1854,9 +1855,9 @@ void NextionLCD::init(){
 				if (nex_m600_heatingup == 1) // pokaz temp glowicy podczas nagrzewania m600 na stronie select
 				{
 					char temptemp[14];
-					strlcpy(temptemp, i8tostr3rj(thermalManager.degHotend(0)), 4);
+					strlcpy(temptemp, i16tostr3rj(thermalManager.degHotend(0)), 4);
 					strcat(temptemp, PSTR(" / "));
-					strcat(temptemp, i8tostr3rj(thermalManager.degTargetHotend(0)));
+					strcat(temptemp, i16tostr3rj(thermalManager.degTargetHotend(0)));
 					LcdRiga4.setText(temptemp);
 				}
 				break;
