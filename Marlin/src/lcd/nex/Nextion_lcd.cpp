@@ -15,6 +15,7 @@
 	#include "../../module/planner.h"
 	#include "../../module/settings.h"
 	#include "../../lcd/ultralcd.h"
+	//#include "../../lcd/menu/menu_item.h"
 #endif
 
 #if ENABLED(SPEAKER)
@@ -76,17 +77,20 @@
   #endif
 	
 	#if ENABLED(ADVANCED_PAUSE_FEATURE)
-		void lcd_pause_pausing_message()  { _lcd_pause_message(GET_TEXT(MSG_PAUSE_PRINT_INIT));        }
-		void lcd_advanced_pause_wait_for_nozzles_to_heat();
-		void lcd_advanced_pause_toocold_menu();
-		void lcd_advanced_pause_option_menu();
-		void lcd_advanced_pause_init_message();
-		void lcd_advanced_pause_unload_message();
-		void lcd_advanced_pause_insert_message();
-		void lcd_advanced_pause_load_message();
-		void lcd_advanced_pause_heat_nozzle();
-		void lcd_advanced_pause_extrude_message();
-		void lcd_advanced_pause_resume_message();
+		
+		bool nex_m600_heatingup = 0;
+		// NOWE 2.0
+		void lcd_pause_pausing_message()  { nexlcd.nex_enqueue_filament_change(); }
+		void lcd_pause_parking_message()  { nexlcd.lcd_advanced_pause_init_message(); }
+		void lcd_pause_changing_message() { nexlcd.lcd_advanced_pause_load_message(); }
+		void lcd_pause_unload_message()   { nexlcd.lcd_advanced_pause_unload_message(); }
+		void lcd_pause_heating_message()  { nexlcd.lcd_advanced_pause_wait_for_nozzles_to_heat(); }
+		void lcd_pause_heat_message()     { nexlcd.lcd_advanced_pause_heat_nozzle(); }
+		void lcd_pause_insert_message()   { nexlcd.lcd_advanced_pause_insert_message(); }
+		void lcd_pause_load_message()     { nexlcd.lcd_advanced_pause_load_message(); }
+		void lcd_pause_waiting_message()  { nexlcd.lcd_advanced_pause_wait_for_nozzles_to_heat(); }
+		void lcd_pause_resume_message()   { nexlcd.lcd_advanced_pause_resume_message(); }
+		void lcd_pause_toocold_menu()			{ nexlcd.lcd_advanced_pause_toocold_menu(); }
 
 		//void lcd_pause_pausing_message()  { _lcd_pause_message(GET_TEXT(MSG_PAUSE_PRINT_INIT));        }
 		//void lcd_pause_changing_message() { _lcd_pause_message(GET_TEXT(MSG_FILAMENT_CHANGE_INIT));    }
@@ -360,6 +364,8 @@
       setpageSD();
     }
 
+		void NextionLCD::menu_action_function(screenFunc_t func) { (*func)(); }
+
 		/**
 		 *	Ustawia strone z karta SD
 		*/
@@ -497,7 +503,7 @@
 	 */
 	#define WAIT_FOR_CLICK_F(TYPE, ...) \
     if (lcd_clicked){ \
-		menu_action_ ## TYPE(__VA_ARGS__); \
+		nexlcd.menu_action_ ## TYPE(__VA_ARGS__); \
     return; }\
 
 	#define WAIT_FOR_CLICK() \
@@ -507,12 +513,12 @@
     return; }\
 
   #define START_SCREEN() \
-    start_menu(false, true); \
+    nexlcd.start_menu(false, true); \
     do { \
       uint8_t _lcdLineNr = 0; \
 
   #define START_MENU() \
-    start_menu(true, true); \
+    nexlcd.start_menu(true, true); \
     uint16_t encoderLine = 1; \
     uint8_t _lcdLineNr = 0; \
     do { \
@@ -521,12 +527,12 @@
       delay(100)
 
   #define MENU_ITEM(TYPE, LABEL, ...) \
-      if (lcdDrawUpdate) { \
+      if (nexlcd.lcdDrawUpdate) { \
         lcd_row_list[_lcdLineNr]->setText_PGM(PSTR(LABEL)); \
         LcdMax.setValue(_lcdLineNr); \
       } \
-      if (lcd_clicked && encoderLine == _lcdLineNr) { \
-        menu_action_ ## TYPE(__VA_ARGS__); \
+      if (nexlcd.lcd_clicked && encoderLine == _lcdLineNr) { \
+        nexlcd.menu_action_ ## TYPE(__VA_ARGS__); \
         return; \
       } \
       ++_lcdLineNr
@@ -534,7 +540,7 @@
   #define MENU_BACK(LABEL) MENU_ITEM(back, LABEL)
 
   #define STATIC_ITEM_P(LABEL) \
-      if (lcdDrawUpdate) { \
+      if (nexlcd.lcdDrawUpdate) { \
         lcd_row_list[_lcdLineNr]->setText_PGM(LABEL); \
         LcdMin.setValue(_lcdLineNr + 1); \
       } \
@@ -544,19 +550,19 @@
 
   #define END_MENU() \
       idle(); \
-      lcdDrawUpdate = false; \
+      nexlcd.lcdDrawUpdate = false; \
     } while(1)
 
   #define END_SCREEN() \
-      lcdDrawUpdate = false; \
+      nexlcd.lcdDrawUpdate = false; \
     } while(0)
 
 	 // Portions from STATIC_ITEM...
 	#define HOTEND_STATUS_ITEM() do { \
-        if (lcdDrawUpdate) { \
+        if (nexlcd.lcdDrawUpdate) { \
           lcd_row_list[_lcdLineNr]->setText(i8tostr3(thermalManager.degHotend)); \
         } \
-				lcdDrawUpdate = true; \
+				nexlcd.lcdDrawUpdate = true; \
 				++_lcdLineNr; \
     }while(0)
 
@@ -592,11 +598,12 @@
 				}
 			#endif
 			PageSelect.show();
-			//kATT enqueue_and_echo_commands_P(PSTR("M600 B0"));
+			queue.enqueue_now_P("M600 B0");
 		}
 
     void NextionLCD::lcd_advanced_pause_resume_print() {
       pause_menu_response = PAUSE_RESPONSE_RESUME_PRINT;
+			ui.return_to_status();
       PagePrinter.show();
     }
 
@@ -607,14 +614,14 @@
     void NextionLCD::lcd_advanced_pause_option_menu() {
       START_MENU();
       STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_OPTION_HEADER));
-      MENU_ITEM(function, GET_TEXT(MSG_FILAMENT_CHANGE_OPTION_RESUME), lcd_advanced_pause_resume_print);
-      MENU_ITEM(function, GET_TEXT(MSG_FILAMENT_CHANGE_OPTION_PURGE), lcd_advanced_pause_extrude_more);
+      MENU_ITEM(function, GET_TEXT(MSG_FILAMENT_CHANGE_OPTION_RESUME), nexlcd.lcd_advanced_pause_resume_print);
+      MENU_ITEM(function, GET_TEXT(MSG_FILAMENT_CHANGE_OPTION_PURGE), nexlcd.lcd_advanced_pause_extrude_more);
       END_MENU();
     }
 
     void NextionLCD::lcd_advanced_pause_init_message() {
       START_SCREEN();
-		STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
+				STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_INIT_1));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_INIT_2));
       END_SCREEN();
@@ -653,7 +660,7 @@
       END_SCREEN();
     }
 
-    static void NextionLCD::lcd_advanced_pause_load_message() {
+    void NextionLCD::lcd_advanced_pause_load_message() {
       START_SCREEN();
 		STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_LOAD_1));
@@ -661,7 +668,7 @@
       END_SCREEN();
     }
 
-    static void NextionLCD::lcd_advanced_pause_purge_message() {
+    void NextionLCD::lcd_advanced_pause_purge_message() {
       START_SCREEN();
 			//STATIC_ITEM(MSG_NEX_FILAMENT_CHANGE_HEADER); usuniete bo przy pauzie rowniez bylo wyswietlane
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_EXTRUDE_1));
@@ -669,7 +676,7 @@
       END_SCREEN();
     }
 
-    static void NextionLCD::lcd_advanced_pause_resume_message() {
+    void NextionLCD::lcd_advanced_pause_resume_message() {
       START_SCREEN();
 		//STATIC_ITEM(MSG_NEX_FILAMENT_CHANGE_HEADER); jw.
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_RESUME_1));
@@ -677,52 +684,67 @@
       END_SCREEN();
     }
 
-    void NextionLCD::lcd_advanced_pause_show_message(const PauseMessage message,const PauseMenuResponse mode/*=ADVANCED_PAUSE_MODE_PAUSE_PRINT*/) 
+    void lcd_pause_show_message(const PauseMessage message,
+																const PauseMode mode/*=PAUSE_MODE_SAME*/,
+																const uint8_t extruder/*=active_extruder*/)
+			//const PauseMessage message,const PauseMode mode, const uint8_t extruder) 
 		{
       //UNUSED(extruder);
       static PauseMessage old_message;
-      advanced_pause_mode = mode;
+      //advanced_pause_mode = mode;
 
       if (old_message != message) {
 				nex_m600_heatingup = 0;//zmiana jesli wyjdzie poza heatingup ????
 				    
-					// POZOSTALO
-					//PAUSE_MESSAGE_PAUSING,
-					//PAUSE_MESSAGE_CHANGING,
-					//PAUSE_MESSAGE_WAITING,
-					//PAUSE_MESSAGE_STATUS,
-					
         switch (message) {
-          case PAUSE_MESSAGE_INIT:
-            lcd_advanced_pause_init_message();
+          case PAUSE_MESSAGE_PARKING:
+						SERIAL_ECHOLN("PARKING:");
+            nexlcd.lcd_advanced_pause_init_message();
+            break;
+          case PAUSE_MESSAGE_CHANGING:
+						SERIAL_ECHOLN("CHANGING:??");
+						nexlcd.lcd_advanced_pause_init_message();
             break;
           case PAUSE_MESSAGE_UNLOAD:
-            lcd_advanced_pause_unload_message();
+						nexlcd.lcd_advanced_pause_unload_message();
+						SERIAL_ECHOLN("UNLOAD:??");
+            break;
+          case PAUSE_MESSAGE_WAITING:
+						SERIAL_ECHOLN("WAITING:??");
             break;
           case PAUSE_MESSAGE_INSERT:
-            lcd_advanced_pause_insert_message();
+						nexlcd.lcd_advanced_pause_insert_message();
+						SERIAL_ECHOLN("INSERT:??");
             break;
           case PAUSE_MESSAGE_LOAD:
-            lcd_advanced_pause_load_message();
+						nexlcd.lcd_advanced_pause_load_message();
+						SERIAL_ECHOLN("LOAD:??");
             break;
           case PAUSE_MESSAGE_PURGE:
-            lcd_advanced_pause_purge_message();
+						nexlcd.lcd_advanced_pause_purge_message();
+						SERIAL_ECHOLN("PURGE:??");
             break;
           case PAUSE_MESSAGE_RESUME:
-            lcd_advanced_pause_resume_message();
+						//nex_m600_heatingup = 1;
+						nexlcd.lcd_advanced_pause_resume_message();
+           	SERIAL_ECHOLN("RESUME:??");
             break;
-          case PAUSE_MESSAGE_HEAT:
-            lcd_advanced_pause_heat_nozzle();
+					case PAUSE_MESSAGE_HEAT:
+           	SERIAL_ECHOLN("HEAT:??");
             break;
           case PAUSE_MESSAGE_HEATING:
-						nex_m600_heatingup = 1;
-            lcd_advanced_pause_wait_for_nozzles_to_heat();
+           	SERIAL_ECHOLN("HEATING:??");
+						 nexlcd.lcd_advanced_pause_wait_for_nozzles_to_heat();
             break;
           case PAUSE_MESSAGE_OPTION:
+						SERIAL_ECHOLN("OPTION:??");
             pause_menu_response = PAUSE_RESPONSE_WAIT_FOR;
-            lcd_advanced_pause_option_menu();
+            nexlcd.lcd_advanced_pause_option_menu();
             break;
-          //case ADVANCED_PAUSE_MESSAGE_STATUS:
+          case PAUSE_MESSAGE_STATUS:
+						
+           	SERIAL_ECHOLN("STATUS:??");
+            break;
           default:
             PagePrinter.show();
             break;
@@ -1125,7 +1147,7 @@
 
 		if (strcmp(bufferson,"M600") == 0)
 		{
-			// nex_enqueue_filament_change();
+			nexlcd.nex_enqueue_filament_change();
 			buzzer.tone(100, 2300);
 		}
 		else if (strcmp(bufferson, "M78 S78") == 0)
@@ -1980,7 +2002,6 @@ void NextionLCD::init(){
 		PagePrinter.show();
 		queue.inject_P("M500");  // dodane aby zapisywało poziomowanie podczas trwania funkcji
 		g29_in_progress = false; // dodane po zakonczeniu g29
-		
 	}
 #endif
 

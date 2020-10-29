@@ -317,6 +317,7 @@ millis_t MarlinUI::next_button_update_ms; // = 0
 
 #endif // HAS_LCD_MENU
 
+#if DISABLED(NEXTION_DISPLAY)
 void MarlinUI::init() {
 
   init_lcd();
@@ -380,6 +381,7 @@ void MarlinUI::init() {
 
   TERN_(HAS_ENCODER_ACTION, encoderDiff = 0);
 }
+#endif
 
 bool MarlinUI::get_blink() {
   static uint8_t blink = 0;
@@ -612,6 +614,7 @@ void MarlinUI::status_screen() {
   draw_status_screen();
 }
 
+#if DISABLED(NEXTION_DISPLAY)
 void MarlinUI::kill_screen(PGM_P lcd_error, PGM_P lcd_component) {
   init();
   status_printf_P(1, PSTR(S_FMT ": " S_FMT), lcd_error, lcd_component);
@@ -628,6 +631,7 @@ void MarlinUI::kill_screen(PGM_P lcd_error, PGM_P lcd_component) {
 
   draw_kill_screen();
 }
+#endif
 
 void MarlinUI::quick_feedback(const bool clear_buttons/*=true*/) {
 
@@ -802,6 +806,7 @@ millis_t next_lcd_update_ms;
   millis_t MarlinUI::return_to_status_ms = 0;
 #endif
 
+#if DISABLED(NEXTION_DISPLAY)
 void MarlinUI::update() {
 
   static uint16_t max_display_update_time = 0;
@@ -1081,6 +1086,7 @@ void MarlinUI::update() {
 
   TERN_(HAS_GRAPHICAL_TFT, tft_idle());
 }
+#endif
 
 #if HAS_ADC_BUTTONS
 

@@ -35,6 +35,9 @@
 #if HAS_FILAMENT_SENSOR
   #include "../../feature/runout.h"
 #endif
+#if ENABLED(NEXTION_DISPLAY)
+  #include "../nex/Nextion_lcd.h"
+#endif
 
 //
 // Change Filament > Change/Unload/Load Filament
@@ -276,7 +279,7 @@ void _lcd_pause_message(PGM_P const msg) {
   HOTEND_STATUS_ITEM();                                         // 5: Hotend Status
   END_SCREEN();
 }
-
+#if DISABLED(NEXTION_DISPLAY)
 void lcd_pause_parking_message()  { _lcd_pause_message(GET_TEXT(MSG_PAUSE_PRINT_PARKING));     }
 void lcd_pause_changing_message() { _lcd_pause_message(GET_TEXT(MSG_FILAMENT_CHANGE_INIT));    }
 void lcd_pause_unload_message()   { _lcd_pause_message(GET_TEXT(MSG_FILAMENT_CHANGE_UNLOAD));  }
@@ -286,6 +289,7 @@ void lcd_pause_insert_message()   { _lcd_pause_message(GET_TEXT(MSG_FILAMENT_CHA
 void lcd_pause_load_message()     { _lcd_pause_message(GET_TEXT(MSG_FILAMENT_CHANGE_LOAD));    }
 void lcd_pause_waiting_message()  { _lcd_pause_message(GET_TEXT(MSG_ADVANCED_PAUSE_WAITING));  }
 void lcd_pause_resume_message()   { _lcd_pause_message(GET_TEXT(MSG_FILAMENT_CHANGE_RESUME));  }
+#endif
 
 void lcd_pause_purge_message() {
   #if ENABLED(ADVANCED_PAUSE_CONTINUOUS_PURGE)
@@ -296,6 +300,7 @@ void lcd_pause_purge_message() {
 }
 
 FORCE_INLINE screenFunc_t ap_message_screen(const PauseMessage message) {
+  SERIAL_ECHO("message:"); SERIAL_ECHOLN(message);
   switch (message) {
     case PAUSE_MESSAGE_PARKING:  return lcd_pause_parking_message;
     case PAUSE_MESSAGE_CHANGING: return lcd_pause_changing_message;
@@ -309,26 +314,28 @@ FORCE_INLINE screenFunc_t ap_message_screen(const PauseMessage message) {
     case PAUSE_MESSAGE_HEATING:  return lcd_pause_heating_message;
     case PAUSE_MESSAGE_OPTION:   pause_menu_response = PAUSE_RESPONSE_WAIT_FOR;
                                  return menu_pause_option;
-    case PAUSE_MESSAGE_STATUS:
+    case PAUSE_MESSAGE_STATUS:   { SERIAL_ECHOLN("dupastatus"); return lcd_pause_toocold_menu;}
     default: break;
   }
   return nullptr;
 }
 
-void lcd_pause_show_message(
-  const PauseMessage message,
-  const PauseMode mode/*=PAUSE_MODE_SAME*/,
-  const uint8_t extruder/*=active_extruder*/
-) {
-  if (mode != PAUSE_MODE_SAME) pause_mode = mode;
-  hotend_status_extruder = extruder;
-  const screenFunc_t next_screen = ap_message_screen(message);
-  if (next_screen) {
-    ui.defer_status_screen();
-    ui.goto_screen(next_screen);
-  }
-  else
-    ui.return_to_status();
-}
+  #if DISABLED(NEXTION_DISPLAY)
+    void lcd_pause_show_message(
+      const PauseMessage message,
+      const PauseMode mode/*=PAUSE_MODE_SAME*/,
+      const uint8_t extruder/*=active_extruder*/
+    ) {
+      if (mode != PAUSE_MODE_SAME) pause_mode = mode;
+      hotend_status_extruder = extruder;
+      const screenFunc_t next_screen = ap_message_screen(message);
+      if (next_screen) {
+        ui.defer_status_screen();
+        ui.goto_screen(next_screen);
+      }
+      else
+        ui.return_to_status();
+    }
+  #endif
 
 #endif // HAS_LCD_MENU && ADVANCED_PAUSE_FEATURE

@@ -26,6 +26,7 @@
 #include "../ultralcd.h"
 #include "library/Nextion.h"
 #include "HardwareSerial.h"
+#include "../../../src/feature/pause.h"
 
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
 	#include "../../core/types.h"
@@ -73,14 +74,16 @@ class NextionLCD
 
 
     void start_menu(const bool encoder, const bool push);
+    void menu_action_function(screenFunc_t func);
+    void menu_action_sdfile(const char* filename);
+    void menu_action_sddirectory(const char* filename);
+
     void return_after_leveling(bool finish);    //powrot do ekranu statusu po zakonczeniu levelingu //wait for user = false
     void lcd_yesno(const uint8_t val, const char* msg1="", const char* msg2="", const char* msg3="");
     void nextion_babystep_z(bool dir);
     void setpage_Status();
-    void menu_action_sdfile(const char* filename);
     void nex_check_sdcard_present();
     void nex_update_sd_status();
-    void menu_action_sddirectory(const char* filename);
     void setrowsdcard(uint32_t number = 0);
     void printrowsd(uint8_t row, const bool folder, const char* filename, const char* longfilename);
     void nex_enqueue_filament_change();
@@ -129,19 +132,22 @@ class NextionLCD
 
     #if ENABLED(ADVANCED_PAUSE_FEATURE)
     void lcd_advanced_pause_toocold_menu();
-    void lcd_advanced_pause_resume_print();
-    void lcd_advanced_pause_extrude_more();
-    void lcd_advanced_pause_option_menu();
-    void lcd_advanced_pause_init_message();
-    void lcd_advanced_pause_unload_message();
-    void lcd_advanced_pause_wait_for_nozzles_to_heat();
-    void lcd_advanced_pause_heat_nozzle();
-    void lcd_advanced_pause_insert_message();
+    static void lcd_advanced_pause_resume_print();
+    static void lcd_advanced_pause_extrude_more();
+    static void lcd_advanced_pause_option_menu();
+    static void lcd_advanced_pause_init_message();
+    static void lcd_advanced_pause_unload_message();
+    static void lcd_advanced_pause_wait_for_nozzles_to_heat();
+    static void lcd_advanced_pause_heat_nozzle();
+    static void lcd_advanced_pause_insert_message();
     static void lcd_advanced_pause_load_message();
     static void lcd_advanced_pause_purge_message();
     static void lcd_advanced_pause_resume_message();
-    void lcd_advanced_pause_show_message(const PauseMessage message,const PauseMenuResponse mode/*=ADVANCED_PAUSE_MODE_PAUSE_PRINT*/);
-    void lcd_advanced_pause_show_message(const PauseMessage message,const PauseMenuResponse mode = PAUSE_RESPONSE_WAIT_FOR);
+    //void lcd_advanced_pause_show_message(const PauseMessage message,const PauseMenuResponse mode/*=ADVANCED_PAUSE_MODE_PAUSE_PRINT*/);
+    /*void lcd_pause_show_message(const PauseMessage message,
+                                  const PauseMode mode=PAUSE_MODE_SAME,
+                                  const uint8_t extruder=active_extruder);*/
+
     #endif
 
     //bool g29_in_progress = false;
@@ -184,6 +190,23 @@ class NextionLCD
 extern NextionLCD nexlcd;
 
 extern float feedrate_mm_s; 
+
+  //nowe 2.0
+  void lcd_pause_pausing_message();
+  void lcd_pause_parking_message();
+  void lcd_pause_changing_message();
+  void lcd_pause_unload_message();
+  void lcd_pause_heating_message();
+  void lcd_pause_heat_message();
+  void lcd_pause_insert_message();
+  void lcd_pause_load_message();
+  void lcd_pause_waiting_message();
+  void lcd_pause_resume_message();
+  void lcd_pause_toocold_menu();
+
+  void lcd_pause_show_message(const PauseMessage message,
+                              const PauseMode mode=PAUSE_MODE_SAME,
+                              const uint8_t extruder=active_extruder);
 
 #endif // ENABLED(NEXTION_DISPLAY)
 

@@ -40,8 +40,8 @@
 #if HAS_ENCODER_WHEEL || ANY_BUTTON(ENC, BACK, UP, DWN, LFT, RT)
   #define HAS_DIGITAL_BUTTONS 1
 #endif
-#if !HAS_ADC_BUTTONS && (ENABLED(REPRAPWORLD_KEYPAD) || (HAS_SPI_LCD && DISABLED(NEWPANEL)))
-  #define HAS_SHIFT_ENCODER 1
+#if !HAS_ADC_BUTTONS && (ENABLED(REPRAPWORLD_KEYPAD) || (HAS_SPI_LCD && DISABLED(NEWPANEL) && DISABLED(NEXTION_LCD)))
+  //#define HAS_SHIFT_ENCODER 1 // nextion
 #endif
 
 // I2C buttons must be read in the main thread
@@ -96,7 +96,7 @@ typedef void (*menuAction_t)();
     typedef void (*screenFunc_t)();
     typedef void (*menuAction_t)();
 
-    #if ENABLED(ADVANCED_PAUSE_FEATURE)
+    #if ENABLED(ADVANCED_PAUSE_FEATURE) && DISABLED(NEXTION_DISPLAY)
       void lcd_pause_show_message(const PauseMessage message,
                                   const PauseMode mode=PAUSE_MODE_SAME,
                                   const uint8_t extruder=active_extruder);
@@ -477,8 +477,9 @@ public:
     static void status_printf_P(const uint8_t level, PGM_P const fmt, ...);
     static void reset_status(const bool no_welcome=false);
 
-  #elif ENABLED(NEXTION_DISPLAY)
+    //static void status_screen();
 
+  #elif ENABLED(NEXTION_DISPLAY)
     bool lcd_wait_for_move = false;
 
     void init();
@@ -537,21 +538,6 @@ public:
         LCDVIEW_CLEAR_CALL_REDRAW,
         LCDVIEW_CALL_NO_REDRAW
       };
-
-  #else // No LCD
-
-    // Send status to host as a notification
-    static void set_status(const char* message, const bool=false);
-    static void set_status_P(PGM_P message, const int8_t=0);
-    static void status_printf_P(const uint8_t, PGM_P message, ...);
-
-    static inline void init() {}
-    static inline void update() {}
-    static inline void return_to_status() {}
-    static inline void set_alert_status_P(PGM_P const) {}
-    static inline void reset_status(const bool=false) {}
-    static inline void reset_alert_level() {}
-    static constexpr bool has_status() { return false; }
 
   #endif
 
@@ -754,7 +740,7 @@ private:
     static void finish_status(const bool persist);
   #endif
 
-  #if HAS_SPI_LCD
+  #if HAS_SPI_LCD || ENABLED(NEXTION_DISPLAY)
     #if HAS_LCD_MENU && LCD_TIMEOUT_TO_STATUS > 0
       static bool defer_return_to_status;
     #else

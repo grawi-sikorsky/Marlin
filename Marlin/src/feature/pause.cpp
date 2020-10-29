@@ -67,6 +67,9 @@
 #define DEBUG_OUT ENABLED(DEBUG_PAUSE_RESUME)
 #include "../core/debug_out.h"
 
+#if ENABLED (NEXTION_DISPLAY)
+  #include "../lcd/nex/Nextion_lcd.h"
+#endif
 // private:
 
 static xyze_pos_t resume_position;

@@ -78,7 +78,7 @@ enum PauseMessage : char {
 	};
 #endif //PLOSS
 
-#if HAS_LCD_MENU
+#if HAS_LCD_MENU || ENABLED (NEXTION_DISPLAY)
   enum PauseMenuResponse : char {
     PAUSE_RESPONSE_WAIT_FOR,
     PAUSE_RESPONSE_EXTRUDE_MORE,

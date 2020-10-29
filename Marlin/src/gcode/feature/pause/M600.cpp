@@ -49,6 +49,10 @@
   #include "../../../feature/runout.h"
 #endif
 
+#if ENABLED(NEXTION_DISPLAY)
+  #include "../../../lcd/nex/Nextion_lcd.h"
+#endif
+
 /**
  * M600: Pause for filament change
  *

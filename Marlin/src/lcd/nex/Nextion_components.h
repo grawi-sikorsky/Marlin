@@ -42,7 +42,7 @@
 	NexObject PageOptions		= NexObject(4, 0,	"maintain");
   NexObject PageSetup     = NexObject(5,  0,  "setup");
 
-  NexObject Pfilament     = NexObject(11, 0, "filament");
+  NexObject PageFilament  = NexObject(11, 0, "filament");
 
 	NexObject PageSelect    = NexObject(14, 0,  "select");
   NexObject PageYesNo     = NexObject(15, 0,  "yesno");

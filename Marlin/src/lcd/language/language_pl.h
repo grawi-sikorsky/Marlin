@@ -527,9 +527,9 @@ namespace Language_pl {
     PROGMEM Language_Str MSG_FILAMENT_CHANGE_RESUME        = _UxGT(MSG_2_LINE("Czekam na", "wznowienie wydruku..."));
 
   #elif ENABLED(NEXTION_DISPLAY)
-      PROGMEM Language_Str MSG_NEX_FILAMENT_CHANGE_HEADER				= _UxGT("Wymiana filamentu");
+      PROGMEM Language_Str MSG_NEX_FILAMENT_CHANGE_HEADER				  = _UxGT("Wymiana filamentu");
       PROGMEM Language_Str MSG_NEX_FILAMENT_CHANGE_OPTION_HEADER	= _UxGT("Wybierz opcje");
-      PROGMEM Language_Str MSG_FILAMENT_CHANGE_INIT_1         = _UxGT("Trwa rozpoczynanie");
+      PROGMEM Language_Str MSG_FILAMENT_CHANGE_INIT_1             = _UxGT("Trwa rozpoczynanie");
       PROGMEM Language_Str MSG_FILAMENT_CHANGE_INIT_2         = _UxGT("zmiany filamentu");
       PROGMEM Language_Str MSG_FILAMENT_CHANGE_UNLOAD_1       = _UxGT("Trwa wysuwanie");
       PROGMEM Language_Str MSG_FILAMENT_CHANGE_UNLOAD_2       = _UxGT("filamentu z glowicy");
@@ -546,6 +546,21 @@ namespace Language_pl {
       PROGMEM Language_Str MSG_TOO_COLD_FOR_M600_2						= _UxGT("rozgrzej aby");
       PROGMEM Language_Str MSG_TOO_COLD_FOR_M600_3						= _UxGT("kontynuowac");
       PROGMEM Language_Str MSG_TOO_COLD_FOR_M600_4						= _UxGT("Temp. min: 170");
+      //dodane old Printo H3
+      PROGMEM Language_Str MSG_PID_AUTOTUNE_START				      = _UxGT("PID rozpoczeto");
+      PROGMEM Language_Str MSG_PID_AUTOTUNE_DONE			        = _UxGT("PID ukonczono");
+      PROGMEM Language_Str MSG_PID_AUTOTUNE_FAIL				      = _UxGT("PID blad kalibracji");
+      PROGMEM Language_Str MSG_PID_AUTOTUNE_OVERSHOT			    = _UxGT("PID blad: overshot");
+
+      PROGMEM Language_Str MSG_PRINT_RECOVERING				        = _UxGT("Przywracanie wydruku");
+      PROGMEM Language_Str MSG_INFO_VLCS_FAILED_PRINTS			  = _UxGT("Utraty zasilania");
+      PROGMEM Language_Str MSG_INFO_PRINTO3D					        = _UxGT("Wsparcie");
+
+      PROGMEM Language_Str	MSG_FILAMENT_CHANGE_MINTEMP			  = _UxGT("Min. Temp. to: ");
+      PROGMEM Language_Str	MSG_FILAMENT_CHANGE_HEATING_1		  = _UxGT("Rozgrzewanie dyszy");
+      PROGMEM Language_Str	MSG_FILAMENT_CHANGE_HEATING_2		  = _UxGT("Prosze czekac");
+      PROGMEM Language_Str	MSG_FILAMENT_CHANGE_HEAT_1			  = _UxGT("Wcisnij przycisk");
+      PROGMEM Language_Str	MSG_FILAMENT_CHANGE_HEAT_2			  = _UxGT("aby rozgrzac dysze");
   #else
     PROGMEM Language_Str MSG_ADVANCED_PAUSE_WAITING        = _UxGT(MSG_1_LINE("Kliknij by kontynuować"));
     PROGMEM Language_Str MSG_PAUSE_PRINT_PARKING           = _UxGT(MSG_1_LINE("Parkowanie..."));
