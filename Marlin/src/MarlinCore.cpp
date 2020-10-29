@@ -449,7 +449,7 @@ void startOrResumeJob() {
 
 #if ENABLED(SDSUPPORT)
 
-  inline void abortSDPrinting() {
+  inline void abortSDPrinting(){
     card.endFilePrint(TERN_(SD_RESORT, true));
     queue.clear();
     quickstop_stepper();
@@ -471,10 +471,13 @@ void startOrResumeJob() {
     TERN_(PASSWORD_AFTER_SD_PRINT_ABORT, password.lock_machine());
   }
 
-  inline void finishSDPrinting() {
-    if (queue.enqueue_one_P(PSTR("M1001"))) {
+  inline void finishSDPrinting(){
+    if (queue.enqueue_one_P(PSTR("M1001"))){
       marlin_state = MF_RUNNING;
       TERN_(PASSWORD_AFTER_SD_PRINT_END, password.lock_machine());
+      #ifdef NEXTION_DISPLAY
+        nexlcd.nex_stop_printing();
+      #endif
     }
   }
 

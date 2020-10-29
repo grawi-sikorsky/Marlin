@@ -328,6 +328,7 @@ namespace Language_pl {
   PROGMEM Language_Str MSG_PRINT_PAUSED                    = _UxGT("Druk wstrzymany");
   PROGMEM Language_Str MSG_PRINTING                        = _UxGT("Drukowanie...");
   PROGMEM Language_Str MSG_PRINT_ABORTED                   = _UxGT("Druk przerwany");
+  PROGMEM Language_Str MSG_PRINT_DONE                      = _UxGT("Druk zakonczony");
   PROGMEM Language_Str MSG_NO_MOVE                         = _UxGT("Brak ruchu");
   PROGMEM Language_Str MSG_KILLED                          = _UxGT("Ubity. ");
   PROGMEM Language_Str MSG_STOPPED                         = _UxGT("Zatrzymany. ");

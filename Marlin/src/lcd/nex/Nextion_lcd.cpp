@@ -123,7 +123,7 @@
 
 		percentdone.setText("0", "stat");		// zeruj procenty
 		progressbar.setValue(0, "stat");			// zeruj progress bar
-		ui.set_status_P(GET_TEXT(MSG_PRINT_ABORTED), -1);	// status bar info
+		ui.set_status_P(GET_TEXT(MSG_PRINT_DONE), -1);	// status bar info
 	}
 
 	/**
@@ -333,11 +333,15 @@
 			SDstatus = SD_PRINTING;
 			SD.setValue(SDstatus,"stat"); // ustaw nex sdval na printing
 
-      card.openAndPrintFile(filename);
+			
 
-			card.selectFileByIndex(nex_file_number[nex_file_row_clicked]);
+
+			card.selectFileByName(filename);
+			card.openAndPrintFile(filename);
+			card.startFileprint();
 			strncpy(filename_printing, card.longFilename, 40); // card.longFilename
-
+			SERIAL_ECHOPGM("card.longfilename: "); SERIAL_ECHOLN(card.longFilename);
+			
       PagePrinter.show();
 			sendCommand("ref 0");
     }
@@ -1186,8 +1190,8 @@
         #if ENABLED(SDSUPPORT)
           case 1: // Stop Print
 						PagePrinter.show();
-						//card.flag.abort_sd_printing = true; // Ta flaga zatrzymuje wydruk w kolejnej wolnej instrukcji idle();
 						nexlcd.nex_stop_printing();
+						ui.set_status_P(GET_TEXT(MSG_PRINT_ABORTED), -1);	// status bar info
             break;
           case 2: // Upload Firmware
 						#if ENABLED(NEX_UPLOAD)
@@ -2118,7 +2122,6 @@ void NextionLCD::init(){
 						nexlcd.print_status_msg("Rozpoczeto kalibracje PID");
 						break;
 				}
-
       	//ScreenHandler.GotoScreen(DGUSLCD_SCREEN_MAIN);
 			}
 		//#endif
@@ -2127,7 +2130,8 @@ void NextionLCD::init(){
 		void stopPrint();
 		void pausePrint();
 		void resumePrint();
-	};
+
+	};	// namespace ExtUI
 
 	#endif
 
