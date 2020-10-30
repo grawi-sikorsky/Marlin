@@ -469,7 +469,7 @@ namespace Language_pl {
   PROGMEM Language_Str MSG_FILAMENT_CHANGE_HEADER_LOAD     = _UxGT("WSUN FILAMENT");
   PROGMEM Language_Str MSG_FILAMENT_CHANGE_HEADER_UNLOAD   = _UxGT("WYSUN FILAMENT");
   PROGMEM Language_Str MSG_FILAMENT_CHANGE_OPTION_HEADER   = _UxGT("OPCJE WZNOWIENIA:");
-  PROGMEM Language_Str MSG_FILAMENT_CHANGE_OPTION_PURGE    = _UxGT("Oczysc więcej");
+  PROGMEM Language_Str MSG_FILAMENT_CHANGE_OPTION_PURGE    = _UxGT("Oczysc wiecej");
   PROGMEM Language_Str MSG_FILAMENT_CHANGE_OPTION_RESUME   = _UxGT("Kontynuuj");
   PROGMEM Language_Str MSG_FILAMENT_CHANGE_NOZZLE          = _UxGT("  Dysza: ");
   PROGMEM Language_Str MSG_RUNOUT_SENSOR                   = _UxGT("Czujnik filamentu");
