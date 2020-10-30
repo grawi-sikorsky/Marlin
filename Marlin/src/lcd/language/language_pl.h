@@ -464,12 +464,12 @@ namespace Language_pl {
   PROGMEM Language_Str MSG_DAC_PERCENT_E                   = _UxGT("E Siła %");
   PROGMEM Language_Str MSG_ERROR_TMC                       = _UxGT("TMC BŁĄD POŁĄCZENIA");
   PROGMEM Language_Str MSG_DAC_EEPROM_WRITE                = _UxGT("Zapisz DAC EEPROM");
-  PROGMEM Language_Str MSG_FILAMENT_CHANGE_HEADER          = _UxGT("ZMIEŃ FILAMENT");
+  PROGMEM Language_Str MSG_FILAMENT_CHANGE_HEADER          = _UxGT("ZMIEN FILAMENT");
   PROGMEM Language_Str MSG_FILAMENT_CHANGE_HEADER_PAUSE    = _UxGT("WYDRUK WSTRZYMANY");
-  PROGMEM Language_Str MSG_FILAMENT_CHANGE_HEADER_LOAD     = _UxGT("WSUŃ FILAMENT");
-  PROGMEM Language_Str MSG_FILAMENT_CHANGE_HEADER_UNLOAD   = _UxGT("WYSUŃ FILAMENT");
+  PROGMEM Language_Str MSG_FILAMENT_CHANGE_HEADER_LOAD     = _UxGT("WSUN FILAMENT");
+  PROGMEM Language_Str MSG_FILAMENT_CHANGE_HEADER_UNLOAD   = _UxGT("WYSUN FILAMENT");
   PROGMEM Language_Str MSG_FILAMENT_CHANGE_OPTION_HEADER   = _UxGT("OPCJE WZNOWIENIA:");
-  PROGMEM Language_Str MSG_FILAMENT_CHANGE_OPTION_PURGE    = _UxGT("Oczyść więcej");
+  PROGMEM Language_Str MSG_FILAMENT_CHANGE_OPTION_PURGE    = _UxGT("Oczysc więcej");
   PROGMEM Language_Str MSG_FILAMENT_CHANGE_OPTION_RESUME   = _UxGT("Kontynuuj");
   PROGMEM Language_Str MSG_FILAMENT_CHANGE_NOZZLE          = _UxGT("  Dysza: ");
   PROGMEM Language_Str MSG_RUNOUT_SENSOR                   = _UxGT("Czujnik filamentu");
@@ -482,7 +482,7 @@ namespace Language_pl {
   PROGMEM Language_Str MSG_MMU2_MENU                       = _UxGT("MMU");
   PROGMEM Language_Str MSG_KILL_MMU2_FIRMWARE              = _UxGT("Uaktualnij firmware MMU!");
   PROGMEM Language_Str MSG_MMU2_NOT_RESPONDING             = _UxGT("MMU wymaga uwagi.");
-  PROGMEM Language_Str MSG_MMU2_RESUME                     = _UxGT("Wznów wydruk");
+  PROGMEM Language_Str MSG_MMU2_RESUME                     = _UxGT("Wznow wydruk");
   PROGMEM Language_Str MSG_MMU2_RESUMING                   = _UxGT("Wznawianie...");
   PROGMEM Language_Str MSG_MMU2_LOAD_FILAMENT              = _UxGT("Wsuń filament");
   PROGMEM Language_Str MSG_MMU2_LOAD_ALL                   = _UxGT("Wsuń wszystko");

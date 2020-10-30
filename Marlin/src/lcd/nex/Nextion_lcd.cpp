@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Nextion_lcd.cpp
  */
 #include "../../MarlinCore.h"
@@ -634,7 +634,6 @@
     }
 
     void NextionLCD::lcd_advanced_pause_wait_for_nozzles_to_heat() {
-			SERIAL_ECHO("m600heating:"); SERIAL_ECHOLN(nexlcd.nex_m600_heatingup);
       START_SCREEN();
 				STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
       	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_HEATING_1));
