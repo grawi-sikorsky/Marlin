@@ -537,10 +537,10 @@
 
   // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
 
-  // Ultimaker
-	#define DEFAULT_Kp 10.22
-	#define DEFAULT_Ki 0.56
-	#define DEFAULT_Kd 46.36
+  // Printo H3 allmetal v5
+  #define DEFAULT_Kp 15.53
+  #define DEFAULT_Ki 0.96
+  #define DEFAULT_Kd 62.63
 
   // MakerGear
   //#define DEFAULT_Kp 7.0
