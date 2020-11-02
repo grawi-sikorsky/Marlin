@@ -22,6 +22,10 @@
 
 #include "../inc/MarlinConfig.h"
 
+#if ENABLED(PARK_HEAD_ON_PAUSE) && ENABLED(NEXTION_DISPLAY)
+  #include "nex/Nextion_lcd.h"
+#endif
+
 #ifdef LED_BACKLIGHT_TIMEOUT
   #include "../feature/leds/leds.h"
 #endif

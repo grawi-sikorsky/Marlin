@@ -1192,9 +1192,6 @@ void setup() {
     SETUP_RUN(watchdog_init());       // Reinit watchdog after HAL_get_reset_source call
   #endif
 
-  SETUP_RUN(ui.init());   // przerzucone za watchdoga bo przy pierwszym uruchomieniu nie laczylo sie z NEX i wisialo, dopiero po przycisku reset ruszala calosc.
-                          // byc moze powiązane: gdy nie laczy sie z nexem (np. podczas uploadu firmware nex), boot jest zapetlony i nie da sie polaczyc przez USB.
-
   #if ENABLED(EXTERNAL_CLOSED_LOOP_CONTROLLER)
     SETUP_RUN(closedloop.init());
   #endif
@@ -1254,6 +1251,10 @@ void setup() {
   marlin_state = MF_RUNNING;
 
   SETUP_LOG("setup() completed.");
+
+  SETUP_RUN(ui.init());   // przerzucone za watchdoga bo przy pierwszym uruchomieniu nie laczylo sie z NEX i wisialo, dopiero po przycisku reset ruszala calosc.
+                          // byc moze powiązane: gdy nie laczy sie z nexem (np. podczas uploadu firmware nex), boot jest zapetlony i nie da sie polaczyc przez USB.
+
 }
 
 /**

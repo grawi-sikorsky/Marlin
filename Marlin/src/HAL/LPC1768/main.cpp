@@ -119,7 +119,7 @@ void HAL_init() {
 
   USB_Init();                               // USB Initialization
   USB_Connect(FALSE);                       // USB clear connection
-  delay(500);                              // Give OS time to notice
+  delay(1000);                              // Give OS time to notice
   USB_Connect(TRUE);
 
   #if DISABLED(NO_SD_HOST_DRIVE)
