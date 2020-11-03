@@ -147,8 +147,12 @@ class NextionLCD
     /*void lcd_pause_show_message(const PauseMessage message,
                                   const PauseMode mode=PAUSE_MODE_SAME,
                                   const uint8_t extruder=active_extruder);*/
-
     #endif
+
+    #if ENABLED(POWER_LOSS_RECOVERY)
+      static void lcd_power_loss_recovery_resume();
+      static void lcd_power_loss_recovery_cancel();
+	  #endif
 
     //bool g29_in_progress = false;
  

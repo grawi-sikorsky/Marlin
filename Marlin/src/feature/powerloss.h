@@ -106,6 +106,8 @@ typedef struct {
 
   // Job elapsed time
   millis_t print_job_elapsed;
+  
+
 
   uint8_t valid_foot;
 

@@ -45,6 +45,7 @@ void lcd_power_loss_recovery_cancel() {
 
 // TODO: Display long filename with Cancel/Resume buttons
 //       Requires supporting methods in PLR class.
+#if DISABLED (NEXTION_DISPLAY)
 void menu_job_recovery() {
   ui.defer_status_screen();
   START_MENU();
@@ -53,5 +54,6 @@ void menu_job_recovery() {
   ACTION_ITEM(MSG_STOP_PRINT, lcd_power_loss_recovery_cancel);
   END_MENU();
 }
+#endif
 
 #endif // HAS_LCD_MENU && POWER_LOSS_RECOVERY

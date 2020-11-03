@@ -31,6 +31,9 @@
 #if ENABLED(EXTENSIBLE_UI)
   #include "../../../lcd/extui/ui_api.h"
 #endif
+#if ENABLED(NEXTION_DISPLAY)
+  #include "../../../lcd/nex/Nextion_lcd.h"
+#endif
 
 #define DEBUG_OUT ENABLED(DEBUG_POWER_LOSS_RECOVERY)
 #include "../../../core/debug_out.h"
@@ -56,12 +59,13 @@ inline void plr_error(PGM_P const prefix) {
  *   - With 'S' go to the Resume/Cancel menu
  *   - With no parameters, run recovery commands
  */
-void GcodeSuite::M1000() {
+void GcodeSuite::M1000(){
 
   if (recovery.valid()) {
     if (parser.seen('S')) {
       #if HAS_LCD_MENU
         ui.goto_screen(menu_job_recovery);
+        menu_job_recovery();
       #elif ENABLED(EXTENSIBLE_UI)
         ExtUI::onPowerLossResume();
       #else

@@ -8,6 +8,7 @@
 #include "../../libs/numtostr.h"
 #include "../../HAL/shared/eeprom_api.h"
 #include "../../lcd/extui/ui_api.h"
+#include "../../feature/powerloss.h"
 
 #if ENABLED(NEXTION_DISPLAY)
 	#include "../../module/stepper.h"
@@ -102,8 +103,6 @@
 		//void lcd_pause_waiting_message()  { _lcd_pause_message(GET_TEXT(MSG_ADVANCED_PAUSE_WAITING));  }
 		//void lcd_pause_resume_message()   { _lcd_pause_message(GET_TEXT(MSG_FILAMENT_CHANGE_RESUME));  }
 	#endif
-
-  
 	
   // Function pointer to menu functions.
   typedef void (*screenFunc_t)();
@@ -758,7 +757,32 @@
 // END OF FILAMENT CHANGE M600
 // =============================
 
+  #if ENABLED(POWER_LOSS_RECOVERY)
+		void menu_job_recovery() {
+			ui.defer_status_screen();
+			START_MENU();
+				STATIC_ITEM(GET_TEXT(MSG_OUTAGE_RECOVERY));
+				MENU_ITEM(function, GET_TEXT(MSG_RESUME_PRINT), nexlcd.lcd_power_loss_recovery_resume);
+				MENU_ITEM(function, GET_TEXT(MSG_STOP_PRINT), nexlcd.lcd_power_loss_recovery_cancel);
+			END_MENU();
+		}
 
+		void NextionLCD::lcd_power_loss_recovery_resume()
+		{
+			// costam
+			SERIAL_ECHOLN("RESUME:");
+			ui.return_to_status();
+  		queue.inject_P(PSTR("M1000"));
+			PagePrinter.show();
+		}
+		void NextionLCD::lcd_power_loss_recovery_cancel()
+		{
+			// costam
+			SERIAL_ECHOLN("CANCEL:");
+			recovery.cancel();
+  		PagePrinter.show();
+		}
+	#endif
 // ======================
 // VLCS LCD SUPPORT
 // ======================
@@ -2116,7 +2140,7 @@ void NextionLCD::init(){
 		}
 
 		#if ENABLED(POWER_LOSS_RECOVERY)
-			void OnPowerLossResume() {
+			void OnPowerLossResume(){
 				// Called on resume from power-loss
 			}
 		#endif
