@@ -107,7 +107,8 @@ typedef struct {
   // Job elapsed time
   millis_t print_job_elapsed;
   
-
+  // BABYSTEP DONE INFO
+  int16_t babysteppZ;
 
   uint8_t valid_foot;
 

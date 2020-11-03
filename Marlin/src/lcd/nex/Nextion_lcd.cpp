@@ -25,7 +25,6 @@
 #if ENABLED(BABYSTEPPING)
 	#include "../../feature/babystep.h"
 	extern Babystep babystep;
-	int _babystep_z_shift = 0;
 #endif
 
 #if ENABLED(NEXTION_DISPLAY)
@@ -1117,7 +1116,7 @@
 	void NextionLCD::setBabystepUpPopCallback(void *ptr){
 		nexlcd.nextion_babystep_z(false);
 		int data = 0;
-		data = _babystep_z_shift;
+		data = nexlcd._babystep_z_shift;
 		persistentStore.write_data(EEPROM_PANIC_BABYSTEP_Z, (uint8_t*)&data, sizeof(data));
 
 		int data_read = 0;
@@ -1130,7 +1129,7 @@
 
 	void NextionLCD::setBabystepEEPROMPopCallback(void *ptr){
 		persistentStore.access_start();
-		persistentStore.write_data(EEPROM_PANIC_BABYSTEP_Z, (uint8_t*)&_babystep_z_shift, sizeof(_babystep_z_shift));
+		persistentStore.write_data(EEPROM_PANIC_BABYSTEP_Z, (uint8_t*)&nexlcd._babystep_z_shift, sizeof(nexlcd._babystep_z_shift));
 		persistentStore.access_finish();		
 	}
 
@@ -1931,7 +1930,7 @@ void NextionLCD::init(){
 	// dodana obsluga babystep
 	#if ENABLED(BABYSTEPPING)
 		void NextionLCD::nextion_babystep_z(bool dir) {
-			const int16_t babystep_increment = 8;
+			const int16_t babystep_increment = BABYSTEP_MULTIPLICATOR_Z;
 
 			if (dir == true)
 			{

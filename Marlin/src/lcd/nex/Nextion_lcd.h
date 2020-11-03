@@ -55,6 +55,11 @@ class NextionLCD
     bool nex_ss_state;											// screensaver status
     uint16_t nex_ss_timeout;								// screensaver timeout
     uint8_t nex_ss_pagebefore;							// saved page before screen saver
+
+    // BABYSTEPPING NEX
+    #if ENABLED(BABYSTEPPING)
+      int _babystep_z_shift = 0;
+    #endif
 	
     //Główne metody ekranu
     void check_periodical_actions();  //Aktualizacja LCD z mniejsza czestotliwosca - 0.4s -> nextion_draw_update();

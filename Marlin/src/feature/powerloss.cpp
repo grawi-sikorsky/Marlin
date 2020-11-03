@@ -54,6 +54,11 @@ uint32_t PrintJobRecovery::cmd_sdpos, // = 0
 #include "../module/temperature.h"
 #include "../core/serial.h"
 
+#if ENABLED(BABYSTEPPING) && ENABLED(NEXTION_DISPLAY)
+  #include "../feature/babystep.h"
+  #include "../../../lcd/nex/Nextion_lcd.h"
+#endif
+
 #if ENABLED(FWRETRACT)
   #include "fwretract.h"
 #endif
@@ -226,6 +231,15 @@ void PrintJobRecovery::save(const bool force/*=false*/, const float zraise/*=0*/
 
     // Elapsed print job time
     info.print_job_elapsed = print_job_timer.duration();
+
+    #if ENABLED(BABYSTEPPING) && ENABLED(NEXTION_DISPLAY)
+      info.babysteppZ = babystep.axis_total[BS_AXIS_IND(Z_AXIS)];
+      SERIAL_ECHOLN(info.babysteppZ);
+      SERIAL_ECHOLN(babystep.axis_total[BS_AXIS_IND(Z_AXIS)]);
+      SERIAL_ECHOLN(babystep.steps[BS_AXIS_IND(Z_AXIS)]);
+      SERIAL_ECHO("Nex BABY:"); SERIAL_ECHOLN(nexlcd._babystep_z_shift);
+      info.babysteppZ = nexlcd._babystep_z_shift;
+    #endif
 
     write();
   }
@@ -480,6 +494,11 @@ void PrintJobRecovery::resume() {
     sprintf_P(cmd, PSTR("G92.9 Z%s"), str_1);
   #endif
   gcode.process_subcommands_now(cmd);
+
+  #if ENABLED(NEXTION_DISPLAY) && ENABLED(BABYSTEPPING)
+    SERIAL_ECHOLN(info.babysteppZ);
+    babystep.add_steps(Z_AXIS, info.babysteppZ);
+  #endif
 
   // Restore the feedrate
   sprintf_P(cmd, PSTR("G1 F%d"), info.feedrate);
