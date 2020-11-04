@@ -2559,7 +2559,6 @@
   #define EEPROM_SD_FILE_DIR_DEPTH		(EEPROM_SD_FILENAME-1)				// 1 - zagniezdzenie pliku
   #define EEPROM_SD_DIRS				(EEPROM_SD_FILE_DIR_DEPTH-80)		// 8x10 @_@
   #define EEPROM_PANIC_BABYSTEP_Z		(EEPROM_SD_DIRS-4)					// 4 - long 4 bajty
-	//#define EEPROM_NEX_FILAMENT_SENSOR (EEPROM_PANIC_BABYSTEP_Z-1) // 1bajt bool
 
   //
   // Nextion

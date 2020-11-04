@@ -233,10 +233,6 @@ void PrintJobRecovery::save(const bool force/*=false*/, const float zraise/*=0*/
     info.print_job_elapsed = print_job_timer.duration();
 
     #if ENABLED(BABYSTEPPING) && ENABLED(NEXTION_DISPLAY)
-      info.babysteppZ = babystep.axis_total[BS_AXIS_IND(Z_AXIS)];
-      SERIAL_ECHOLN(info.babysteppZ);
-      SERIAL_ECHOLN(babystep.axis_total[BS_AXIS_IND(Z_AXIS)]);
-      SERIAL_ECHOLN(babystep.steps[BS_AXIS_IND(Z_AXIS)]);
       SERIAL_ECHO("Nex BABY:"); SERIAL_ECHOLN(nexlcd._babystep_z_shift);
       info.babysteppZ = nexlcd._babystep_z_shift;
     #endif
@@ -496,8 +492,9 @@ void PrintJobRecovery::resume() {
   gcode.process_subcommands_now(cmd);
 
   #if ENABLED(NEXTION_DISPLAY) && ENABLED(BABYSTEPPING)
-    SERIAL_ECHOLN(info.babysteppZ);
-    babystep.add_steps(Z_AXIS, info.babysteppZ);
+    SERIAL_ECHO("BABYSTEP after resume:"); SERIAL_ECHOLN(info.babysteppZ);
+    babystep.add_steps(Z_AXIS, info.babysteppZ);  // aplikujemy babystepa zapisanego
+    nexlcd._babystep_z_shift = info.babysteppZ;   // zapisujemy babystepa rowniez do nexa
   #endif
 
   // Restore the feedrate
