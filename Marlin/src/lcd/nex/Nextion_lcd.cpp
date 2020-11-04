@@ -56,7 +56,6 @@
 	
 	// ZMIENNE ZEWNETRZNE MARLINa
 	//extern uint8_t progress_printing; // dodane nex
-	//extern bool nex_filament_runout_sensor_flag;
 	extern xyze_pos_t destination;// = { 0.0 };
 	extern bool g29_in_progress;// = false;
 	extern inline void set_current_to_destination() { COPY(current_position, destination); }
