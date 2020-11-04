@@ -337,9 +337,6 @@
 			SDstatus = SD_PRINTING;
 			SD.setValue(SDstatus,"stat"); // ustaw nex sdval na printing
 
-			
-
-
 			card.selectFileByName(filename);
 			card.openAndPrintFile(filename);
 			card.startFileprint();
@@ -770,17 +767,22 @@
 
 		void NextionLCD::lcd_power_loss_recovery_resume()
 		{
-			// costam
-			SERIAL_ECHOLN("RESUME:");
 			ui.return_to_status();
   		queue.inject_P(PSTR("M1000"));
+			// TODO: nex status nie otrzymuje info o tym ze wydurk trwa!
+
+			SDstatus = SD_PRINTING;
+			SD.setValue(SDstatus,"stat"); // ustaw nex sdval na printing
+			strncpy(filename_printing, card.longFilename, 40); // card.longFilename
+			SERIAL_ECHOPGM("card.longfilename: "); SERIAL_ECHOLN(card.longFilename);
+
 			PagePrinter.show();
 		}
+		
 		void NextionLCD::lcd_power_loss_recovery_cancel()
 		{
-			// costam
-			SERIAL_ECHOLN("CANCEL:");
 			recovery.cancel();
+			queue.enqueue_one_P("G28");
   		PagePrinter.show();
 		}
 	#endif
@@ -1117,12 +1119,6 @@
 
 	void NextionLCD::setBabystepUpPopCallback(void *ptr){
 		nexlcd.nextion_babystep_z(false);
-		int data = 0;
-		data = nexlcd._babystep_z_shift;
-		persistentStore.write_data(EEPROM_PANIC_BABYSTEP_Z, (uint8_t*)&data, sizeof(data));
-
-		int data_read = 0;
-		persistentStore.read_data(EEPROM_PANIC_BABYSTEP_Z, (uint8_t*)&data_read, sizeof(data_read));
 	}
 
 	void NextionLCD::setBabystepDownPopCallback(void *ptr){
@@ -1130,9 +1126,8 @@
 	}
 
 	void NextionLCD::setBabystepEEPROMPopCallback(void *ptr){
-		persistentStore.access_start();
-		persistentStore.write_data(EEPROM_PANIC_BABYSTEP_Z, (uint8_t*)&nexlcd._babystep_z_shift, sizeof(nexlcd._babystep_z_shift));
-		persistentStore.access_finish();
+		// tutaj zapisywalo babystep val w eeprom
+
 	}
 
 	void NextionLCD::setspeedPopCallback(void *ptr) {
@@ -1712,6 +1707,8 @@ void NextionLCD::init(){
 
 		//nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
 
+		//SERIAL_ECHO("_babystep_z_shift: "); SERIAL_ECHOLN(_babystep_z_shift);
+
 		// timeout screen saver
 		#if ENABLED(NEX_SCREENSAVER)
 			if(nex_ss_state == true)
@@ -1931,9 +1928,9 @@ void NextionLCD::init(){
 
 	// dodana obsluga babystep
 	#if ENABLED(BABYSTEPPING)
-		void NextionLCD::nextion_babystep_z(bool dir) {
+		void NextionLCD::nextion_babystep_z(bool dir) 
+		{
 			const int16_t babystep_increment = BABYSTEP_MULTIPLICATOR_Z;
-
 			if (dir == true)
 			{
 				babystep.add_steps(Z_AXIS, babystep_increment);

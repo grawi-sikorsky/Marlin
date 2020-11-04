@@ -475,7 +475,7 @@ void PrintJobRecovery::resume() {
   #endif
 
   // Move back to the saved XY
-  sprintf_P(cmd, PSTR("G1 X%s Y%s F3000"),
+  sprintf_P(cmd, PSTR("G1 X%s Y%s F6000"),
     dtostrf(info.current_position.x, 1, 3, str_1),
     dtostrf(info.current_position.y, 1, 3, str_2)
   );
@@ -484,9 +484,9 @@ void PrintJobRecovery::resume() {
   // Move back to the saved Z
   dtostrf(info.current_position.z, 1, 3, str_1);
   #if Z_HOME_DIR > 0
-    sprintf_P(cmd, PSTR("G1 Z%s F200"), str_1);
+    sprintf_P(cmd, PSTR("G1 Z%s F2000"), str_1);
   #else
-    gcode.process_subcommands_now_P(PSTR("G1 Z0 F200"));
+    gcode.process_subcommands_now_P(PSTR("G1 Z0 F2000"));
     sprintf_P(cmd, PSTR("G92.9 Z%s"), str_1);
   #endif
   gcode.process_subcommands_now(cmd);
