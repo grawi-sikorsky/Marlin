@@ -778,7 +778,7 @@
 
 			PagePrinter.show();
 		}
-		
+
 		void NextionLCD::lcd_power_loss_recovery_cancel()
 		{
 			recovery.cancel();
@@ -1252,7 +1252,7 @@
           break;
 				case 5: // ustaw czujnik filamentu ON
 					queue.enqueue_one_P("M412 S1");
-					settings.save();
+					queue.enqueue_one_P("M500");
 					PageSetup.show();
 					break;
         default: break;
@@ -1272,7 +1272,7 @@
         #endif
 					case 5: // ustaw czujnik filamentu
 						queue.enqueue_one_P("M412 S0");
-						settings.save();
+						queue.enqueue_one_P("M500");
 						PageSetup.show();
 						break;
         default:
