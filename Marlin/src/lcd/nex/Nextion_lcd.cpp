@@ -10,13 +10,16 @@
 #include "../../lcd/extui/ui_api.h"
 #include "../../feature/powerloss.h"
 
+#if HAS_FILAMENT_SENSOR
+  #include "../../feature/runout.h"
+#endif
+
 #if ENABLED(NEXTION_DISPLAY)
 	#include "../../module/stepper.h"
 	#include "../../feature/bedlevel/mbl/mesh_bed_leveling.h"
 	#include "../../module/planner.h"
 	#include "../../module/settings.h"
 	#include "../../lcd/ultralcd.h"
-	//#include "../../lcd/menu/menu_item.h"
 #endif
 
 #if ENABLED(SPEAKER)
@@ -53,7 +56,7 @@
 	
 	// ZMIENNE ZEWNETRZNE MARLINa
 	//extern uint8_t progress_printing; // dodane nex
-	extern bool nex_filament_runout_sensor_flag;
+	//extern bool nex_filament_runout_sensor_flag;
 	extern xyze_pos_t destination;// = { 0.0 };
 	extern bool g29_in_progress;// = false;
 	extern inline void set_current_to_destination() { COPY(current_position, destination); }
@@ -1044,7 +1047,7 @@
 			#endif
 
 			#if ENABLED(FILAMENT_RUNOUT_SENSOR)
-						if (eeprom_read_byte((uint8_t*)EEPROM_NEX_FILAMENT_SENSOR) == 1)
+						if (runout.enabled == 1)
 						{
 							Sfilsensor.setText_PGM(GET_TEXT(MSG_YES), "statscreen");
 						}
@@ -1130,7 +1133,7 @@
 	void NextionLCD::setBabystepEEPROMPopCallback(void *ptr){
 		persistentStore.access_start();
 		persistentStore.write_data(EEPROM_PANIC_BABYSTEP_Z, (uint8_t*)&nexlcd._babystep_z_shift, sizeof(nexlcd._babystep_z_shift));
-		persistentStore.access_finish();		
+		persistentStore.access_finish();
 	}
 
 	void NextionLCD::setspeedPopCallback(void *ptr) {
@@ -1253,9 +1256,9 @@
         case 4: // Unconditional stop
           PagePrinter.show();
           break;
-				case 5: // ustaw czujnik filamentu
-					nex_filament_runout_sensor_flag = 1;
-					persistentStore.write_data(EEPROM_NEX_FILAMENT_SENSOR, 1);
+				case 5: // ustaw czujnik filamentu ON
+					queue.enqueue_one_P("M412 S1");
+					settings.save();
 					PageSetup.show();
 					break;
         default: break;
@@ -1274,8 +1277,8 @@
             break;
         #endif
 					case 5: // ustaw czujnik filamentu
-						nex_filament_runout_sensor_flag = 0;
-						persistentStore.write_data(EEPROM_NEX_FILAMENT_SENSOR, (uint8_t)0);
+						queue.enqueue_one_P("M412 S0");
+						settings.save();
 						PageSetup.show();
 						break;
         default:
@@ -1446,8 +1449,8 @@ void NextionLCD::init(){
 	
 	nexlcd.setup_callbacks();
 
-	#if ENABLED(FSENSOR_STATE)
-		nex_filament_runout_sensor_flag = eeprom_read_byte((uint8_t*)EEPROM_NEX_FILAMENT_SENSOR);
+	#if ENABLED(FILAMENT_RUNOUT_SENSOR)
+		// bylo tutaj zczytywanie z eepromu info czy filament sensor jest wlaczony...
 	#endif
 
 	#if ENABLED(SDSUPPORT) && PIN_EXISTS(SD_DETECT)

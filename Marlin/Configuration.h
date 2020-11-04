@@ -1256,7 +1256,7 @@
  * RAMPS-based boards use SERVO3_PIN for the first runout sensor.
  * For other boards you may need to define FIL_RUNOUT_PIN, FIL_RUNOUT2_PIN, etc.
  */
-//#define FILAMENT_RUNOUT_SENSOR
+#define FILAMENT_RUNOUT_SENSOR
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
   #define FIL_RUNOUT_ENABLED_DEFAULT true // Enable the sensor on startup. Override with M412 followed by M500.
   #define NUM_RUNOUT_SENSORS   1          // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
@@ -2559,7 +2559,7 @@
   #define EEPROM_SD_FILE_DIR_DEPTH		(EEPROM_SD_FILENAME-1)				// 1 - zagniezdzenie pliku
   #define EEPROM_SD_DIRS				(EEPROM_SD_FILE_DIR_DEPTH-80)		// 8x10 @_@
   #define EEPROM_PANIC_BABYSTEP_Z		(EEPROM_SD_DIRS-4)					// 4 - long 4 bajty
-	#define EEPROM_NEX_FILAMENT_SENSOR (EEPROM_PANIC_BABYSTEP_Z-1) // 1bajt bool
+	//#define EEPROM_NEX_FILAMENT_SENSOR (EEPROM_PANIC_BABYSTEP_Z-1) // 1bajt bool
 
   //
   // Nextion

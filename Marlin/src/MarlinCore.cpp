@@ -225,7 +225,6 @@
   #include "../src/lcd/nex/Nextion_lcd.h"
   
   uint8_t progress_printing; // dodane nex
-	bool nex_filament_runout_sensor_flag;
 #endif
 
 PGMSTR(NUL_STR, "");
