@@ -82,8 +82,8 @@
 //#define PRINTO_H3_PLUS
 //#define PRINTO_H3_TOWER
 //#define PRINTO_H3_TOWERPLUS
-#define PRINTO_H3_MIDI
-//#define PRINTO_H3_MIDI350
+//#define PRINTO_H3_MIDI
+#define PRINTO_H3_MIDI350
 //#define PRINTO_H3_BIGGIE
 
 // Wybor sterownika:
@@ -798,15 +798,28 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-//#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 148 }        // DEFAULT PRINTO H3      = 16 / 16 / 32 / 16
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 640, 640, 3200, 148 }        // 32bit LV8729 PRINTO H3 = 128 / 128 / 128 / 16
+#ifdef PRINTO_H3_MIDI350
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 148 }        // DEFAULT PRINTO H3      = 16 / 16 / 32 / 16
+  #define DEFAULT_MAX_FEEDRATE          { 500, 500, 35, 120 }
+  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 50, 10000 }
+#else
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 148 }        // DEFAULT PRINTO H3      = 16 / 16 / 32 / 16
+  #define DEFAULT_MAX_FEEDRATE          { 500, 500, 45, 120 }
+  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 10000 }
+#endif
+
+#ifdef PRINTO_H3_MIDI
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 640, 640, 3200, 148 }        // 32bit LV8729 PRINTO H3 = 128 / 128 / 128 / 16
+  #define DEFAULT_MAX_FEEDRATE          { 500, 500, 45, 120 }
+  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 10000 }
+#endif
 
 /**
  * Default Max Feed Rate (mm/s)
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 500, 500, 45, 120 }
+//#define DEFAULT_MAX_FEEDRATE          { 500, 500, 45, 120 }
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -819,7 +832,7 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 10000 }
+//#define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 10000 }
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -1049,7 +1062,7 @@
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
-#define PROBING_MARGIN 0
+#define PROBING_MARGIN 10
 
 // X and Y axis travel speed (mm/min) between probes
 #define XY_PROBE_SPEED (450*60)
@@ -1507,7 +1520,7 @@
 #endif
 
 // Homing speeds (mm/m)
-#define HOMING_FEEDRATE_XY (120*60)
+#define HOMING_FEEDRATE_XY (100*60)
 #define HOMING_FEEDRATE_Z  (40*60)
 
 // Validate that endstops are triggered on homing moves

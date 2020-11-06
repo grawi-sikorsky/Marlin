@@ -9,6 +9,7 @@
 #include "../../HAL/shared/eeprom_api.h"
 #include "../../lcd/extui/ui_api.h"
 #include "../../feature/powerloss.h"
+#include "../../feature/bedlevel/bedlevel.h"	// dla set_bed_leveling_enabled();
 
 #if HAS_FILAMENT_SENSOR
   #include "../../feature/runout.h"
@@ -57,7 +58,6 @@
 	// ZMIENNE ZEWNETRZNE MARLINa
 	//extern uint8_t progress_printing; // dodane nex
 	extern xyze_pos_t destination;// = { 0.0 };
-	extern bool g29_in_progress;// = false;
 	extern inline void set_current_to_destination() { COPY(current_position, destination); }
 	extern inline void set_destination_to_current() { COPY(destination, current_position); }
 	extern void home_all_axes();
@@ -773,7 +773,7 @@
 
 			SDstatus = SD_PRINTING;
 			SD.setValue(SDstatus,"stat"); // ustaw nex sdval na printing
-			strncpy(filename_printing, card.longFilename, 40); // card.longFilename
+			//strncpy(filename_printing, card.longFilename, 40); // card.longFilename  // i tak nie dziala, po wznowieniu nazwafolderu
 			SERIAL_ECHOPGM("card.longfilename: "); SERIAL_ECHOLN(card.longFilename);
 
 			PagePrinter.show();
@@ -2038,7 +2038,7 @@ void NextionLCD::init(){
 	namespace ExtUI {
 		//void OnPidTuning(const result_t rst);
 
-		void onStartup()		{ nexlcd.init(); }
+		void onStartup()		{ nexlcd.init(); set_bed_leveling_enabled(true); }
 		void onIdle()				{ nexlcd.update(); nexlcd.check_periodical_actions();}
 		void onPrinterKilled(PGM_P const error, PGM_P const component) { nexlcd.kill_screen_msg(error, component); }
 		void onPlayTone(const unsigned int frequency, const unsigned long duration) {}
@@ -2082,6 +2082,7 @@ void NextionLCD::init(){
 
 			#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
 			#elif ENABLED(NEXTION_AUTO_BED_LEVEL)
+				set_bed_leveling_enabled(true);
 			#endif
 
 			PagePrinter.show();
