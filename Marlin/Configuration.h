@@ -800,7 +800,7 @@
  */
 #ifdef PRINTO_H3_MIDI350
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 148 }        // DEFAULT PRINTO H3      = 16 / 16 / 32 / 16
-  #define DEFAULT_MAX_FEEDRATE          { 500, 500, 35, 120 }
+  #define DEFAULT_MAX_FEEDRATE          { 200, 200, 35, 120 }
   #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 50, 10000 }
 #else
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 148 }        // DEFAULT PRINTO H3      = 16 / 16 / 32 / 16
@@ -847,9 +847,9 @@
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
-#define DEFAULT_ACCELERATION          1400    // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_ACCELERATION          1000    // X, Y, Z and E acceleration for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  6000    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   3200    // X, Y, Z acceleration for travel (non printing) moves
+#define DEFAULT_TRAVEL_ACCELERATION   2400    // X, Y, Z acceleration for travel (non printing) moves
 
 /**
  * Default Jerk limits (mm/s)
