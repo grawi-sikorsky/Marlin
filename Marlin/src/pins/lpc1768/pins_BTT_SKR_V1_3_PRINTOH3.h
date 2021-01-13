@@ -80,6 +80,9 @@
   #define FIL_RUNOUT_PIN   P1_29 // filament printo h3 X-min
 #endif
 
+#ifdef PSU_CONTROL
+  #define PS_ON_PIN P1_25       // PS OFF printo h3 Y-MAX SKR 1.4
+#endif
 //
 // Steppers
 //
@@ -331,5 +334,6 @@
 	//#define BTN_ENC 35
 	//#define SD_DETECT_PIN SS_PIN
   #define SD_DETECT_PIN  P1_31
+  //#define PS_ON_PIN P0_10
 	//#define KILL_PIN 25
 #endif

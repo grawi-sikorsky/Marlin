@@ -491,7 +491,7 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
 
   bool nozzle_timed_out = false;
 
-  show_continue_prompt(is_reload);
+  //show_continue_prompt(is_reload); // usuniete dodane nex
 
   first_impatient_beep(max_beep_count);
 
@@ -508,9 +508,10 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
   #endif
 
   // Wait for filament insert by user and press button
-  KEEPALIVE_STATE(PAUSED_FOR_USER);
+  KEEPALIVE_STATE(IN_HANDLER);  // dodane, bylo: PAUSED FOR USER
   TERN_(HOST_PROMPT_SUPPORT, host_prompt_do(PROMPT_USER_CONTINUE, GET_TEXT(MSG_NOZZLE_PARKED), CONTINUE_STR));
   TERN_(EXTENSIBLE_UI, ExtUI::onUserConfirmRequired_P(GET_TEXT(MSG_NOZZLE_PARKED)));
+
   wait_for_user = true;    // LCD click or M108 will clear this
   while (wait_for_user) {
     impatient_beep(max_beep_count);

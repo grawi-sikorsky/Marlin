@@ -546,6 +546,10 @@ namespace Language_pl {
       PROGMEM Language_Str MSG_TOO_COLD_FOR_M600_2						= _UxGT("rozgrzej aby");
       PROGMEM Language_Str MSG_TOO_COLD_FOR_M600_3						= _UxGT("kontynuowac");
       PROGMEM Language_Str MSG_TOO_COLD_FOR_M600_4						= _UxGT("Temp. min: 170");
+      PROGMEM Language_Str MSG_FILAMENT_CHANGE_WAITINGFORUSER	= _UxGT("Kliknij aby");
+      PROGMEM Language_Str MSG_FILAMENT_CHANGE_WAITINGFORUSER_1	= _UxGT("kontynuowac");
+
+
       //dodane old Printo H3
       PROGMEM Language_Str MSG_PID_AUTOTUNE_START				      = _UxGT("PID rozpoczeto");
       PROGMEM Language_Str MSG_PID_AUTOTUNE_DONE			        = _UxGT("PID ukonczono");

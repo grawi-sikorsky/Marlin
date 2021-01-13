@@ -77,15 +77,15 @@ void GcodeSuite::M125() {
 
   const bool sd_printing = TERN0(SDSUPPORT, IS_SD_PRINTING());
 
-  TERN_(HAS_LCD_MENU, lcd_pause_show_message(PAUSE_MESSAGE_PARKING, PAUSE_MODE_PAUSE_PRINT));
+  //TERN_(HAS_LCD_MENU, lcd_pause_show_message(PAUSE_MESSAGE_PARKING, PAUSE_MODE_PAUSE_PRINT)); // usuniete nextion
 
   const bool show_lcd = TERN0(HAS_LCD_MENU, parser.seenval('P'));
 
   if (pause_print(retract, park_point, 0, show_lcd)) {
     TERN_(POWER_LOSS_RECOVERY, if (recovery.enabled) recovery.save(true));
     if (ENABLED(EXTENSIBLE_UI) || !sd_printing || show_lcd) {
-      wait_for_confirmation(false, 0);
-      resume_print(0, 0, -retract, 0);
+        wait_for_confirmation(false, 0);
+        resume_print(0, 0, -retract, 0);
     }
   }
 }

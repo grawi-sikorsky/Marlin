@@ -56,6 +56,7 @@ void GcodeSuite::M24() {
   #if ENABLED(PARK_HEAD_ON_PAUSE)
     if (did_pause_print) {
       resume_print(); // will call print_job_timer.start()
+      SERIAL_ECHOLN("PARK resumeprint");
       return;
     }
   #endif
@@ -64,6 +65,7 @@ void GcodeSuite::M24() {
     card.startFileprint();            // SD card will now be read for commands
     startOrResumeJob();               // Start (or resume) the print job timer
     TERN_(POWER_LOSS_RECOVERY, recovery.prepare());
+    SERIAL_ECHOLN("card startfileprint");
   }
 
   #if ENABLED(HOST_ACTION_COMMANDS)

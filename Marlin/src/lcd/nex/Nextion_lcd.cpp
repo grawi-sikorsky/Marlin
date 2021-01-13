@@ -135,10 +135,10 @@
 	 */
   void NextionLCD::PlayPausePopCallback(void *ptr){
     UNUSED(ptr);
-    if (card.isMounted && card.isFileOpen()) {
-      if (card.isPrinting) {														//pause
-        card.pauseSDPrint();
-        print_job_timer.pause();
+    if (card.isMounted() && card.isFileOpen()) {
+      if(card.isPrinting()) {														//pause
+        //card.pauseSDPrint();
+        //print_job_timer.pause();
         #if ENABLED(PARK_HEAD_ON_PAUSE)
         	queue.inject_P(PSTR("M125"));
         #endif
@@ -147,17 +147,28 @@
 				SDstatus = SD_PAUSE;
 				SD.setValue(SDstatus,"stat");// ustaw nex sdval na pause
       }
-      else {																					//resume
+      else {																						//resume		
 				#if ENABLED(PARK_HEAD_ON_PAUSE)
+					wait_for_user = false;
 					queue.inject_P(PSTR("M24"));
+					//resume_print();
+/*
+					if (card.isFileOpen()) {
+						card.startFileprint();            // SD card will now be read for commands
+						startOrResumeJob();               // Start (or resume) the print job timer
+						TERN_(POWER_LOSS_RECOVERY, recovery.prepare());
+						SERIAL_ECHOLN("card startfileprint");
+						
+					}
+					*/
+
 				#else
 				card.startFileprint();
 				print_job_timer.start();
 				#endif
 				ui.set_status_P(GET_TEXT(MSG_RESUME_PRINT), 1);
-
 				SDstatus = SD_PRINTING;
-				SD.setValue(SDstatus,"stat");
+				SD.setValue(SDstatus,"stat");			
       }
     }
   }
@@ -655,6 +666,14 @@
       END_SCREEN();
     }
 
+		void NextionLCD::lcd_advanced_pause_waitingforuser()
+		{
+      START_SCREEN();
+      	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_WAITINGFORUSER));
+      	STATIC_ITEM(GET_TEXT(MSG_FILAMENT_CHANGE_WAITINGFORUSER_1));
+      END_SCREEN();
+		}
+
     void NextionLCD::lcd_advanced_pause_load_message() {
       START_SCREEN();
 				STATIC_ITEM(GET_TEXT(MSG_NEX_FILAMENT_CHANGE_HEADER));
@@ -705,6 +724,7 @@
 						SERIAL_ECHOLN("UNLOAD:??");
             break;
           case PAUSE_MESSAGE_WAITING:
+						nexlcd.lcd_advanced_pause_waitingforuser();
 						SERIAL_ECHOLN("WAITING:??");
             break;
           case PAUSE_MESSAGE_INSERT:
@@ -724,6 +744,7 @@
            	SERIAL_ECHOLN("RESUME:??");
             break;
 					case PAUSE_MESSAGE_HEAT:
+						nexlcd.lcd_advanced_pause_heat_nozzle();
            	SERIAL_ECHOLN("HEAT:??");
             break;
           case PAUSE_MESSAGE_HEATING:

@@ -148,6 +148,7 @@ class NextionLCD
     static void lcd_advanced_pause_load_message();
     static void lcd_advanced_pause_purge_message();
     static void lcd_advanced_pause_resume_message();
+    static void lcd_advanced_pause_waitingforuser();
     //void lcd_advanced_pause_show_message(const PauseMessage message,const PauseMenuResponse mode/*=ADVANCED_PAUSE_MODE_PAUSE_PRINT*/);
     /*void lcd_pause_show_message(const PauseMessage message,
                                   const PauseMode mode=PAUSE_MODE_SAME,
