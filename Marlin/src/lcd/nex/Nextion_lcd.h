@@ -34,7 +34,7 @@
 
 #if ENABLED(BOARD_MKSGEN_PRINTOH3)
   String cmd;
-#elif ENABLED(BOARD_BIGTREE_SKR_V1_3_PH3)
+#elif ENABLED(BOARD_BIGTREE_SKR_V1_3_PH3) || ENABLED(BOARD_BIGTREE_SKR_V1_4_PH3)
   std::string cmd;// = String("");
 #endif
 

@@ -393,6 +393,8 @@
   #include "lpc1768/pins_BTT_SKR_V1_4.h"        // LPC1768                                env:LPC1768
 #elif MB(BIGTREE_SKR_V1_3_PH3)
   #include "lpc1768/pins_BTT_SKR_V1_3_PRINTOH3.h"        // LPC1768                                env:LPC1768
+#elif MB(BIGTREE_SKR_V1_4_PH3)
+  #include "lpc1768/pins_BTT_SKR_V1_4_PRINTOH3.h"        // LPC1768                                env:LPC1768
 //
 // LPC1769 ARM Cortex M3
 //

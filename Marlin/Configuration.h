@@ -82,13 +82,15 @@
 //#define PRINTO_H3_PLUS
 //#define PRINTO_H3_TOWER
 //#define PRINTO_H3_TOWERPLUS
-//#define PRINTO_H3_MIDI
-#define PRINTO_H3_MIDI350
+#define PRINTO_H3_MIDI
+//#define PRINTO_H3_MIDI350
 //#define PRINTO_H3_BIGGIE
 
 // Wybor sterownika:
 //#define MKS_GEN
-#define MKS_SKR
+#define MKS_SKR     // info ze 32 bit
+//#define MKS_SKR13   // wybor sterownika
+#define MKS_SKR14   // wybor sterownika
 
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
@@ -141,7 +143,7 @@
  */
 #if ENABLED(MKS_GEN)
   #define SERIAL_PORT 0
-#elif ENABLED(MKS_SKR)
+#elif ENABLED(MKS_SKR) || ENABLED(MKS_SKR14)
   #define SERIAL_PORT -1
   // serial port 2 jest ustawiony na nextiona, nie musi byc nizej definiowany
 #endif
@@ -173,8 +175,10 @@
 
   #if ENABLED(MKS_GEN)
     #define MOTHERBOARD BOARD_MKSGEN_PRINTOH3
-  #elif ENABLED(MKS_SKR)
+  #elif ENABLED(MKS_SKR13)
     #define MOTHERBOARD BOARD_BIGTREE_SKR_V1_3_PH3
+  #elif ENABLED(MKS_SKR14)
+    #define MOTHERBOARD BOARD_BIGTREE_SKR_V1_4_PH3
   #endif
  
 #endif
@@ -389,7 +393,7 @@
     #define AUTO_POWER_E_FANS
     #define AUTO_POWER_CONTROLLERFAN
     #define AUTO_POWER_CHAMBER_FAN
-    //#define AUTO_POWER_E_TEMP        50 // (°C) Turn on PSU over this temperature
+    #define AUTO_POWER_E_TEMP        100 // (°C) Turn on PSU over this temperature
     //#define AUTO_POWER_CHAMBER_TEMP  30 // (°C) Turn on PSU over this temperature
     #define POWER_TIMEOUT 30
   #endif
@@ -802,17 +806,18 @@
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 148 }        // DEFAULT PRINTO H3      = 16 / 16 / 32 / 16
   #define DEFAULT_MAX_FEEDRATE          { 200, 200, 35, 120 }
   #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 50, 10000 }
+#endif
+
+#ifdef PRINTO_H3_MIDI
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 640, 640, 800, 148 }        // 32bit LV8729 PRINTO H3 = 128 / 128 / 32 / 16
+  #define DEFAULT_MAX_FEEDRATE          { 500, 500, 45, 120 }
+  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 10000 }
 #else
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 148 }        // DEFAULT PRINTO H3      = 16 / 16 / 32 / 16
   #define DEFAULT_MAX_FEEDRATE          { 500, 500, 45, 120 }
   #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 10000 }
 #endif
 
-#ifdef PRINTO_H3_MIDI
-  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 640, 640, 3200, 148 }        // 32bit LV8729 PRINTO H3 = 128 / 128 / 128 / 16
-  #define DEFAULT_MAX_FEEDRATE          { 500, 500, 45, 120 }
-  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 10000 }
-#endif
 
 /**
  * Default Max Feed Rate (mm/s)
@@ -847,9 +852,9 @@
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
-#define DEFAULT_ACCELERATION          1000    // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_ACCELERATION          1400    // X, Y, Z and E acceleration for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  6000    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   2400    // X, Y, Z acceleration for travel (non printing) moves
+#define DEFAULT_TRAVEL_ACCELERATION   2800    // X, Y, Z acceleration for travel (non printing) moves
 
 /**
  * Default Jerk limits (mm/s)
