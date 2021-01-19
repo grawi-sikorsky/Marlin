@@ -1191,6 +1191,14 @@
 			nexlcd.nex_enqueue_filament_change();
 			buzzer.tone(100, 2300);
 		}
+		else if (strcmp(bufferson, "M81") == 0)	// wylaczenie drukarki 
+		{
+			buzzer.tone(100, 3100); // dodane - pozegnalny brzeczyk
+			buzzer.tone(100, 2600);
+			buzzer.tone(100, 2300);
+			queue.enqueue_now_P("G28");
+			queue.enqueue_now_P("M81");
+		}
 		else if (strcmp(bufferson, "M78 S78") == 0)
 		{
 			queue.inject_P(bufferson);
