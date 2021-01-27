@@ -70,7 +70,7 @@
 // Z Probe (when not Z_MIN_PIN)
 //
 #ifndef Z_MIN_PROBE_PIN
-  #define Z_MIN_PROBE_PIN  P1_24
+  #define Z_MIN_PROBE_PIN  P1_25
 #endif
 
 //
@@ -81,8 +81,9 @@
 #endif
 
 #ifdef PSU_CONTROL
-  #define PS_ON_PIN P1_25       // PS OFF printo h3 Y-MAX SKR 1.4
+  #define PS_ON_PIN P1_26       // PS OFF printo h3 Y-MAX SKR 1.4 P1_25 // SKR 1.3 P1_26
 #endif
+
 //
 // Steppers
 //

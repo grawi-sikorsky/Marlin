@@ -1140,10 +1140,12 @@
 
 	void NextionLCD::setBabystepUpPopCallback(void *ptr){
 		nexlcd.nextion_babystep_z(false);
+		buzzer.tone(100, 2300);
 	}
 
 	void NextionLCD::setBabystepDownPopCallback(void *ptr){
 		nexlcd.nextion_babystep_z(true);
+		buzzer.tone(100, 2300);
 	}
 
 	void NextionLCD::setBabystepEEPROMPopCallback(void *ptr){
@@ -1729,6 +1731,9 @@ void NextionLCD::init(){
 		static float			PreviousHotendTemp = 0,
 											PreviousTargetHotendTemp = 0;
 
+		static millis_t cycle = 0;					// do odswiezania coords
+		const millis_t teraz = millis();		// do odswiezania coords
+
     if (!NextionON) return;
 
     PageID = Nextion_PageID();																		// sprawdz strone
@@ -1855,8 +1860,13 @@ void NextionLCD::init(){
 						targetdegtoLCD(1, PreviousTargetBedTemp);
 					}
 				#endif
- 
-        coordtoLCD();
+
+				// koordy odswiezamy rzadziej bo spam leci po serialu mimo czystek
+				if (ELAPSED(teraz, cycle)) 
+				{
+					cycle = teraz + 800UL; // zmianka z 1000UL
+					coordtoLCD();
+				}
 
 				//nex_update_sd_status();
 
