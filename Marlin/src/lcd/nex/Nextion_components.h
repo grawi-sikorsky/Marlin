@@ -23,6 +23,7 @@
 			EPageSpeed 					= 7,
 			EPageFilament 			= 11,
 			EPageBedlevel 			= 12,
+      EPageBabyStep       = 13,
 			EPageSelect 				= 14,
 			EPageYesno 					= 15,
 			EPageFlow 					= 21,
@@ -200,6 +201,7 @@
 	NexObject ZbabyUp			= NexObject(13, 1, "m0");
 	NexObject ZbabyDown		= NexObject(13, 2, "m1");
 	NexObject ZbabyBack_Save = NexObject(13, 3, "m2");
+  NexObject ZbabyVal    = NexObject(13,11, "t1_babyval");
 
 
   /*******************************************************************

@@ -1140,12 +1140,10 @@
 
 	void NextionLCD::setBabystepUpPopCallback(void *ptr){
 		nexlcd.nextion_babystep_z(false);
-		buzzer.tone(100, 2300);
 	}
 
 	void NextionLCD::setBabystepDownPopCallback(void *ptr){
 		nexlcd.nextion_babystep_z(true);
-		buzzer.tone(100, 2300);
 	}
 
 	void NextionLCD::setBabystepEEPROMPopCallback(void *ptr){
@@ -1160,6 +1158,7 @@
 
 		feedrate_percentage = vspeedbuff;
 		PagePrinter.show();
+		buzzer.tone(50, 2300);
 	}
 
 	void NextionLCD::setflowPopCallback(void *ptr){
@@ -1223,7 +1222,7 @@
 		else
 		{ 
 			queue.inject_P(bufferson);
-			buzzer.tone(100, 2300);
+			buzzer.tone(50, 2300);
 		}
   }
 
@@ -1910,6 +1909,12 @@ void NextionLCD::init(){
 				// odswiez temp glowicy na ekranie filament [przyciski]
 					degtoLCD(0, thermalManager.degHotend(0));
 				break;
+			case EPageBabyStep:
+					float nexval;
+					nexval = babystep.axis_total[1];
+					nexval = nexval/800;
+					ZbabyVal.setText(ftostr43sign(nexval),"babysteppage");
+				break;
 			case EPageSelect:	// FILAMENT CHANGE PAGE?
 				
 				if (nex_m600_heatingup == 1) // pokaz temp glowicy podczas nagrzewania m600 na stronie select
@@ -1970,16 +1975,26 @@ void NextionLCD::init(){
 		void NextionLCD::nextion_babystep_z(bool dir) 
 		{
 			const int16_t babystep_increment = BABYSTEP_MULTIPLICATOR_Z;
+			float nexval;
 			if (dir == true)
 			{
 				babystep.add_steps(Z_AXIS, babystep_increment);
 				_babystep_z_shift += babystep_increment;
+
+				nexval = babystep.axis_total[1];
+				nexval = nexval/800;
+				ZbabyVal.setText(ftostr43sign(nexval), "babysteppage");
 			}
 			else if (dir == false)
 			{
-					babystep.add_steps(Z_AXIS, -babystep_increment);
+				babystep.add_steps(Z_AXIS, -babystep_increment);
 				_babystep_z_shift -= babystep_increment;
+
+				nexval = babystep.axis_total[1];
+				nexval = nexval/800;
+				ZbabyVal.setText(ftostr43sign(nexval), "babysteppage");
 			}
+			buzzer.tone(40, 2300);
 		}
 	#endif
 
