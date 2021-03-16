@@ -78,19 +78,19 @@
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
 // ============================================
 
-//#define PRINTO_H3
+#define PRINTO_H3
 //#define PRINTO_H3_PLUS
 //#define PRINTO_H3_TOWER
 //#define PRINTO_H3_TOWERPLUS
-#define PRINTO_H3_MIDI
+//#define PRINTO_H3_MIDI
 //#define PRINTO_H3_MIDI350
 //#define PRINTO_H3_BIGGIE
 
 // Wybor sterownika:
 //#define MKS_GEN
 #define MKS_SKR     // info ze 32 bit
-//#define MKS_SKR13   // wybor sterownika
-#define MKS_SKR14   // wybor sterownika
+#define MKS_SKR13   // wybor sterownika
+//#define MKS_SKR14   // wybor sterownika
 
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
@@ -812,6 +812,12 @@
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 640, 640, 800, 148 }        // 32bit LV8729 PRINTO H3 = 128 / 128 / 32 / 16
   #define DEFAULT_MAX_FEEDRATE          { 500, 500, 45, 120 }
   #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 10000 }
+#endif
+
+#ifdef PRINTO_H3
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 640, 640, 800, 148 }        // 32bit LV8729 PRINTO H3 = 128 / 128 / 32 / 16
+  #define DEFAULT_MAX_FEEDRATE          { 500, 500, 45, 120 }
+  #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 10000 }
 #else
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 148 }        // DEFAULT PRINTO H3      = 16 / 16 / 32 / 16
   #define DEFAULT_MAX_FEEDRATE          { 500, 500, 45, 120 }
@@ -1067,7 +1073,7 @@
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
-#define PROBING_MARGIN 10
+#define PROBING_MARGIN 20
 
 // X and Y axis travel speed (mm/min) between probes
 #define XY_PROBE_SPEED (450*60)
@@ -1406,7 +1412,7 @@
   #if ENABLED(PRINTO_H3_MIDI) || ENABLED(PRINTO_H3_MIDI350) || ENABLED(PRINTO_H3_BIGGIE)
     #define GRID_MAX_POINTS_X 3    // Don't use more than 7 points per axis, implementation limited.
   #else
-    #define GRID_MAX_POINTS_X 2    // Don't use more than 7 points per axis, implementation limited.
+    #define GRID_MAX_POINTS_X 3    // Don't use more than 7 points per axis, implementation limited.
   #endif
 
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
