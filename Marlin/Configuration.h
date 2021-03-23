@@ -78,9 +78,9 @@
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
 // ============================================
 
-//#define PRINTO_H3
+#define PRINTO_H3
 //#define PRINTO_H3_PLUS
-#define PRINTO_H3_TOWER
+//#define PRINTO_H3_TOWER
 //#define PRINTO_H3_TOWERPLUS
 //#define PRINTO_H3_MIDI
 //#define PRINTO_H3_MIDI350
@@ -89,8 +89,8 @@
 // Wybor sterownika:
 //#define MKS_GEN
 #define MKS_SKR     // info ze 32 bit
-#define MKS_SKR13   // wybor sterownika
-//#define MKS_SKR14   // wybor sterownika
+//#define MKS_SKR13   // wybor sterownika
+#define MKS_SKR14   // wybor sterownika
 
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
@@ -1116,10 +1116,17 @@
  * Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
-#define Z_CLEARANCE_DEPLOY_PROBE    4 // Z Clearance for Deploy/Stow
-#define Z_CLEARANCE_BETWEEN_PROBES  1 // Z Clearance between probe points
-#define Z_CLEARANCE_MULTI_PROBE     1 // Z Clearance between multiple probes
-#define Z_AFTER_PROBING             3 // Z position after probing is done
+#ifdef PRINTO_H3_MIDI350
+  #define Z_CLEARANCE_DEPLOY_PROBE    4 // Z Clearance for Deploy/Stow
+  #define Z_CLEARANCE_BETWEEN_PROBES  2 // Z Clearance between probe points
+  #define Z_CLEARANCE_MULTI_PROBE     1 // Z Clearance between multiple probes
+  #define Z_AFTER_PROBING             3 // Z position after probing is done
+#else
+  #define Z_CLEARANCE_DEPLOY_PROBE    4 // Z Clearance for Deploy/Stow
+  #define Z_CLEARANCE_BETWEEN_PROBES  1 // Z Clearance between probe points
+  #define Z_CLEARANCE_MULTI_PROBE     1 // Z Clearance between multiple probes
+  #define Z_AFTER_PROBING             3 // Z position after probing is done
+#endif
 
 #define Z_PROBE_LOW_POINT          -30 // Farthest distance below the trigger-point to go before stopping
 
