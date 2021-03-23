@@ -51,6 +51,8 @@ class NextionLCD
               lcd_clicked               = false,
 							nex_m600_heatingup 				= false;
 
+    bool      pause_from_nex  = false;
+
     // Zmienne Screensaver
     bool nex_ss_state;											// screensaver status
     uint16_t nex_ss_timeout;								// screensaver timeout

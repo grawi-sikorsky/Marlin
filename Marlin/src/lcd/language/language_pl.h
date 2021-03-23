@@ -565,6 +565,8 @@ namespace Language_pl {
       PROGMEM Language_Str	MSG_FILAMENT_CHANGE_HEATING_2		  = _UxGT("Prosze czekac");
       PROGMEM Language_Str	MSG_FILAMENT_CHANGE_HEAT_1			  = _UxGT("Wcisnij przycisk");
       PROGMEM Language_Str	MSG_FILAMENT_CHANGE_HEAT_2			  = _UxGT("aby rozgrzac dysze");
+
+      PROGMEM Language_Str MSG_SETTINGS_STORED                 = _UxGT("Ustawienia zapisane");
   #else
     PROGMEM Language_Str MSG_ADVANCED_PAUSE_WAITING        = _UxGT(MSG_1_LINE("Kliknij by kontynuować"));
     PROGMEM Language_Str MSG_PAUSE_PRINT_PARKING           = _UxGT(MSG_1_LINE("Parkowanie..."));

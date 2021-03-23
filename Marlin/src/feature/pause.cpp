@@ -491,8 +491,11 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
 
   bool nozzle_timed_out = false;
 
-  //show_continue_prompt(is_reload); // usuniete dodane nex
-
+  if(nexlcd.pause_from_nex == false)
+  {
+    show_continue_prompt(is_reload); // usuniete dodane nex ??????????????????????? jak nie ma to pauza dziala ok (okienko wznowienia pojawia sie po kliknieciu wznow) - brakuje jednak informacji o wlozeniu filamentu przy zmianie filamentu
+  }
+  
   first_impatient_beep(max_beep_count);
 
   // Start the heater idle timers

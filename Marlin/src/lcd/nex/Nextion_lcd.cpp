@@ -146,6 +146,7 @@
 
 				SDstatus = SD_PAUSE;
 				SD.setValue(SDstatus,"stat");// ustaw nex sdval na pause
+				nexlcd.pause_from_nex = true;
       }
       else {																						//resume		
 				#if ENABLED(PARK_HEAD_ON_PAUSE)
@@ -168,7 +169,8 @@
 				#endif
 				ui.set_status_P(GET_TEXT(MSG_RESUME_PRINT), 1);
 				SDstatus = SD_PRINTING;
-				SD.setValue(SDstatus,"stat");			
+				SD.setValue(SDstatus,"stat");
+				nexlcd.pause_from_nex = false;
       }
     }
   }
@@ -606,7 +608,7 @@
 				}
 			#endif
 			PageSelect.show();
-			queue.enqueue_now_P("M600 B0");
+			queue.inject_P("M600 B0"); // inject_p zamiast enqueue_now - inaczej m600 nie wykonuje sie
 		}
 
     void NextionLCD::lcd_advanced_pause_resume_print() {
@@ -760,6 +762,8 @@
           case PAUSE_MESSAGE_STATUS:
 						ui.reset_status();
 						ui.return_to_status();
+						//SDstatus = SD_PRINTING; // inaczej ikonka nex dalej mysli ze pauza
+						//SD.setValue(SDstatus,"stat"); // ustaw nex sdval na printing
 						PagePrinter.show();
            	SERIAL_ECHOLN("STATUS:??");
             break;
@@ -1863,7 +1867,7 @@ void NextionLCD::init(){
 				// koordy odswiezamy rzadziej bo spam leci po serialu mimo czystek
 				if (ELAPSED(teraz, cycle)) 
 				{
-					cycle = teraz + 800UL; // zmianka z 1000UL
+					cycle = teraz + 1000UL; // zmianka z 1000UL
 					coordtoLCD();
 				}
 

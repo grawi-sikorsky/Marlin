@@ -89,8 +89,8 @@
 // Wybor sterownika:
 //#define MKS_GEN
 #define MKS_SKR     // info ze 32 bit
-#define MKS_SKR13   // wybor sterownika
-//#define MKS_SKR14   // wybor sterownika
+//#define MKS_SKR13   // wybor sterownika
+#define MKS_SKR14   // wybor sterownika
 
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
@@ -818,10 +818,16 @@
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 640, 640, 800, 148 }        // 32bit LV8729 PRINTO H3 = 128 / 128 / 32 / 16
   #define DEFAULT_MAX_FEEDRATE          { 500, 500, 45, 120 }
   #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 10000 }
-#else
-  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 148 }        // DEFAULT PRINTO H3      = 16 / 16 / 32 / 16
+#endif
+
+#ifdef PRINTO_H3_TOWER
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 640, 640, 800, 148 }        // 32bit LV8729 PRINTO H3 = 128 / 128 / 32 / 16
   #define DEFAULT_MAX_FEEDRATE          { 500, 500, 45, 120 }
   #define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 10000 }
+#else
+  //#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 148 }        // DEFAULT PRINTO H3      = 16 / 16 / 32 / 16
+  //#define DEFAULT_MAX_FEEDRATE          { 500, 500, 45, 120 }
+  //#define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 80, 10000 }
 #endif
 
 
