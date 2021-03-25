@@ -89,8 +89,8 @@
 // Wybor sterownika:
 //#define MKS_GEN
 #define MKS_SKR     // info ze 32 bit
-//#define MKS_SKR13   // wybor sterownika
-#define MKS_SKR14   // wybor sterownika
+#define MKS_SKR13   // wybor sterownika
+//#define MKS_SKR14   // wybor sterownika
 
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!

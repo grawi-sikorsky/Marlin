@@ -114,20 +114,30 @@
 	 *	Nextion stop print button
 	 */
   void NextionLCD::nex_stop_printing() {
-		card.flag.abort_sd_printing = true; 		// Ta flaga zatrzymuje wydruk w kolejnej wolnej instrukcji idle();
-		// 2.0 did_pause_print = false;					// flaga pause_print na false, na wypadek gdyby drukarka byla w stanie pauzy @_@
+		nexlcd.pause_from_nex = true;						// Wowczas nie wejdzie w nagrzewanie-ekstruzje uruchamiane po wznowieniu
+		did_pause_print = 0;										// Wylacza pauze 
+		wait_for_user = false;									// Przywroc kontrole userowi - Wznow
+		//queue.inject_P(PSTR("M108"));						// niewiadomo jeszcze
+		//queue.inject_P(PSTR("M24"));					// wznowienie
+
+		card.flag.abort_sd_printing = true; 		// Ta flaga zatrzymuje wydruk w kolejnej wolnej instrukcji idle(); - problem tylko gdy drukarka jest w pause...
 		//stepper.quick_stop_panic();						// pomocne z panic'a, trzeba to zaserwowac aby mozna bylo ponownie wykonac jakakolwiek komende
 		#if ENABLED(PLOSS_SUPPORT)
 			//_babystep_z_shift = 0;								// dodane - zeruje babystep po zatrzymaniu wydruku
 			persistentStore.writedata((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);	// zeruj babystepping w eeprom
 		#endif
 
+		// stopujemy rozgrzewanie wszelkie..
+		// todo
+		thermalManager.setTargetHotend(0, 0);	
+		thermalManager.setTargetBed(0);
+
 		SDstatus = SD_INSERT;
 		SD.setValue(SDstatus,"stat");				// 
 
 		percentdone.setText("0", "stat");		// zeruj procenty
 		progressbar.setValue(0, "stat");			// zeruj progress bar
-		ui.set_status_P(GET_TEXT(MSG_PRINT_DONE), -1);	// status bar info
+		ui.set_status_P(GET_TEXT(MSG_PRINT_DONE), 1);	// status bar info
 	}
 
 	/**
@@ -347,6 +357,8 @@
 				//KATT eeprom_update_dword((uint32_t*)(EEPROM_PANIC_BABYSTEP_Z), _babystep_z_shift);	// zeruj babystepping w eeprom
 			#endif // jezeli VLCS wlaczone
 
+			_babystep_z_shift = 0;																												// zeruj babystep po uruchomieniu wydruku
+			
 			SDstatus = SD_PRINTING;
 			SD.setValue(SDstatus,"stat"); // ustaw nex sdval na printing
 
