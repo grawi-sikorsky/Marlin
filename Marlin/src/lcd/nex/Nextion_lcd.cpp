@@ -358,6 +358,9 @@
 			#endif // jezeli VLCS wlaczone
 
 			_babystep_z_shift = 0;																												// zeruj babystep po uruchomieniu wydruku
+			babystep_nexval = 0;
+			babystep.reset_total(Z_AXIS);
+			ZbabyVal.setText(ftostr43sign(_babystep_z_shift), "babysteppage");
 			
 			SDstatus = SD_PRINTING;
 			SD.setValue(SDstatus,"stat"); // ustaw nex sdval na printing
@@ -1926,10 +1929,10 @@ void NextionLCD::init(){
 					degtoLCD(0, thermalManager.degHotend(0));
 				break;
 			case EPageBabyStep:
-					float nexval;
-					nexval = babystep.axis_total[1];
-					nexval = nexval/800;
-					ZbabyVal.setText(ftostr43sign(nexval),"babysteppage");
+					babystep_nexval = 0;
+					babystep_nexval = babystep.axis_total[1];
+					babystep_nexval = babystep_nexval/800;
+					ZbabyVal.setText(ftostr43sign(babystep_nexval),"babysteppage");
 				break;
 			case EPageSelect:	// FILAMENT CHANGE PAGE?
 				
@@ -1991,24 +1994,24 @@ void NextionLCD::init(){
 		void NextionLCD::nextion_babystep_z(bool dir) 
 		{
 			const int16_t babystep_increment = BABYSTEP_MULTIPLICATOR_Z;
-			float nexval;
+			babystep_nexval = 0;
 			if (dir == true)
 			{
 				babystep.add_steps(Z_AXIS, babystep_increment);
 				_babystep_z_shift += babystep_increment;
 
-				nexval = babystep.axis_total[1];
-				nexval = nexval/800;
-				ZbabyVal.setText(ftostr43sign(nexval), "babysteppage");
+				babystep_nexval = babystep.axis_total[1];
+				babystep_nexval = babystep_nexval/800;
+				ZbabyVal.setText(ftostr43sign(babystep_nexval), "babysteppage");
 			}
 			else if (dir == false)
 			{
 				babystep.add_steps(Z_AXIS, -babystep_increment);
 				_babystep_z_shift -= babystep_increment;
 
-				nexval = babystep.axis_total[1];
-				nexval = nexval/800;
-				ZbabyVal.setText(ftostr43sign(nexval), "babysteppage");
+				babystep_nexval = babystep.axis_total[1];
+				babystep_nexval = babystep_nexval/800;
+				ZbabyVal.setText(ftostr43sign(babystep_nexval), "babysteppage");
 			}
 			buzzer.tone(40, 2300);
 		}

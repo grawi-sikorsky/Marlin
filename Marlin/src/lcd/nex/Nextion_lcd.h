@@ -61,6 +61,7 @@ class NextionLCD
     // BABYSTEPPING NEX
     #if ENABLED(BABYSTEPPING)
       int _babystep_z_shift = 0;
+      float babystep_nexval = 0;
     #endif
 	
     //Główne metody ekranu
