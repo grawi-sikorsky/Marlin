@@ -22,8 +22,8 @@
 
 #include "../inc/MarlinConfig.h"
 
-#if ENABLED(PARK_HEAD_ON_PAUSE) && ENABLED(NEXTION_DISPLAY)
-  #include "nex/Nextion_lcd.h"
+#if ENABLED(NEXTION_DISPLAY)
+  #include "../../src/lcd/nex/Nextion_lcd.h"
 #endif
 
 #include "../MarlinCore.h" // for printingIsPaused
@@ -835,8 +835,8 @@ inline bool can_encode() {
   return !BUTTON_PRESSED(ENC_EN); // Update encoder only when ENC_EN is not LOW (pressed)
 }
 
-#if DISABLED(NEXTION_DISPLAY)
 /// TU BYLO #IF DISABLE NEXTION!
+#if DISABLED (NEXTION_DISPLAY)
 void MarlinUI::update() {
 
   static uint16_t max_display_update_time = 0;
