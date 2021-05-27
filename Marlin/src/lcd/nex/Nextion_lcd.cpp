@@ -2253,7 +2253,8 @@ void NextionLCD::init(){
 		void onSteppersDisabled(){}
 		void onHomingStart(){}
 		void onMeshLevelingStart(){}
-		
+		void onHomingComplete(){}
+
 
 	};	// namespace ExtUI
 
