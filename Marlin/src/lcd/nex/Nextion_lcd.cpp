@@ -2224,7 +2224,7 @@ void NextionLCD::init(){
 				SERIAL_ECHOLNPAIR("onPidTuning:",rst);
 				switch(rst) {
 					case PID_BAD_EXTRUDER_NUM:
-						nexlcd.print_status_msg(STR_PID_BAD_EXTRUDER_NUM);
+						nexlcd.print_status_msg(STR_PID_BAD_HEATER_ID);
 						break;
 					case PID_TEMP_TOO_HIGH:
 						nexlcd.print_status_msg(STR_PID_TEMP_TOO_HIGH);
