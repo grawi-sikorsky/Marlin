@@ -835,6 +835,7 @@ inline bool can_encode() {
   return !BUTTON_PRESSED(ENC_EN); // Update encoder only when ENC_EN is not LOW (pressed)
 }
 
+#if DISABLED(NEXTION_DISPLAY)
 /// TU BYLO #IF DISABLE NEXTION!
 void MarlinUI::update() {
 
@@ -1306,7 +1307,7 @@ void MarlinUI::update() {
 
 #endif // HAS_ENCODER_ACTION
 
-//#endif // HAS_WIRED_LCD
+#endif // HAS_WIRED_LCD
 
 #if HAS_STATUS_MESSAGE
 

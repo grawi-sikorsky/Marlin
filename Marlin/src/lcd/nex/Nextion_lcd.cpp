@@ -165,16 +165,16 @@
 					//resume_print();
 /*
 					if (card.isFileOpen()) {
-						card.startFileprint();            // SD card will now be read for commands
+						card.startOrResumeFilePrinting();            // SD card will now be read for commands
 						startOrResumeJob();               // Start (or resume) the print job timer
 						TERN_(POWER_LOSS_RECOVERY, recovery.prepare());
-						SERIAL_ECHOLN("card startfileprint");
+						SERIAL_ECHOLN("card startOrResumeFilePrinting");
 						
 					}
 					*/
 
 				#else
-				card.startFileprint();
+				card.startOrResumeFilePrinting();
 				print_job_timer.start();
 				#endif
 				ui.set_status_P(GET_TEXT(MSG_RESUME_PRINT), 1);
@@ -367,7 +367,7 @@
 
 			card.selectFileByName(filename);
 			card.openAndPrintFile(filename);
-			card.startFileprint();
+			card.startOrResumeFilePrinting();
 			strncpy(filename_printing, card.longFilename, 40); // card.longFilename
 			SERIAL_ECHOPGM("card.longfilename: "); SERIAL_ECHOLN(card.longFilename);
 			
