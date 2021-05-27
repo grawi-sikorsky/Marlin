@@ -33,7 +33,6 @@
 #include "../../../core/debug_out.h"
 
 /**
- *
  * M906: report or set KVAL_HOLD which sets the maximum effective voltage provided by the
  *       PWMs to the steppers
  *
@@ -56,7 +55,6 @@
  *
  * L6470 is used in the STEP-CLOCK mode.  KVAL_HOLD is the only KVAL_xxx
  * that affects the effective voltage seen by the stepper.
- *
  */
 
 /**
@@ -134,7 +132,7 @@ void L64XX_report_current(L64XX &motor, const L64XX_axis_t axis) {
       SERIAL_ECHOPAIR("...MicroSteps: ", MicroSteps,
                       "   ADC_OUT: ", L6470_ADC_out);
       SERIAL_ECHOPGM("   Vs_compensation: ");
-      serialprintPGM((motor.GetParam(sh.L6470_AXIS_CONFIG) & CONFIG_EN_VSCOMP) ? PSTR("ENABLED ") : PSTR("DISABLED"));
+      SERIAL_ECHOPGM_P((motor.GetParam(sh.L6470_AXIS_CONFIG) & CONFIG_EN_VSCOMP) ? PSTR("ENABLED ") : PSTR("DISABLED"));
       SERIAL_ECHOLNPAIR("   Compensation coefficient: ~", comp_coef * 0.01f);
 
       SERIAL_ECHOPAIR("...KVAL_HOLD: ", motor.GetParam(L6470_KVAL_HOLD),
@@ -236,7 +234,7 @@ void GcodeSuite::M906() {
     const uint8_t index = parser.byteval('I');
   #endif
 
-  LOOP_XYZE(i) if (uint16_t value = parser.intval(axis_codes[i])) {
+  LOOP_LOGICAL_AXES(i) if (uint16_t value = parser.intval(axis_codes[i])) {
 
     report_current = false;
 
