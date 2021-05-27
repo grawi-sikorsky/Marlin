@@ -29,6 +29,11 @@
 #if ENABLED(NEXTION_DISPLAY)
       #define RX1    P1_18
       #define TX1    P1_19
+      #define LCD_PINS_RS       -1
+      #define LCD_PINS_ENABLE   -1  // marlinui HD44780cpp nextion...
+      #define SHIFT_OUT_PIN     -1
+      #define SHIFT_LD_PIN      -1
+      #define SHIFT_CLK_PIN     -1
 #endif
 
 //

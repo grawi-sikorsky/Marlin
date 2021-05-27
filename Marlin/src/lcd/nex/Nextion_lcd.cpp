@@ -2247,6 +2247,13 @@ void NextionLCD::init(){
 		void stopPrint();
 		void pausePrint();
 		void resumePrint();
+		void onPostprocessSettings(){}
+		void onPrintFinished(){}
+		void onSteppersEnabled(){}
+		void onSteppersDisabled(){}
+		void onHomingStart(){}
+		void onMeshLevelingStart(){}
+		
 
 	};	// namespace ExtUI
 
