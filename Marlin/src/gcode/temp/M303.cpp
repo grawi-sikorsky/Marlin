@@ -81,7 +81,7 @@ void GcodeSuite::M303() {
     KEEPALIVE_STATE(NOT_BUSY);
   #endif
 
-  ExtUI::onPidTuning(ExtUI::result_t::PID_START); // dodane nextion printo h3 - info o rozpoczeciu pid
+  //ExtUI::onPidTuning(ExtUI::result_t::PID_START); // dodane nextion printo h3 - info o rozpoczeciu pid
   ui.set_status(GET_TEXT(MSG_PID_AUTOTUNE));
   
   LCD_MESSAGEPGM(MSG_PID_AUTOTUNE);

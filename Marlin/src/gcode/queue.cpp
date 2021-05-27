@@ -440,7 +440,7 @@ void GCodeQueue::get_serial_commands() {
       SerialState &serial = serial_state[p];
 
       #if ENABLED(NEXTION_DISPLAY)
-        if (!serial_count) { 
+        if (!serial_state) { 
           nexlcd.nextion_draw_update(); //dodane dla nextiona
           continue; 
         } // skip empty lines           

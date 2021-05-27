@@ -1306,7 +1306,7 @@ void MarlinUI::update() {
 
 #endif // HAS_ENCODER_ACTION
 
-#endif // HAS_WIRED_LCD
+//#endif // HAS_WIRED_LCD
 
 #if HAS_STATUS_MESSAGE
 

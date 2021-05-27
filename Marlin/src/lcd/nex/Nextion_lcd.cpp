@@ -20,7 +20,7 @@
 	#include "../../feature/bedlevel/mbl/mesh_bed_leveling.h"
 	#include "../../module/planner.h"
 	#include "../../module/settings.h"
-	#include "../../lcd/ultralcd.h"
+	#include "../../lcd/marlinui.h"
 #endif
 
 #if ENABLED(SPEAKER)
@@ -2235,7 +2235,7 @@ void NextionLCD::init(){
 					case PID_DONE:
 						nexlcd.print_status_msg(STR_PID_AUTOTUNE_FINISHED);
 						break;
-					case PID_START:
+					case PID_STARTED:
 						nexlcd.print_status_msg("Rozpoczeto kalibracje PID");
 						break;
 				}
