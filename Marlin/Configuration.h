@@ -88,8 +88,8 @@
 // Wybor sterownika:
 //#define MKS_GEN
 #define MKS_SKR     // info ze 32 bit
-#define MKS_SKR13   // wybor sterownika
-//#define MKS_SKR14   // wybor sterownika
+//#define MKS_SKR13   // wybor sterownika
+#define MKS_SKR14   // wybor sterownika
 
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
@@ -1753,6 +1753,7 @@
 
 // Homing speeds (mm/min)
 #define HOMING_FEEDRATE_MM_M { (100*60), (100*60), (40*60) }
+#define HOMING_FEEDRATE_Z 40*60 // nex dla g29
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS

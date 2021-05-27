@@ -106,7 +106,7 @@ typedef void (*menuAction_t)();
       void lcd_mesh_edit_setup(const float &initial);
       float lcd_mesh_edit();
     #endif
-
+  #endif
 #endif // HAS_WIRED_LCD
 
 #if HAS_MARLINUI_U8GLIB

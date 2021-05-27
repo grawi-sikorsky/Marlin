@@ -23,7 +23,7 @@
 // For debug Connect
 //#define NEXTION_CONNECT_DEBUG
 #include "../../MarlinCore.h"
-#include "../ultralcd.h"
+#include "../marlinui.h"
 #include "library/Nextion.h"
 #include "HardwareSerial.h"
 #include "../../../src/feature/pause.h"
