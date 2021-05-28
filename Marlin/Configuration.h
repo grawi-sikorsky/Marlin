@@ -78,19 +78,19 @@
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
 // ============================================
 
-//#define PRINTO_H3
+#define PRINTO_H3
 //#define PRINTO_H3_PLUS
 //#define PRINTO_H3_TOWER
 //#define PRINTO_H3_TOWERPLUS
 //#define PRINTO_H3_MIDI
-#define PRINTO_H3_MIDI350
+//#define PRINTO_H3_MIDI350
 //#define PRINTO_H3_BIGGIE
 
 // Wybor sterownika:
 //#define MKS_GEN
 #define MKS_SKR     // info ze 32 bit
-#define MKS_SKR13   // wybor sterownika
-//#define MKS_SKR14   // wybor sterownika
+//#define MKS_SKR13   // wybor sterownika
+#define MKS_SKR14   // wybor sterownika
 
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
@@ -106,8 +106,8 @@
 #endif
 
 // BED LEVELING NEXTION
-	//#define NEXTION_SEMIAUTO_BED_LEVEL  // mesh bed leveling - semi auto
-  #define NEXTION_AUTO_BED_LEVEL     // bilinear bed leveling - auto
+	#define NEXTION_SEMIAUTO_BED_LEVEL  // mesh bed leveling - semi auto
+  //#define NEXTION_AUTO_BED_LEVEL     // bilinear bed leveling - auto
 
 
 
