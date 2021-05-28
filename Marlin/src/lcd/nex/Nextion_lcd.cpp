@@ -1227,7 +1227,9 @@
 		else if(strcmp(bufferson, "G29 S1") == 0) // musimy wylapac komende z nextiona zanim trafi do parsera
 		{																					// inaczej trzeba bedzie miec osobne wsady do NEXa z auto i semi levelingiem
 			#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
-				queue.inject_P(bufferson);
+				queue.enqueue_now_P("G28");	// bazowanie przed poziomowaniem
+				queue.enqueue_now_P("G29 S1"); // poziomowanie auto
+				//queue.inject_P(bufferson);
 				Pprobe.show();		// pokaz ekran semiauto leveling
 			#endif
 			
