@@ -1274,7 +1274,9 @@ void setup() {
     DWIN_Frame_SetDir(1); // Orientation 90°
     DWIN_UpdateLCD();     // Show bootscreen (first image)
   #else
-    SETUP_RUN(ui.init());                                     // NEXTION CZEK IT PO MERGE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  
+    //SETUP_RUN(ui.init());                                     // nextion - Musi byc inicjalizowane po watchdogu bo wisi na bootlopie
+
     #if BOTH(HAS_WIRED_LCD, SHOW_BOOTSCREEN)
       SETUP_RUN(ui.show_bootscreen());
       const millis_t bootscreen_ms = millis();
