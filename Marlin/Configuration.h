@@ -105,8 +105,8 @@
 #endif
 
 // BED LEVELING NEXTION
-	//#define NEXTION_SEMIAUTO_BED_LEVEL  // mesh bed leveling - semi auto
-  #define NEXTION_AUTO_BED_LEVEL     // bilinear bed leveling - auto
+	#define NEXTION_SEMIAUTO_BED_LEVEL  // mesh bed leveling - semi auto
+  //#define NEXTION_AUTO_BED_LEVEL     // bilinear bed leveling - auto
 
 
 
