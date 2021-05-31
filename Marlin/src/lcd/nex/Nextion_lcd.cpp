@@ -1075,7 +1075,7 @@
 			Sfirmware.setText_PGM(PSTR(SHORT_BUILD_VERSION), "statscreen");
 			Skompil.setText_PGM(PSTR(STRING_DISTRIBUTION_DATE), "statscreen");
 
-			#if ENABLED(NEXTION_BED_SEMIAUTO_LEVEL)
+			#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
 				Sleveling.setText_PGM(GET_TEXT(MSG_MESH_LEVELING), "statscreen");
 			#elif ENABLED(NEXTION_AUTO_BED_LEVEL)
 				Sleveling.setText_PGM(GET_TEXT(MSG_BILINEAR_LEVELING), "statscreen");
