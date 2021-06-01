@@ -86,14 +86,6 @@ class PrintCounter: public Stopwatch {
        */
       static constexpr millis_t saveInterval = MIN_TO_MS(PRINTCOUNTER_SAVE_INTERVAL);
     #endif
-    
-    /**
-     * @brief Interval in seconds between EEPROM saves
-     * @details This const value defines what will be the time between each
-     * EEPROM save cycle, the development team recommends to set this value
-     * no lower than 3600 secs (1 hour).
-     */
-    static constexpr uint16_t saveInterval = 3600;
 
     /**
      * @brief Timestamp of the last call to deltaDuration()
