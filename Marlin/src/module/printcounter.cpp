@@ -250,11 +250,13 @@ void PrintCounter::tick() {
     update_next = now + updateInterval * 1000;
   }
 
-  static uint32_t eeprom_next; // = 0
-  if (ELAPSED(now, eeprom_next)) {
-    eeprom_next = now + saveInterval * 1000;
-    saveStats();
-  }
+  #if PRINTCOUNTER_SAVE_INTERVAL > 0
+    static millis_t eeprom_next; // = 0
+    if (ELAPSED(now, eeprom_next)) {
+      eeprom_next = now + saveInterval;
+      saveStats();
+    }
+  #endif
 }
 
 // @Override
