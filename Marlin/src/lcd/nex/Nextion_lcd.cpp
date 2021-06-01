@@ -2195,15 +2195,21 @@ void NextionLCD::init(){
 		void onConfigurationStoreWritten(bool success) {
 			// Called after the entire EEPROM has been written,
 			// whether successful or not.
-			BUZZ(70, 2300); // dodane beeper git
-			BUZZ(70, 2900); // dodane beeper git
+			if(!card.isPrinting)
+			{
+			  BUZZ(70, 2300); // dodane beeper git
+			  BUZZ(70, 2900); // dodane beeper git
+			}
 		}
 
 		void onConfigurationStoreRead(bool success) {
 			// Called after the entire EEPROM has been read,
 			// whether successful or not.
-			BUZZ(70, 2300); // dodane beeper git
-			BUZZ(70, 2900); // dodane beeper git
+			if(!card.isPrinting)
+			{
+			  BUZZ(70, 2300); // dodane beeper git
+			  BUZZ(70, 2900); // dodane beeper git
+			}
 		}
 
 		void onFactoryReset(){
