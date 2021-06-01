@@ -1797,7 +1797,7 @@
 #define PRINTCOUNTER
 
 #if ENABLED(PRINTCOUNTER)
-  #define PRINTCOUNTER_SAVE_INTERVAL 60 // (minutes) EEPROM save interval during print
+  #define PRINTCOUNTER_SAVE_INTERVAL 1 // (minutes) EEPROM save interval during print
 #endif
 /**
  * Password
