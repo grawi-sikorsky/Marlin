@@ -77,9 +77,9 @@
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
 // ============================================
 
-//#define PRINTO_H3
+#define PRINTO_H3
 //#define PRINTO_H3_PLUS
-#define PRINTO_H3_TOWER
+//#define PRINTO_H3_TOWER
 //#define PRINTO_H3_TOWERPLUS
 //#define PRINTO_H3_MIDI
 //#define PRINTO_H3_MIDI350
@@ -88,8 +88,8 @@
 // Wybor sterownika:
 //#define MKS_GEN
 #define MKS_SKR     // info ze 32 bit
-#define MKS_SKR13   // wybor sterownika
-//#define MKS_SKR14   // wybor sterownika
+//#define MKS_SKR13   // wybor sterownika
+#define MKS_SKR14   // wybor sterownika
 
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
