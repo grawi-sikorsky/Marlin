@@ -49,7 +49,7 @@
 		// Zmienne dluga nazwa na ekranie statusu
 	int		nex_file_number[6];
 	int 	nex_file_row_clicked;
-	char	filename_printing[40];
+	char	filename_printing[50];
 
 	#if PIN_EXISTS(SD_DETECT)
 		uint8_t lcd_sd_status;
@@ -138,6 +138,8 @@
 		percentdone.setText("0", "stat");		// zeruj procenty
 		progressbar.setValue(0, "stat");			// zeruj progress bar
 		ui.set_status_P(GET_TEXT(MSG_PRINT_DONE), 1);	// status bar info
+
+		babystep.axis_total[1] = 0;
 	}
 
 	/**
@@ -360,6 +362,7 @@
 			_babystep_z_shift = 0;																												// zeruj babystep po uruchomieniu wydruku
 			babystep_nexval = 0;
 			babystep.reset_total(Z_AXIS);
+			babystep.axis_total[1] = 0;
 			ZbabyVal.setText(ftostr43sign(_babystep_z_shift), "babysteppage");
 			
 			SDstatus = SD_PRINTING;
