@@ -440,7 +440,9 @@
 	//#define BTN_EN2 17
 	//#define BTN_ENC 35
 	//#define SD_DETECT_PIN SS_PIN
-  #define SD_DETECT_PIN  P1_31
+  #if !SD_CONNECTION_IS(LCD)
+    #define SD_DETECT_PIN  P1_31
+  #endif
   //#define PS_ON_PIN P0_10
 	//#define KILL_PIN 25
 #endif

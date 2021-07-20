@@ -29,10 +29,13 @@
  * Marlin release version identifier
  */
 #ifdef MKS_SKR13
-	#define SHORT_BUILD_VERSION "2.0.1c s1.3"
+	#define SHORT_BUILD_VERSION "2.0.2 s1.3"
 #endif
 #ifdef MKS_SKR14
-	#define SHORT_BUILD_VERSION "2.0.1c s1.4"
+	#define SHORT_BUILD_VERSION "2.0.2 s1.4"
+#endif
+#ifdef MKS_SKR20
+	#define SHORT_BUILD_VERSION "2.0.2 s2.0"
 #endif
 
 #define NAZWA_DRUKARKI "PrintO H3"
@@ -48,7 +51,7 @@
  * here we define this default string as the date where the latest release
  * version was tagged.
  */
-#define STRING_DISTRIBUTION_DATE "2021-06-10"
+#define STRING_DISTRIBUTION_DATE "2021-07-20"
 
 /**
  * Definiuje nazwe drukarki (wybor w configuration.h)

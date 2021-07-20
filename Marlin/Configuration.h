@@ -85,11 +85,14 @@
 //#define PRINTO_H3_MIDI350
 //#define PRINTO_H3_BIGGIE
 
-// Wybor sterownika:
+// Wybor typu sterownika:
 //#define MKS_GEN
 #define MKS_SKR     // info ze 32 bit
+
+// Wybor sterownika 32bit:
 //#define MKS_SKR13   // wybor sterownika
 #define MKS_SKR14   // wybor sterownika
+//#define MKS_SKR20   // wybor sterownika
 
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
