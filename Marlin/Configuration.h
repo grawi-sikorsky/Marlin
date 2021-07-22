@@ -91,8 +91,8 @@
 
 // Wybor sterownika 32bit:
 //#define MKS_SKR13   // wybor sterownika
-#define MKS_SKR14   // wybor sterownika
-//#define MKS_SKR20   // wybor sterownika
+//#define MKS_SKR14   // wybor sterownika
+#define MKS_SKR20   // wybor sterownika
 
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
@@ -192,6 +192,8 @@
     #define MOTHERBOARD BOARD_BIGTREE_SKR_V1_3_PH3
   #elif ENABLED(MKS_SKR14)
     #define MOTHERBOARD BOARD_BIGTREE_SKR_V1_4_PH3
+  #elif ENABLED(MKS_SKR20)
+    #define MOTHERBOARD BOARD_BIGTREE_SKR_V2_0_PH3
   #endif
  
 #endif

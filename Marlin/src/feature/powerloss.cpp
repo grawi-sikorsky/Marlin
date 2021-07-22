@@ -56,7 +56,8 @@ uint32_t PrintJobRecovery::cmd_sdpos, // = 0
 
 #if ENABLED(BABYSTEPPING) && ENABLED(NEXTION_DISPLAY)
   #include "../feature/babystep.h"
-  #include "../../../lcd/nex/Nextion_lcd.h"
+  //#include "../../../lcd/nex/Nextion_lcd.h"
+  #include "../lcd/nex/Nextion_lcd.h"
 #endif
 
 #if ENABLED(FWRETRACT)

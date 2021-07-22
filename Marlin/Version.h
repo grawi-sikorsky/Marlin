@@ -51,7 +51,7 @@
  * here we define this default string as the date where the latest release
  * version was tagged.
  */
-#define STRING_DISTRIBUTION_DATE "2021-07-20"
+#define STRING_DISTRIBUTION_DATE "2021-07-22"
 
 /**
  * Definiuje nazwe drukarki (wybor w configuration.h)

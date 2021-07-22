@@ -391,6 +391,7 @@
 #define BOARD_ANET_ET4P               4227  // ANET ET4P V1.x (STM32F407VGT6)
 #define BOARD_FYSETC_CHEETAH_V20      4228  // FYSETC Cheetah V2.0
 
+#define BOARD_BIGTREE_SKR_V2_0_PH3    4299  // SKR v2.0 - pinouts configured for Printo H3 printer
 
 //
 // ARM Cortex M7

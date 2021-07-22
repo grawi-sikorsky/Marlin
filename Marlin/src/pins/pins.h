@@ -635,6 +635,8 @@
   #include "stm32f4/pins_ANET_ET4P.h"           // STM32F4                                env:Anet_ET4_OpenBLT
 #elif MB(FYSETC_CHEETAH_V20)
   #include "stm32f4/pins_FYSETC_CHEETAH_V20.h"  // STM32F4                                env:FYSETC_CHEETAH_V20
+#elif MB(BIGTREE_SKR_V2_0_PH3)
+  #include "stm32f4/pins_BTT_SKR_V2_0_REV_B_PH3.h" // STM32F4                                env:BIGTREE_SKR_2 
 
 //
 // ARM Cortex M7
